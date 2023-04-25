@@ -38,6 +38,7 @@ class EliminarProductoExitoso(QMessageBox):
         self.exec_()
 
 class AgregarProductoWindow(QWidget):   
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Agregar Producto")
