@@ -1,9 +1,12 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QPushButton, QMessageBox, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QTableWidget, QHeaderView, QToolButton, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import pyqtSignal, Qt, QDateTime, QSize
+from reportlab.pdfgen import canvas
 from PyQt5.QtGui import QIcon, QPixmap
 from Login import LoginWindow
 from ABMProductos import AgregarProductoWindow, ModificarProductoWindow, EliminarProductoWindow
 import sys
+import os
+import time
 
 
 class MainWindow(QMainWindow):
@@ -171,6 +174,49 @@ class MainWindow(QMainWindow):
         editproductos_button.clicked.connect(self.abrir_ventana_modificar_producto)
         deleteproductos_button.clicked.connect(self.abrir_ventana_eliminar_producto)
         logout_button.clicked.connect(self.cerrar_sesion)
+        reportes_button.clicked.connect(self.show_reports_window)
+
+    def show_reports_window(self):
+        reports_window = QDialog(self)
+        reports_window.setWindowTitle("Reportes")
+        reports_window.setFixedSize(300, 200)
+
+        stock_report_button = QPushButton("Reporte Stock")
+        sales_report_button = QPushButton("Reporte Ventas")
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("Seleccione el tipo de reporte:"))
+        layout.addWidget(stock_report_button)
+        layout.addWidget(sales_report_button)
+
+        reports_window.setLayout(layout)
+
+        stock_report_button.clicked.connect(self.generate_stock_report)
+        sales_report_button.clicked.connect(self.generate_sales_report)
+
+        reports_window.exec_()
+
+    def generate_stock_report(self):
+        pdf_file = f"stock_report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
+        pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+
+        # Aquí puedes agregar la lógica para obtener los datos del stock y generar el contenido del PDF
+        c = canvas.Canvas(pdf_path)
+        c.drawString(100, 750, "Reporte de Stock")
+        c.save()
+
+        QMessageBox.information(self, "Éxito", f"Reporte de stock generado exitosamente en {pdf_path}")
+
+    def generate_sales_report(self):
+        pdf_file = f"sales_report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
+        pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+
+        # Aquí puedes agregar la lógica para obtener los datos de las ventas y generar el contenido del PDF
+        c = canvas.Canvas(pdf_path)
+        c.drawString(100, 750, "Reporte de Ventas")
+        c.save()
+
+        QMessageBox.information(self, "Éxito", f"Reporte de ventas generado exitosamente en {pdf_path}")
 
     def init_right_side_buttons(self):
         # Crear un QFrame para contener los botones
@@ -196,8 +242,6 @@ class MainWindow(QMainWindow):
 
         # Aplicar el layout al QFrame
         buttons_frame.setLayout(buttons_layout)
-
-
 
     def show_payment_window(self):
         payment_window = QDialog(self)
@@ -270,6 +314,7 @@ class MainWindow(QMainWindow):
 
         # Mostrar la ventana de pago
         payment_window.exec_()
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Point Of Sale")
