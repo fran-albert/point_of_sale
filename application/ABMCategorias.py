@@ -1,11 +1,12 @@
-from repositories.categoria_repository import CategoriaRepository
+from servicios.categoria_service import CategoriaService
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
 
 # Crear una instancia de QApplication
 app = QApplication([])
 
-categoria_repo = CategoriaRepository()
-categorias = categoria_repo.obtenerCategorias()
+categoria_service = CategoriaService()
+
+categorias = categoria_service.obtenerCategorias()
 
 # Crear una instancia de QTableWidget con dos columnas y el número de filas igual a la longitud de la lista de datos
 table = QTableWidget(len(categorias), 2)
