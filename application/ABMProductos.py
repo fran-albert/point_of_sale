@@ -5,8 +5,6 @@ from PyQt5.QtGui import QFont, QIcon, QPixmap
 from Login import LoginWindow
 import sys
 
-
-
 class AgregarProductoExitoso(QMessageBox):
     def __init__(self):
         super().__init__()
