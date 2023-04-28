@@ -6,8 +6,6 @@ class CategoriaRepository:
     def __init__(self):
         self.connection = MySQLConnection.get_connection()
 
-    
-
     def insertarCategoria(self, categoria):
         sql = "INSERT INTO categorias(Descripcion, Porcentaje) VALUES (%s, %s)"
         try:
@@ -41,3 +39,14 @@ class CategoriaRepository:
                 self.connection.commit()
         except Exception as e:
             raise RuntimeError(f"Error al actualizar la categoria {descripcion}") from e
+
+
+    def eliminarCategoria(self, descripcion):
+        query = "DELETE FROM categorias WHERE Descripcion = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (descripcion,))
+                self.connection.commit()
+        except Exception as e:
+            raise RuntimeError(f"Error al eliminar la categoria {descripcion}") from e
+

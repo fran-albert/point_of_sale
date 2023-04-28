@@ -74,12 +74,13 @@ class AgregarCategoriaDialog(QDialog):
 def on_agregar_categoria_clicked():
     dialog = AgregarCategoriaDialog()
     result = dialog.exec()
-
+    
     if result == QDialog.Accepted:
         # Aquí puedes actualizar la tabla para mostrar la nueva categoría agregada
-        # categoria_service.insertarCategoria(categoria)
-        pass
+        table.setItem(i, 0, item_descripcion)
+        table.setItem(i, 1, item_porcentaje)
 
+        pass
 
 # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
 table = QTableWidget(len(categorias), 4)
@@ -95,6 +96,24 @@ def on_button_clicked():
     # Imprime el índice de la fila
     print("Botón presionado en la fila:", index.row())
 
+def on_delete_button_clicked():
+    # Obtén el botón que emitió la señal
+    button = app.sender()
+    # Obtiene el índice del elemento en la tabla
+    index = table.indexAt(button.pos())
+
+    # Obtén la descripción de la categoría seleccionada
+    descripcion = table.item(index.row(), 0).text()
+
+    respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar la categoría {descripcion}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if respuesta == QMessageBox.Yes:
+        # Aquí va el código para eliminar la categoría de la base de datos utilizando la descripción
+        categoria_service.eliminarCategoria(descripcion)
+
+        # Elimina la fila seleccionada de la tabla
+        table.removeRow(index.row())
+
+
 # Agregar los elementos y botones a la tabla
 for i, categoria in enumerate(categorias):
     item_descripcion = QTableWidgetItem(categoria.descripcion)
@@ -109,7 +128,7 @@ for i, categoria in enumerate(categorias):
 
     # Botón Eliminar
     delete_button = QPushButton("Eliminar")
-    delete_button.clicked.connect(on_button_clicked)
+    delete_button.clicked.connect(on_delete_button_clicked)
     table.setCellWidget(i, 3, delete_button)
 
 # Crear un botón Agregar Categoría
