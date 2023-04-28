@@ -1,9 +1,11 @@
-from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame
-from PyQt5.QtGui import QPixmap, QFont, QIcon
-from reportlab.pdfgen import canvas
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QLabel, QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame
+from PyQt5.QtGui import QPixmap, QFont, QIcon, QImage
 from PyQt5.QtCore import Qt, QDateTime, QSize
-import os
-import time
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+import fitz, os, time, traceback, io
 
 # LOGIN WINDOW
 def create_login_ui(self):
@@ -235,8 +237,8 @@ def init_button_menu(self):
     reportes_button.clicked.connect(self.show_reports_window)
 
 # PDF WINDOWS
-def show_reports_window(self):
-    reports_window = QDialog(self)
+def show_reports_window(main_window):
+    reports_window = QDialog(main_window)
     reports_window.setWindowTitle("Reportes")
     reports_window.setFixedSize(300, 200)
 
@@ -250,33 +252,143 @@ def show_reports_window(self):
 
     reports_window.setLayout(layout)
 
-    stock_report_button.clicked.connect(self.generate_stock_report)
-    sales_report_button.clicked.connect(self.generate_sales_report)
+    stock_report_button.clicked.connect(main_window.generate_stock_report)
+    sales_report_button.clicked.connect(main_window.generate_sales_report)
 
     reports_window.exec_()
 
 # PDF GENERATES (SALES - STOCK)
-def generate_stock_report(self):
-    pdf_file = f"stock_report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
-    pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
+    try:
+        pdf_buffer.seek(0)  # Asegurarse de que el puntero esté al inicio del archivo
 
-    # Aquí puedes agregar la lógica para obtener los datos del stock y generar el contenido del PDF
-    c = canvas.Canvas(pdf_path)
-    c.drawString(100, 750, "Reporte de Stock")
-    c.save()
+        # Convertir el PDF a una imagen utilizando PyMuPDF
+        doc = fitz.open("pdf", pdf_buffer.getvalue())
+        page = doc.load_page(0)  # Carga la primera página
+        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Renderiza la página a un pixmap con un factor de zoom de 2
+        img = QImage(pix.samples, pix.width, pix.height, QImage.Format_RGB888)  # Crea una QImage a partir de los datos de imagen del pixmap
+        image = QPixmap.fromImage(img)  # Convierte la QImage a QPixmap
 
-    QMessageBox.information(self, "Éxito", f"Reporte de stock generado exitosamente en {pdf_path}")
+        # Crear un QGraphicsView y QGraphicsScene para mostrar la imagen
+        scene = QGraphicsScene()
+        scene.addPixmap(image)
+        view = QGraphicsView(scene)
 
-def generate_sales_report(self):
-    pdf_file = f"sales_report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
-    pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+        preview_dialog = QDialog(main_window)
+        preview_dialog.setWindowTitle("Vista Previa")
+        preview_dialog.setFixedSize(800, 400)
 
-    # Aquí puedes agregar la lógica para obtener los datos de las ventas y generar el contenido del PDF
-    c = canvas.Canvas(pdf_path)
-    c.drawString(100, 750, "Reporte de Ventas")
-    c.save()
+        save_pdf_button = QPushButton("Guardar PDF")
 
-    QMessageBox.information(self, "Éxito", f"Reporte de ventas generado exitosamente en {pdf_path}")
+        def save_pdf():
+            pdf_file = f"report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
+            pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+
+            with open(pdf_path, 'wb') as f:
+                f.write(pdf_buffer.getbuffer())
+
+            QMessageBox.information(main_window, "Éxito", f"PDF guardado exitosamente en {pdf_path}")
+            preview_dialog.accept()
+
+        save_pdf_button.clicked.connect(save_pdf)
+
+        layout = QVBoxLayout()
+        layout.addWidget(view)
+        layout.addWidget(save_pdf_button)
+        preview_dialog.setLayout(layout)
+
+        result = preview_dialog.exec()
+        view.setScene(None)  # Elimina la referencia a la escena antes de cerrar el diálogo
+        return True if result == QDialog.Accepted else False
+    except Exception as e:
+        print("Error al mostrar la vista previa del PDF:")
+        traceback.print_exc()  # Imprimir el traceback de la excepción
+        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al mostrar la vista previa del PDF: {e}")
+        return False
+    
+
+def generate_pdf(main_window, title, data=None):
+    pdf_buffer = io.BytesIO()
+
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=landscape(letter))
+    elements = []
+
+    # Título del reporte
+    title = title
+    elements.append(Paragraph(title, getSampleStyleSheet()['Heading1']))
+
+    # Tabla de datos
+    if data:
+        table = Table(data)
+
+        # Estilos de la tabla
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 14),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ]))
+
+        elements.append(table)
+
+    # Generar el PDF
+    doc.build(elements)
+
+    pdf_buffer.seek(0)
+    return pdf_buffer
+
+def generate_stock_report(main_window):
+    try:
+        # Datos de ejemplo para la tabla
+        data = [['Producto', 'Cantidad', 'Precio'],
+                ['Producto 1', '10', '100'],
+                ['Producto 2', '5', '150'],
+                ['Producto 3', '8', '200']]
+
+        pdf_buffer = generate_pdf(main_window, "Reporte de Stock", data)
+
+        stock_headers = ["ID", "Producto", "Cantidad"]
+        stock_data = [
+            [1, "Producto 1", 10],
+            [2, "Producto 2", 5],
+            [3, "Producto 3", 20]
+        ]
+
+        show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+    except Exception as e:
+        print("Error al generar el reporte de stock:")
+        #traceback.print_exc()  # Imprimir el traceback de la excepción
+        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
+
+
+def generate_sales_report(main_window):
+
+    try:
+        # Datos de ejemplo para la tabla
+        data = [['Producto', 'Cantidad', 'Precio'],
+                ['Producto 1', '10', '100'],
+                ['Producto 2', '5', '150'],
+                ['Producto 3', '8', '200']]
+
+        pdf_buffer = generate_pdf(main_window, "Reporte de Ventas", data)
+
+        stock_headers = ["ID", "Producto", "Cantidad"]
+        stock_data = [
+            [1, "Producto 1", 10],
+            [2, "Producto 2", 5],
+            [3, "Producto 3", 20]
+        ]
+
+        show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+    except Exception as e:
+        print("Error al generar el reporte de ventas:")
+        #traceback.print_exc()  # Imprimir el traceback de la excepción
+        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
+
 
 # RIGHT SIDE BUTTONS (COBRAR)
 def init_right_side_buttons(self):
@@ -309,7 +421,7 @@ def show_payment_window(self):
     payment_window = QDialog(self)
     payment_window.setWindowTitle("Pago")
     payment_window.setFixedSize(600, 400)  # Cambiar el tamaño de la ventana
-    payment_window.setStyleSheet("background-color: #F1F6F9;")  # Cambiar el color de fondo
+    payment_window.setStyleSheet("background-color: #FFFFFF;")  # Cambiar el color de fondo
 
     # Crear el QLabel para mostrar el mensaje "TOTAL:"
     total_label = QLabel("TOTAL:")

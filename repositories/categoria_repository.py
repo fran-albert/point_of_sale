@@ -23,9 +23,10 @@ class CategoriaRepository:
             with self.connection.cursor() as cursor:
                 cursor.execute(query)
                 for row in cursor.fetchall():
+                    id = row[0]
                     descripcion = row[1]
                     porcentaje = row[2]
-                    nuevaCategoria = Categoria(descripcion, porcentaje)
+                    nuevaCategoria = Categoria(id, descripcion, porcentaje)
                     categorias.append(nuevaCategoria)
             return categorias
         except Error as e:

@@ -5,4 +5,4 @@ class CategoriaService:
         self.categoria_repository = CategoriaRepository()
 
     def obtenerCategorias(self):
-        return self.categoria_repository.obtenerCategorias
+        return self.categoria_repository.obtenerCategorias()

@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Agrega la carpeta principal al sys.path
+ruta_principal = str(Path(__file__).parent.parent.resolve())
+if ruta_principal not in sys.path:
+    sys.path.append(ruta_principal)
+
 from servicios.categoria_service import CategoriaService
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
 
@@ -15,11 +23,11 @@ table = QTableWidget(len(categorias), 2)
 table.setHorizontalHeaderLabels(["Descripción", "Categoría"])
 
 # Agregar los elementos a la tabla
-for i, (descripcion, categoria) in enumerate(categorias):
-    item_descripcion = QTableWidgetItem(descripcion)
-    item_categoria = QTableWidgetItem(categoria)
+for i, categoria in enumerate(categorias):
+    item_descripcion = QTableWidgetItem(categoria.descripcion)
+    item_porcentaje = QTableWidgetItem(str(categoria.porcentaje))
     table.setItem(i, 0, item_descripcion)
-    table.setItem(i, 1, item_categoria)
+    table.setItem(i, 1, item_porcentaje)
 
 # Mostrar la tabla en pantalla
 table.show()
