@@ -33,7 +33,7 @@ class AgregarProductoDialog(QDialog):
         layout.addWidget(self.nombre_label)
         layout.addWidget(self.nombre_input)
 
-        self.precio_label = QLabel("Precio:")
+        self.precio_label = QLabel("Precio Compra:")
         self.precio_input = QLineEdit()
         layout.addWidget(self.precio_label)
         layout.addWidget(self.precio_input)
@@ -86,29 +86,30 @@ class AgregarProductoDialog(QDialog):
     def agregar_producto(self):
         codigo = self.codigo_input.text().strip()
         nombre = self.nombre_input.text().strip()
-        precio = self.precio_input.text().strip()
+        precioCompra = self.precio_input.text().strip()
         cant_stock = self.cant_stock_input.text().strip()
         categoria = self.categoria_selector.currentData()
-      # Asegúrese de almacenar el ID o un objeto de categoría en lugar del texto si es necesario
         impuestos = self.impuestos_input.text().strip()
         descuentos = self.descuentos_input.text().strip()
         proveedor = self.proveedor_input.text().strip()
         fecha_venc = self.fecha_venc_input.date().toString("yyyy-MM-dd")
 
-        if codigo and nombre and precio and cant_stock and categoria and impuestos and descuentos and proveedor and fecha_venc:
+        if codigo and nombre and precioCompra and cant_stock and categoria and impuestos and descuentos and proveedor and fecha_venc:
             try:
-                precio = float(precio)
+                precioCompra = float(precioCompra)
                 cant_stock = int(cant_stock)
                 impuestos = float(impuestos)
                 descuentos = float(descuentos)
-                # Asegúrese de usar el ID de la categoría o un objeto de categoría en lugar del texto, si es necesario
-                producto = Producto(codigo, nombre, precio, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                porcentaje = categoria_service.obtenerPorcentaje(categoria)
+                precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
+                producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
                 producto_service.insertarProducto(producto)
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
         else:
             QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
+
 
 class EditarProductoDialog(QDialog):
     def __init__(self, producto, parent=None):
@@ -127,8 +128,8 @@ class EditarProductoDialog(QDialog):
         layout.addWidget(self.nombre_label)
         layout.addWidget(self.nombre_input)
 
-        self.precio_label = QLabel("Precio:")
-        self.precio_input = QLineEdit(str(producto.precio))
+        self.precio_label = QLabel("Precio Venta:")
+        self.precio_input = QLineEdit(str(producto.precioVenta))
         layout.addWidget(self.precio_label)
         layout.addWidget(self.precio_input)
 
@@ -216,10 +217,10 @@ class EditarProductoDialog(QDialog):
 
 
 # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
-table = QTableWidget(len(producto), 9)
+table = QTableWidget(len(producto), 10)
 
 # Definir los encabezados de las columnas
-table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio", "Cant Stock", "Categoría", "Impuestos", "Descuentos", "Proveedor", "Fecha Venc"])
+table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio Compra", "Precio Venta", "Cant Stock", "Categoría", "Impuestos", "Descuentos", "Proveedor", "Fecha Venc"])
 
 def actualizar_tabla():
     # Obtén la lista actualizada de productos
@@ -235,7 +236,8 @@ def actualizar_tabla():
     for i, prod in enumerate(productos):
         item_nombre = QTableWidgetItem(prod.nombre)
         item_codigo = QTableWidgetItem(prod.codigo)
-        item_precio = QTableWidgetItem(str(prod.precio))
+        item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
+        item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
         item_cant_stock = QTableWidgetItem(str(prod.cantStock))
         item_categoria = QTableWidgetItem(prod.categoria)
         item_impuestos = QTableWidgetItem(str(prod.impuestos))
@@ -243,16 +245,16 @@ def actualizar_tabla():
         item_proveedor = QTableWidgetItem(prod.proveedor)
         item_fecha_venc = QTableWidgetItem(prod.fechaVenc.strftime("%Y-%m-%d"))
 
-
         table.setItem(i, 0, item_nombre)
         table.setItem(i, 1, item_codigo)
-        table.setItem(i, 2, item_precio)
-        table.setItem(i, 3, item_cant_stock)
-        table.setItem(i, 4, item_categoria)
-        table.setItem(i, 5, item_impuestos)
-        table.setItem(i, 6, item_descuentos)
-        table.setItem(i, 7, item_proveedor)
-        table.setItem(i, 8, item_fecha_venc)
+        table.setItem(i, 2, item_precioCompra)
+        table.setItem(i, 3, item_precioVenta)
+        table.setItem(i, 4, item_cant_stock)
+        table.setItem(i, 5, item_categoria)
+        table.setItem(i, 6, item_impuestos)
+        table.setItem(i, 7, item_descuentos)
+        table.setItem(i, 8, item_proveedor)
+        table.setItem(i, 9, item_fecha_venc)
 
 # Llama a actualizar_tabla() para llenar la tabla con los productos iniciales
 actualizar_tabla()

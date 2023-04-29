@@ -9,6 +9,9 @@ class CategoriaService:
     
     def obtenerCategorias(self):
         return self.categoria_repository.obtenerCategorias()
+    
+    def obtenerPorcentaje(self, descripcion):
+        return self.categoria_repository.obtenerPorcentaje(descripcion)
 
     def actualizarCategoria(self, nuevaDescripcion, nuevoPorcentaje, descripcion):
         return self.categoria_repository.actualizarCategoria(nuevaDescripcion, nuevoPorcentaje, descripcion)

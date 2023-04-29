@@ -15,6 +15,19 @@ class CategoriaRepository:
         except Error as e:
             raise RuntimeError("Error al insertar la nueva categoria", e)
         
+    def obtenerPorcentaje(self, descripcion):
+        porcentaje = None
+        query = "SELECT porcentaje FROM categorias WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (descripcion,))
+                row = cursor.fetchone()
+                if row:
+                    porcentaje = row[0]
+            return porcentaje
+        except Error as e:
+            raise RuntimeError(f"Error al obtener el porcentaje de la categoria con ID {descripcion}", e)
+        
     def obtenerCategorias(self):
         categorias = []
         query = "SELECT * FROM categorias"

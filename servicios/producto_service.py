@@ -10,8 +10,8 @@ class ProductoService:
     def obtenerProductos(self):
         return self.producto_repository.obtenerProductos()
 
-    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecio, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
-        return self.producto_repository.actualizarProducto(nuevoCodigo, nuevoNombre, nuevoPrecio, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo)
+    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
+        return self.producto_repository.actualizarProducto(nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo)
     
     def eliminarProducto(self, codigo):
         return self.producto_repository.eliminarProducto(codigo)

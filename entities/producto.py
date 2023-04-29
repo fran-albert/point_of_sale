@@ -1,9 +1,10 @@
 class Producto:
 
-    def __init__(self, codigo, nombre, precio, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc):
+    def __init__(self, codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc):
         self.codigo = codigo
         self.nombre = nombre
-        self.precio = precio
+        self.precioCompra = precioCompra
+        self.precioVenta = precioVenta
         self.cantStock = cant_stock
         self.categoria = categoria
         self.impuestos = impuestos
@@ -11,14 +12,23 @@ class Producto:
         self.proveedor = proveedor
         self.fechaVenc = fecha_venc
 
+
+    @staticmethod
+    def calculoPrecioVenta(precioCompra, porcentaje):
+        precioVenta = precioCompra * (1 + porcentaje / 100)
+        return precioVenta
+
     def set_codigo(self, codigo):
         self.codigo = codigo
 
     def set_nombre(self, nombre):
         self.nombre = nombre
 
-    def set_precio(self, precio):
-        self.precio = precio
+    def set_precioCompra(self, precioCompra):
+        self.precioCompra = precioCompra
+
+    def set_precioVenta(self, precioVenta):
+        self.precioVenta = precioVenta
 
     def set_cantStock(self, cantStock):
         self.cantStock = cantStock
@@ -45,8 +55,11 @@ class Producto:
     def get_nombre(self):
         return self.nombre
 
-    def get_precio(self):
-        return self.precio
+    def get_precioCompra(self):
+        return self.precioCompra
+    
+    def get_precioVenta(self):
+        return self.precioVenta
 
     def get_cantStock(self):
         return self.cantStock
