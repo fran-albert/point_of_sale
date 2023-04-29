@@ -17,6 +17,50 @@ categorias = categoria_service.obtenerCategorias()
 
 
 
+class EditarCategoriaDialog(QDialog):
+    def __init__(self, descripcion, porcentaje, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Editar Categoría")
+
+        layout = QVBoxLayout()
+
+        self.descripcion_label = QLabel("Descripción:")
+        self.descripcion_input = QLineEdit(descripcion)
+        layout.addWidget(self.descripcion_label)
+        layout.addWidget(self.descripcion_input)
+
+        self.porcentaje_label = QLabel("Porcentaje:")
+        self.porcentaje_input = QLineEdit(str(porcentaje))
+        layout.addWidget(self.porcentaje_label)
+        layout.addWidget(self.porcentaje_input)
+
+        self.buttons_layout = QHBoxLayout()
+        self.guardar_button = QPushButton("Guardar")
+        self.cancelar_button = QPushButton("Cancelar")
+        self.buttons_layout.addWidget(self.guardar_button)
+        self.buttons_layout.addWidget(self.cancelar_button)
+
+        layout.addLayout(self.buttons_layout)
+        self.setLayout(layout)
+
+        self.guardar_button.clicked.connect(self.guardar_categoria)
+        self.cancelar_button.clicked.connect(self.reject)
+
+    def guardar_categoria(self):
+        nueva_descripcion = self.descripcion_input.text().strip()
+        nuevo_porcentaje = self.porcentaje_input.text().strip()
+
+        if nueva_descripcion and nuevo_porcentaje:
+            try:
+                nuevo_porcentaje = float(nuevo_porcentaje)
+                self.nueva_descripcion = nueva_descripcion
+                self.nuevo_porcentaje = nuevo_porcentaje
+                self.accept()
+            except ValueError:
+                QMessageBox.warning(self, "Error", "Por favor, ingrese un porcentaje válido.")
+        else:
+            QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
+
 class AgregarCategoriaDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -61,26 +105,7 @@ class AgregarCategoriaDialog(QDialog):
         else:
             QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
 
-
-        # Botón Agregar Categoría
-        add_category_button = QPushButton("Agregar Categoría")
-        add_category_button.clicked.connect(on_agregar_categoria_clicked)
-
-        # Por ejemplo, puedes crear un objeto Categoria con los datos ingresados y
-        # llamar a insertarCategoria() para agregarlo a la base de datos.
-
         self.accept()
-
-def on_agregar_categoria_clicked():
-    dialog = AgregarCategoriaDialog()
-    result = dialog.exec()
-    
-    if result == QDialog.Accepted:
-        # Aquí puedes actualizar la tabla para mostrar la nueva categoría agregada
-        table.setItem(i, 0, item_descripcion)
-        table.setItem(i, 1, item_porcentaje)
-
-        pass
 
 # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
 table = QTableWidget(len(categorias), 4)
@@ -88,13 +113,67 @@ table = QTableWidget(len(categorias), 4)
 # Definir los encabezados de las columnas
 table.setHorizontalHeaderLabels(["Descripción", "Categoría", "", ""])
 
-def on_button_clicked():
+def actualizar_tabla():
+    # Obtén la lista actualizada de categorías
+    categorias = categoria_service.obtenerCategorias()
+
+    # Limpia la tabla antes de agregar nuevas filas
+    table.setRowCount(0)
+
+    # Establece el número de filas en la tabla según la longitud de la lista de categorías
+    table.setRowCount(len(categorias))
+
+    # Rellena la tabla con las categorías actualizadas
+    for i, categoria in enumerate(categorias):
+        item_descripcion = QTableWidgetItem(categoria.descripcion)
+        item_porcentaje = QTableWidgetItem(str(categoria.porcentaje))
+        table.setItem(i, 0, item_descripcion)
+        table.setItem(i, 1, item_porcentaje)
+
+        # Botón Editar
+        edit_button = QPushButton("Editar")
+        edit_button.clicked.connect(on_edit_button_clicked)
+        table.setCellWidget(i, 2, edit_button)
+
+        # Botón Eliminar
+        delete_button = QPushButton("Eliminar")
+        delete_button.clicked.connect(on_delete_button_clicked)
+        table.setCellWidget(i, 3, delete_button)
+
+def on_agregar_categoria_clicked():
+    dialog = AgregarCategoriaDialog()
+    result = dialog.exec()
+
+    if result == QDialog.Accepted:
+        # Actualiza la tabla para mostrar la nueva categoría agregada
+        actualizar_tabla()
+
+def on_edit_button_clicked():
     # Obtén el botón que emitió la señal
     button = app.sender()
     # Obtiene el índice del elemento en la tabla
     index = table.indexAt(button.pos())
-    # Imprime el índice de la fila
-    print("Botón presionado en la fila:", index.row())
+
+    # Obtén la descripción y el porcentaje de la categoría seleccionada
+    descripcion = table.item(index.row(), 0).text()
+    porcentaje = float(table.item(index.row(), 1).text())
+
+    # Muestra la ventana de edición y obtén el resultado
+    dialog = EditarCategoriaDialog(descripcion, porcentaje)
+    result = dialog.exec()
+
+    if result == QDialog.Accepted:
+        nueva_descripcion = dialog.nueva_descripcion
+        nuevo_porcentaje = dialog.nuevo_porcentaje
+
+        # Actualiza la categoría en la base de datos
+        categoria_service.actualizarCategoria(nueva_descripcion, nuevo_porcentaje, descripcion)
+
+        # Actualiza la tabla para mostrar los cambios
+        actualizar_tabla()
+
+    # En la función `actualizar_tabla`, conecta el botón "Editar" a `on_edit_button_clicked`
+    edit_button.clicked.connect(on_edit_button_clicked)
 
 def on_delete_button_clicked():
     # Obtén el botón que emitió la señal
@@ -113,7 +192,6 @@ def on_delete_button_clicked():
         # Elimina la fila seleccionada de la tabla
         table.removeRow(index.row())
 
-
 # Agregar los elementos y botones a la tabla
 for i, categoria in enumerate(categorias):
     item_descripcion = QTableWidgetItem(categoria.descripcion)
@@ -123,7 +201,7 @@ for i, categoria in enumerate(categorias):
 
     # Botón Editar
     edit_button = QPushButton("Editar")
-    edit_button.clicked.connect(on_button_clicked)
+    edit_button.clicked.connect(on_edit_button_clicked)
     table.setCellWidget(i, 2, edit_button)
 
     # Botón Eliminar
