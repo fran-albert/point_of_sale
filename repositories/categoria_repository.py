@@ -44,14 +44,15 @@ class CategoriaRepository:
         except Error as e:
             raise RuntimeError("Error al obtener las categorias", e)
     
-    def actualizarCategoria(self, nuevaDescripcion, nuevoPorcentaje, descripcion):
-        query = "UPDATE categorias SET Descripcion = %s, Porcentaje = %s WHERE Descripcion = %s"
+    def actualizarCategoria(self, nuevaDescripcion, nuevoPorcentaje, idCategoria):
+        query = "UPDATE categorias SET Descripcion = %s, Porcentaje = %s WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (nuevaDescripcion, nuevoPorcentaje, descripcion))
+                cursor.execute(query, (nuevaDescripcion, nuevoPorcentaje, idCategoria))
                 self.connection.commit()
         except Exception as e:
-            raise RuntimeError(f"Error al actualizar la categoria {descripcion}") from e
+            raise RuntimeError(f"Error al actualizar la categoria con ID {idCategoria}") from e
+
 
 
     def eliminarCategoria(self, descripcion):

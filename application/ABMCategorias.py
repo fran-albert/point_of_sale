@@ -5,7 +5,8 @@ ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
     sys.path.append(ruta_principal)
 from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QFrame, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
 from servicios.categoria_service import CategoriaService
 from servicios.producto_service import ProductoService
 from entities.categoria import Categoria
@@ -129,6 +130,8 @@ class ABMCategoriasWindow(QMainWindow):
         self.producto_service = ProductoService()
         self.categorias = self.categoria_service.obtenerCategorias()
 
+
+
         # El resto del código en la función abmCategorias se coloca aquí.
         self.table = QTableWidget(len(self.categorias), 5)
 
@@ -162,16 +165,66 @@ class ABMCategoriasWindow(QMainWindow):
         # Crear un layout vertical
         layout = QVBoxLayout()
 
-        # Agregar la tabla y el botón al layout
-        layout.addWidget(self.table)
-        layout.addWidget(add_category_button)
+        # Crear un QLabel para el título
+        title_label = QLabel("Categorías")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: green; font-size: 24px")
+
+        # Crear un QFrame para el rectángulo
+        rectangle_frame = QFrame()
+        rectangle_frame.setFrameShape(QFrame.StyledPanel)
+        rectangle_frame.setFrameShadow(QFrame.Sunken)
+        rectangle_frame.setLineWidth(1)
+
+        # Crear un QVBoxLayout para el rectángulo y agregar el campo de búsqueda y el botón
+        rectangle_layout = QVBoxLayout(rectangle_frame)
+        search_field = QLineEdit()
+        search_field.setPlaceholderText("Buscar categorías...")
+        rectangle_layout.addWidget(search_field)
+        rectangle_layout.addWidget(add_category_button)
+
+        # Ajustar el tamaño de las columnas automáticamente para ajustarse al contenido
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
+        # Evitar que las columnas se puedan estirar
+        self.table.horizontalHeader().setStretchLastSection(False)
+
+        # Evitar que las filas se puedan estirar
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
+
+        # Establecer la selección a nivel de fila y deshabilitar la edición de celdas
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        # Crear una QScrollArea y establecer la tabla como su widget interno
+        scroll_area = QScrollArea()
+        scroll_area.setWidget(self.table)
+        scroll_area.setWidgetResizable(True)
+
+        # Modificar la política de tamaño de la tabla
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.table.setMinimumHeight(300)  # Cambia este valor según tus necesidades
+
+        # Añadir el título, el rectángulo y el scroll_area al layout
+        layout.addWidget(title_label)
+        layout.addWidget(rectangle_frame)
+        layout.addWidget(scroll_area)
+        layout.addStretch(1)  # Añade un espacio flexible para pegar la tabla a la parte inferior de la pantalla
 
         # Crear un widget central y establecer el layout
         central_widget = QWidget()
         central_widget.setLayout(layout)
 
         # Establecer el widget central en la ventana
-        self.setCentralWidget(central_widget)  
+        self.setCentralWidget(central_widget)
+
+        # Establece el título de la ventana
+        self.setWindowTitle("Categorías")
+
+        # Establece el tamaño y la posición de la ventana
+        self.setGeometry(100, 100, 450, 500)  # x, y, ancho, alto
+
+
 
     def actualizar_tabla(self):
             # Obtén la lista actualizada de categorías
@@ -234,7 +287,7 @@ class ABMCategoriasWindow(QMainWindow):
             idCategoria = dialog.actual_idcategoria
             
             # Actualiza la categoría en la base de datos
-            self.categoria_service.actualizarCategoria(nueva_descripcion, nuevo_porcentaje, descripcion)
+            self.categoria_service.actualizarCategoria(nueva_descripcion, nuevo_porcentaje, idCategoria)
 
             if porcentaje != nuevo_porcentaje:
                 self.producto_service.actualizarPrecioVenta(nuevo_porcentaje, idCategoria)
