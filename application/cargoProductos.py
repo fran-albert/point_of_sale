@@ -17,10 +17,9 @@ producto  = producto_service.obtenerProductos()
 categoria_service = CategoriaService()
 
 class AgregarProductoDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def _init_(self, parent=None):
+        super()._init_(parent)
         self.setWindowTitle("Agregar Producto")
-
         layout = QVBoxLayout()
 
         self.codigo_label = QLabel("Código:")
@@ -112,61 +111,49 @@ class AgregarProductoDialog(QDialog):
 
 
 class EditarProductoDialog(QDialog):
-    def __init__(self, producto, parent=None):
-        super().__init__(parent)
+    def _init_(self, producto, categorias, parent=None):
+        super()._init_(parent)
         self.setWindowTitle("Editar Producto")
 
+        self.producto = producto
+        self.categorias = categorias
         layout = QVBoxLayout()
 
-        self.codigo_label = QLabel("Código:")
-        self.codigo_input = QLineEdit(producto.codigo)
-        layout.addWidget(self.codigo_label)
-        layout.addWidget(self.codigo_input)
+        self.precioCompra_label = QLabel("Precio de compra:")
+        self.precioCompra_input = QLineEdit(str(producto.precioCompra))
+        layout.addWidget(self.precioCompra_label)
+        layout.addWidget(self.precioCompra_input)
 
-        self.nombre_label = QLabel("Nombre:")
-        self.nombre_input = QLineEdit(producto.nombre)
-        layout.addWidget(self.nombre_label)
-        layout.addWidget(self.nombre_input)
-
-        self.precio_label = QLabel("Precio Venta:")
-        self.precio_input = QLineEdit(str(producto.precioVenta))
-        layout.addWidget(self.precio_label)
-        layout.addWidget(self.precio_input)
-
-        self.cant_stock_label = QLabel("Cantidad en Stock:")
-        self.cant_stock_input = QLineEdit(str(producto.cant_stock))
-        layout.addWidget(self.cant_stock_label)
-        layout.addWidget(self.cant_stock_input)
+        self.stock_label = QLabel("Stock:")
+        self.stock_input = QLineEdit(str(producto.cantStock))
+        layout.addWidget(self.stock_label)
+        layout.addWidget(self.stock_input)
 
         self.categoria_label = QLabel("Categoría:")
-        self.categoria_selector = QComboBox()
-        # Aquí debes llenar el selector de categorías utilizando el método obtenerCategorias
-        # y añadir cada categoría al selector.
-        categorias = categoria_service.obtenerCategorias()
-        for categoria in categorias:
-            self.categoria_selector.addItem(categoria.descripcion, categoria.id)
+        self.categoria_combo = QComboBox()
+        for categoria in self.categorias:
+            self.categoria_combo.addItem(categoria.descripcion, categoria.id)
+        index = self.categoria_combo.findData(producto.categoria)
+        self.categoria_combo.setCurrentIndex(index)
         layout.addWidget(self.categoria_label)
-        layout.addWidget(self.categoria_selector)
+        layout.addWidget(self.categoria_combo)
 
         self.impuestos_label = QLabel("Impuestos:")
         self.impuestos_input = QLineEdit(str(producto.impuestos))
         layout.addWidget(self.impuestos_label)
         layout.addWidget(self.impuestos_input)
 
-        self.descuentos_label = QLabel("Descuentos:")
-        self.descuentos_input = QLineEdit(str(producto.descuentos))
-        layout.addWidget(self.descuentos_label)
-        layout.addWidget(self.descuentos_input)
+        self.buttons_layout = QHBoxLayout()
+        self.guardar_button = QPushButton("Guardar")
+        self.cancelar_button = QPushButton("Cancelar")
+        self.buttons_layout.addWidget(self.guardar_button)
+        self.buttons_layout.addWidget(self.cancelar_button)
 
-        self.proveedor_label = QLabel("Proveedor:")
-        self.proveedor_input = QLineEdit(producto.proveedor)
-        layout.addWidget(self.proveedor_label)
-        layout.addWidget(self.proveedor_input)
+        layout.addLayout(self.buttons_layout)
+        self.setLayout(layout)
 
-        self.fecha_venc_label = QLabel("Fecha de Vencimiento:")
-        self.fecha_venc_input = QDateEdit(QDate.fromString(producto.fecha_venc, "yyyy-MM-dd"))
-        layout.addWidget(self.fecha_venc_label)
-        layout.addWidget(self.fecha_venc_input)
+        self.guardar_button.clicked.connect(self.guardar_producto)
+        self.cancelar_button.clicked.connect(self.reject)
 
         self.buttons_layout = QHBoxLayout()
         self.guardar_button = QPushButton("Guardar")
@@ -181,32 +168,20 @@ class EditarProductoDialog(QDialog):
         self.cancelar_button.clicked.connect(self.reject)
 
     def guardar_producto(self):
-        nuevo_codigo = self.codigo_input.text().strip()
-        nuevo_nombre = self.nombre_input.text().strip()
-        nuevo_precio = self.precio_input.text().strip()
-        nueva_cant_stock = self.cant_stock_input.text().strip()
-        nueva_categoria = self.categoria_selector.currentData()  # Asegúrate de almacenar el ID o un objeto de categoría en lugar del texto, si es necesario
+        nuevo_precioCompra = self.precioCompra_input.text().strip()
+        nuevo_stock = self.stock_input.text().strip()
+        nueva_categoria = self.categoria_combo.currentData()
         nuevos_impuestos = self.impuestos_input.text().strip()
-        nuevos_descuentos = self.descuentos_input.text().strip()
-        nuevo_proveedor = self.proveedor_input.text().strip()
-        nueva_fecha_venc = self.fecha_venc_input.date().toString("yyyy-MM-dd")
 
-        if nuevo_codigo and nuevo_nombre and nuevo_precio and nueva_cant_stock and nueva_categoria and nuevos_impuestos and nuevos_descuentos and nuevo_proveedor and nueva_fecha_venc:
+        if nuevo_precioCompra and nuevo_stock and nuevos_impuestos:
             try:
-                nuevo_precio = float(nuevo_precio)
-                nueva_cant_stock = int(nueva_cant_stock)
+                nuevo_precioCompra = float(nuevo_precioCompra)
+                nuevo_stock = int(nuevo_stock)
                 nuevos_impuestos = float(nuevos_impuestos)
-                nuevos_descuentos = float(nuevos_descuentos)
-                # Asegúrate de usar el ID de la categoría o un objeto de categoría en lugar del texto, si es necesario
-                self.nuevo_codigo = nuevo_codigo
-                self.nuevo_nombre = nuevo_nombre
-                self.nuevo_precio = nuevo_precio
-                self.nueva_cant_stock = nueva_cant_stock
-                self.nueva_categoria = nueva_categoria
-                self.nuevos_impuestos = nuevos_impuestos
-                self.nuevos_descuentos = nuevos_descuentos
-                self.nuevo_proveedor = nuevo_proveedor
-                self.nueva_fecha_venc = nueva_fecha_venc
+                self.producto.precioCompra = nuevo_precioCompra
+                self.producto.cantStock = nuevo_stock
+                self.producto.categoria = nueva_categoria
+                self.producto.impuestos = nuevos_impuestos
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
@@ -214,17 +189,46 @@ class EditarProductoDialog(QDialog):
             QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
 
 
+def on_edit_button_clicked():
+    # Obtén el botón que emitió la señal
+    button = app.sender()
+    # Obtiene el índice del elemento en la tabla
+    index = table.indexAt(button.pos())
+
+    # Obtén el código del producto seleccionado
+    codigo = table.item(index.row(), 1).text()
+
+    # Obtén el objeto producto correspondiente al código
+    producto = producto_service.obtenerProductos(codigo)
+
+    # Obtén la lista de categorías
+    categorias = categoria_service.obtenerCategorias()
+
+    # Muestra la ventana de edición y obtén el resultado
+    dialog = EditarProductoDialog(producto, categorias)
+    result = dialog.exec()
+
+    if result == QDialog.Accepted:
+        # Actualiza el producto en la base de datos
+        producto_service.actualizarProducto(producto)
+
+        # Actualiza la tabla para mostrar los cambios
+        actualizar_tabla()
 
 
 # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
-table = QTableWidget(len(producto), 10)
+table = QTableWidget(len(producto), 12)
 
 # Definir los encabezados de las columnas
-table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio Compra", "Precio Venta", "Cant Stock", "Categoría", "Impuestos", "Descuentos", "Proveedor", "Fecha Venc"])
+table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio Compra", "Precio Venta", "Cant Stock", "Categoría", "Impuestos", "Descuentos", "Proveedor", "Fecha Venc", "", ""])
 
 def actualizar_tabla():
     # Obtén la lista actualizada de productos
     productos = producto_service.obtenerProductos()
+
+    # Obtén una lista de categorías y crea un diccionario que mapee los IDs a las descripciones
+    categorias = categoria_service.obtenerCategorias()
+    categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
 
     # Limpia la tabla antes de agregar nuevas filas
     table.setRowCount(0)
@@ -239,7 +243,8 @@ def actualizar_tabla():
         item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
         item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
         item_cant_stock = QTableWidgetItem(str(prod.cantStock))
-        item_categoria = QTableWidgetItem(prod.categoria)
+        item_categoria = QTableWidgetItem(categoria_descripcion_map[int(float(prod.categoria))])
+   # Usa el diccionario para obtener la descripción y Convierte la clave en entero
         item_impuestos = QTableWidgetItem(str(prod.impuestos))
         item_descuentos = QTableWidgetItem(str(prod.descuentos))
         item_proveedor = QTableWidgetItem(prod.proveedor)
@@ -256,6 +261,16 @@ def actualizar_tabla():
         table.setItem(i, 8, item_proveedor)
         table.setItem(i, 9, item_fecha_venc)
 
+        # Botón Editar
+        edit_button = QPushButton("Editar")
+        edit_button.clicked.connect(on_edit_button_clicked)
+        table.setCellWidget(i, 10, edit_button)
+
+        # Botón Eliminar
+        #delete_button = QPushButton("Eliminar")
+        #delete_button.clicked.connect(on_delete_button_clicked)
+        #table.setCellWidget(i, 3, delete_button)
+
 # Llama a actualizar_tabla() para llenar la tabla con los productos iniciales
 actualizar_tabla()
 
@@ -267,32 +282,45 @@ def on_agregar_producto_clicked():
             # Actualiza la tabla para mostrar la nueva categoría agregada
         actualizar_tabla()
 
-# def on_edit_button_clicked():
-#     # Obtén el botón que emitió la señal
-#     button = app.sender()
-#     # Obtiene el índice del elemento en la tabla
-#     index = table.indexAt(button.pos())
+def on_edit_button_clicked():
+    # Obtén el botón que emitió la señal
+    button = app.sender()
+    # Obtiene el índice del elemento en la tabla
+    index = table.indexAt(button.pos())
 
-#     # Obtén la descripción y el porcentaje de la categoría seleccionada
-#     descripcion = table.item(index.row(), 0).text()
-#     porcentaje = float(table.item(index.row(), 1).text())
+    # Obtén el nombre del producto seleccionado
+    nombre_producto = table.item(index.row(), 0).text()
 
-#     # Muestra la ventana de edición y obtén el resultado
-#     dialog = EditarCategoriaDialog(descripcion, porcentaje)
-#     result = dialog.exec()
+    # Obtén la lista de productos
+    productos = producto_service.obtenerProductos()
 
-#     if result == QDialog.Accepted:
-#         nueva_descripcion = dialog.nueva_descripcion
-#         nuevo_porcentaje = dialog.nuevo_porcentaje
+    # Busca el producto con el nombre dado en la lista de productos
+    producto = None
+    for prod in productos:
+        if prod.nombre == nombre_producto:
+            producto = prod
+            break
 
-#         # Actualiza la categoría en la base de datos
-#         categoria_service.actualizarCategoria(nueva_descripcion, nuevo_porcentaje, descripcion)
+    if not producto:
+        QMessageBox.warning(None, "Error", "Producto no encontrado.")
+        return
 
-#         # Actualiza la tabla para mostrar los cambios
-#         actualizar_tabla()
+    # Obtén la lista de categorías
+    categorias = categoria_service.obtenerCategorias()
 
-    # # En la función `actualizar_tabla`, conecta el botón "Editar" a `on_edit_button_clicked`
-    # edit_button.clicked.connect(on_edit_button_clicked)
+    # Muestra la ventana de edición y obtén el resultado
+    dialog = EditarProductoDialog(producto, categorias)
+    result = dialog.exec()
+
+    if result == QDialog.Accepted:
+        # Actualiza el producto en la base de datos
+        producto_service.actualizarProducto(producto)
+
+        # Actualiza la tabla para mostrar los cambios
+        actualizar_tabla()
+
+
+
 
 # def on_delete_button_clicked():
 #     # Obtén el botón que emitió la señal
@@ -319,9 +347,9 @@ def on_agregar_producto_clicked():
 #     table.setItem(i, 1, item_porcentaje)
 
 #     # Botón Editar
-#     edit_button = QPushButton("Editar")
-#     edit_button.clicked.connect(on_edit_button_clicked)
-#     table.setCellWidget(i, 2, edit_button)
+    edit_button = QPushButton("Editar")
+    edit_button.clicked.connect(on_edit_button_clicked)
+    # table.setCellWidget(i, 2, edit_button)
 
 #     # Botón Eliminar
 #     delete_button = QPushButton("Eliminar")

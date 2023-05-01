@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QLabel, QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame
+from PyQt5.QtWidgets import QMenuBar, QMenu, QAction, QGraphicsView, QGraphicsScene, QLabel, QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QImage
 from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from reportlab.lib import colors
+from application.ABMCategorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
 import fitz, os, time, traceback, io
 
@@ -69,106 +70,112 @@ def create_login_ui(self):
 
         self.setLayout(layout)
 
+# Utils.py
+def create_main_window_menu(parent):
+    menu_bar = parent.menuBar()
+
+    archivo_menu = QMenu("Archivo", parent)
+    menu_bar.addMenu(archivo_menu)
+
+    menu_menu = QMenu("Menú", parent)
+    menu_bar.addMenu(menu_menu)
+
+    clientes_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Clientes", parent)
+    menu_menu.addAction(clientes_action)
+
+    categorias_action = QAction(QIcon("img/icons8-almacén-48.png"),"Categorias", parent)
+    menu_menu.addAction(categorias_action)
+
+    productos_action = QAction(QIcon("img/icons8-almacén-48.png"),"Productos", parent)
+    menu_menu.addAction(productos_action)
+
+    proveedores_action = QAction(QIcon("img/icons8-proveedor-48.png"),"Proveedores", parent)
+    menu_menu.addAction(proveedores_action)
+
+    usuarios_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Usuarios", parent)
+    menu_menu.addAction(usuarios_action)
+
+    movimientos_menu = QMenu("Movimientos", parent)
+    menu_bar.addMenu(movimientos_menu)
+
+    ventas_action = QAction(QIcon("img/icons8-caja-registradora-48.png"), "Ventas", parent)
+    movimientos_menu.addAction(ventas_action)
+
+    reportes_menu = QMenu("Reportes", parent)
+    menu_bar.addMenu(reportes_menu)
+
+    reporte_stock_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Stock", parent)
+    reportes_menu.addAction(reporte_stock_action)
+
+    reporte_ventas_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Ventas", parent)
+    reportes_menu.addAction(reporte_ventas_action)
+
+    configuracion_menu = QMenu("Configuración", parent)
+    menu_bar.addMenu(configuracion_menu)
+
+    acerca_menu = QMenu("Acerca", parent)
+    menu_bar.addMenu(acerca_menu)
+
+    reporte_stock_action.triggered.connect(parent.generate_stock_report)
+    reporte_ventas_action.triggered.connect(parent.generate_sales_report)
+    categorias_action.triggered.connect(parent.show_categories_window)
+
+
+
 # HEADER
-def init_header(self):
-        header = QFrame(self)
-        header.setGeometry(0, 0, self.width(), 100)
-        header.setStyleSheet("background-color: #F9F5EB;")
+def init_header(parent, width, username, menu_bar_height):
+    parent_width = width
+    header = QFrame(parent)
+    header.move(0, menu_bar_height)
+    header.setFixedHeight(100)
+    header.setMinimumWidth(parent_width)
+    header.setMaximumWidth(parent_width)
 
-        # Lado izquierdo
-        left_layout = QVBoxLayout()
+    header.setStyleSheet("background-color: #F9F5EB;")
 
-        # Parte 1: Logo
-        logo_label = QLabel(header)
-        pixmap = QPixmap("img/logosinfondo.png").scaled(300, 250, Qt.KeepAspectRatio)
-        logo_label.setPixmap(pixmap)
-        logo_label.setAlignment(Qt.AlignCenter)
-        left_layout.addWidget(logo_label)
+    # Lado izquierdo
+    left_layout = QVBoxLayout()
+    user_label = QLabel(f"User: {username}", header)
+    user_label.setStyleSheet("color: black;")
+    left_layout.addWidget(user_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 
-        # Parte 2: Rosario, Argentina y Login y Cajero
-        info_layout = QHBoxLayout()
+    # Centro: Logo
+    center_layout = QVBoxLayout()
+    logo_label = QLabel(header)
+    pixmap = QPixmap("img/logosinfondo.png").scaled(300, 250, Qt.KeepAspectRatio)
+    logo_label.setPixmap(pixmap)
+    logo_label.setAlignment(Qt.AlignCenter)
+    center_layout.addWidget(logo_label)
 
-        # Rosario, Argentina
-        location_label = QLabel("Rosario, Argentina", header)
-        location_label.setStyleSheet("color: black;")
-        font = location_label.font()
-        font.setPointSize(12)  # Ajusta el tamaño de la fuente aquí
-        location_label.setFont(font)
-        location_label.setAlignment(Qt.AlignCenter)
-        info_layout.addWidget(location_label, alignment=Qt.AlignCenter)
+    # Lado derecho
+    right_layout = QGridLayout()
 
-        # Login y Cajero
-        login_cajero_layout = QVBoxLayout()
-        login_label = QLabel("Login: Admin", header)
-        login_label.setStyleSheet("color: black;")
-        cajero_label = QLabel("Cajero: Juan", header)
-        cajero_label.setStyleSheet("color: black;")
-        login_cajero_layout.addWidget(login_label)
-        login_cajero_layout.addWidget(cajero_label)
-        info_layout.addLayout(login_cajero_layout)
+    # Fecha
+    fecha = QDateTime.currentDateTime().toString("dd-MM-yyyy")
+    fecha_num_label = QLabel(fecha, header)
+    fecha_num_label.setStyleSheet("color: black;")
+    right_layout.addWidget(fecha_num_label, 0, 1, Qt.AlignTop | Qt.AlignRight)
 
-        left_layout.addLayout(info_layout)
+    # Location
+    location_label = QLabel("Rosario, Argentina", header)
+    location_label.setStyleSheet("color: black;")
+    right_layout.addWidget(location_label, 1, 0, 1, 2, Qt.AlignTop | Qt.AlignRight)
 
-        # Lado derecho
-        right_layout = QVBoxLayout()
+    # Spacer
+    bottom_spacer = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+    right_layout.addItem(bottom_spacer, 2, 0, 1, 2)
 
-        # Factura layout
-        factura_layout = QHBoxLayout()
-        factura_label = QLabel("Factura:", header)
-        factura_label.setStyleSheet("color: black;")
-        factura_layout.addWidget(factura_label)
-        factura_num_label = QLabel("12345", header)
-        factura_num_label.setStyleSheet("color: black;")
-        factura_layout.addWidget(factura_num_label)
-
-        # Fecha layout
-        fecha_layout = QHBoxLayout()
-        fecha_label = QLabel("Fecha:", header)
-        fecha_label.setStyleSheet("color: black;")
-        fecha_layout.addWidget(fecha_label)
-        fecha = QDateTime.currentDateTime().toString("dd-MM-yyyy")
-        fecha_num_label = QLabel(fecha, header)
-        fecha_num_label.setStyleSheet("color: black;")
-        fecha_layout.addWidget(fecha_num_label)
-
-        factura_fecha_layout = QHBoxLayout()
-        factura_fecha_layout.addLayout(factura_layout)
-        factura_fecha_layout.addSpacing(20)
-        factura_fecha_layout.addLayout(fecha_layout)
-
-        right_layout.addLayout(factura_fecha_layout)
-
-        # Barcode
-        barcode_layout = QHBoxLayout()
-        barcode_label = QLabel("Código de Barras:", header)
-        barcode_label.setStyleSheet("color: black;")
-        barcode_textbox = QLineEdit(header)
-        barcode_layout.addWidget(barcode_label)
-        barcode_layout.addWidget(barcode_textbox)
-        right_layout.addLayout(barcode_layout)
-        right_layout.addSpacing(10)
-
-        # Item Name
-        item_layout = QHBoxLayout()
-        item_label = QLabel("Nombre del Producto:", header)
-        item_label.setStyleSheet("color: black;")
-        item_textbox = QLineEdit(header)
-        item_layout.addWidget(item_label)
-        item_layout.addWidget(item_textbox)
-        right_layout.addLayout(item_layout)
-        right_layout.addSpacing(10)
-
-        barcode_textbox.setFixedWidth(400)
-        item_textbox.setFixedWidth(400)
+    # Layout principal
+    main_layout = QHBoxLayout(header)
+    main_layout.addLayout(left_layout)
+    main_layout.setStretchFactor(left_layout, 1)
+    main_layout.addLayout(center_layout)
+    main_layout.setStretchFactor(center_layout, 1)
+    main_layout.addLayout(right_layout)
+    main_layout.setStretchFactor(right_layout, 1)
+    header.setLayout(main_layout)
 
 
-        # Layout principal
-        main_layout = QHBoxLayout(header)
-        main_layout.addLayout(left_layout)
-        main_layout.setStretchFactor(left_layout, 1)
-        main_layout.addLayout(right_layout)
-        main_layout.setStretchFactor(right_layout, 1)
-        header.setLayout(main_layout)
 
 # PRINCIPAL TABLE
 def init_table(self):
@@ -236,7 +243,7 @@ def init_button_menu(self):
     logout_button.clicked.connect(self.cerrar_sesion)
     reportes_button.clicked.connect(self.show_reports_window)
 
-# PDF WINDOWS
+# PDF WINDOWS ----------- ELIMINAR
 def show_reports_window(main_window):
     reports_window = QDialog(main_window)
     reports_window.setWindowTitle("Reportes")

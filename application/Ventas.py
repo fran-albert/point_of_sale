@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QPushButton, QMessageBox, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QToolButton, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QMenuBar, QMenu, QAction, QMainWindow, QDialog, QPushButton, QMessageBox, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QToolButton, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
-from utils.Utils import init_header, init_table, init_button_menu, show_reports_window, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
+from servicios.usuario_service import UsuarioService
+from utils.Utils import init_header,  create_main_window_menu, show_pdf_preview, show_reports_window, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
+from ABMCategorias import ABMCategoriasWindow
 from ABMProductos import AgregarProductoWindow, ModificarProductoWindow, EliminarProductoWindow
 import sys
 
@@ -12,17 +14,28 @@ class MainWindow(QMainWindow):
 
     logged_out = pyqtSignal()  # Crea una nueva señal personalizada
 
-    def init_header(self):
-        init_header(self)
+    def init_header(self, username):
+        init_header(self, self.width(), username)
 
-    def init_table(self):
-        init_table(self)
- 
-    def init_button_menu(self):
-        init_button_menu(self)
+    #def init_table(self):
+        #init_table(self)
+
+    def show_categories_window(self):
+        self.categoria_window = ABMCategoriasWindow(self.app)
+        self.categoria_window.show()
+
+
+    #def init_button_menu(self):
+        #init_button_menu(self)
 
     def show_reports_window(self):
         show_reports_window(self)
+
+    def generate_sales_report_wrapper(self):
+        generate_sales_report(self)
+
+    def generate_stock_report_wrapper(self):
+        generate_stock_report(self)
 
     def generate_stock_report(self):
         generate_stock_report(self)
@@ -36,17 +49,28 @@ class MainWindow(QMainWindow):
     def show_payment_window(self):
         show_payment_window(self)
 
-    def __init__(self):
+    def __init__(self, current_username, current_password, app):
+        self.usuario_service = UsuarioService()
         super().__init__()
         self.setWindowTitle("Point Of Sale")
-        self.logged_out.connect(self.open_login_window)
-        self.login_window = None
+        self.current_username = self.usuario_service.get_username(current_username, current_password)
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
         self.setFixedSize(1000, 900)
-        self.init_table()
-        self.init_header()
-        self.init_button_menu()  # Llamar al método init_button_menu
+        self.categoria_window = None
+        self.app = app
+        create_main_window_menu(self)
+        init_header(self, self.width(), self.current_username, self.menuBar().height())
+        #self.init_button_menu()
         self.init_right_side_buttons()
+        self.logged_out.connect(self.open_login_window)
+        self.login_window = None
+        #self.init_button_menu()
+        self.init_right_side_buttons()
+
+
+    def resizeEvent(self, event):
+        init_header(self, self.width(), self.current_username, self.menuBar().height())
+        super().resizeEvent(event)
 
     def abrir_ventana_agregar_producto(self):
         self.agregar_producto_window = AgregarProductoWindow()

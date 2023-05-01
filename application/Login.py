@@ -1,6 +1,5 @@
 import os
 import sys
-
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_root)
 from PyQt5.QtGui import QIcon
@@ -29,17 +28,18 @@ class LoginWindow(QWidget):
     def iniciar_sesion(self):
         usuario = self.usuario_edit.text()
         contrasena = self.contrasena_edit.text()
-    
+
         # Crea una instancia de UsuarioService
         usuario_service = UsuarioService()
 
         # Verifica si el usuario y la contraseña son correctos usando la base de datos
         if usuario_service.validate_login(usuario, contrasena):
-            self.close()
-            self.main_window = Ventas.MainWindow()  # Guarda una referencia al objeto como un atributo de la clase
+            self.hide()
+            # Pasa las credenciales del usuario al constructor de la clase Ventas
+            self.main_window = Ventas.MainWindow(usuario, contrasena, app)
             self.main_window.show()
         else:
-            QMessageBox.warning(self, "Error", "Usuario o contraseña incorrectos.")
+            QMessageBox.warning(self, "Error", "Usuario o contraseña incorrecto")
 
     def salir(self):
         """Cierra la aplicación."""

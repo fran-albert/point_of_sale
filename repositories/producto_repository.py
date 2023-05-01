@@ -43,7 +43,7 @@ class ProductoRepository:
 
     
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
-        query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s,, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"
+        query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo))
@@ -51,7 +51,15 @@ class ProductoRepository:
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el producto {codigo}") from e
 
-
+    # Metodo para actualizar el precio de venta cuando cambia el porcentaje de una categoria asociada a productos
+    def actualizarPrecioVenta(self, porcentaje, idCategoria):
+        query = "UPDATE productos SET PrecioVenta = PrecioCompra * (1 + %s/100) WHERE Categoria = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (porcentaje, idCategoria))
+                self.connection.commit()
+        except Exception as e:
+            raise RuntimeError(f"Error al actualizar el precio de venta de los productos asociados a la categoria.") from e
 
     def eliminarProducto(self, codigo):
         query = "DELETE FROM productos WHERE Codigo = %s"
