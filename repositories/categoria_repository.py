@@ -20,7 +20,7 @@ class CategoriaRepository:
         query = "SELECT porcentaje FROM categorias WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (descripcion,))
+                cursor.execute(query, (descripcion))
                 row = cursor.fetchone()
                 if row:
                     porcentaje = row[0]

@@ -14,7 +14,6 @@ class ProductoRepository:
             self.connection.commit()
         except Error as e:
             raise RuntimeError("Error al insertar el nuevo producto", e)
-
             
     def obtenerProductos(self):
         productos = []
@@ -40,7 +39,18 @@ class ProductoRepository:
         except Error as e:
             raise RuntimeError("Error al obtener los productos", e)
 
-
+    def obtenerProducto(self, codigo):
+        producto = None
+        query = "SELECT * FROM productos WHERE categoria = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (codigo))
+                row = cursor.fetchone()
+                if row:
+                    producto = row[0]
+            return producto
+        except Error as e:
+            raise RuntimeError(f"Error al obtener el producto con el código {codigo}", e)
     
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
         query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"

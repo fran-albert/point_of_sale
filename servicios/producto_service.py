@@ -9,6 +9,9 @@ class ProductoService:
     
     def obtenerProductos(self):
         return self.producto_repository.obtenerProductos()
+    
+    def obtenerProducto(self, codigo):
+        return self.producto_repository.obtenerProducto(codigo)
 
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
         return self.producto_repository.actualizarProducto(nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo)
