@@ -6,6 +6,7 @@ from servicios.usuario_service import UsuarioService
 from utils.Utils import init_header,  create_main_window_menu, show_reports_window, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
 from categorias.abm_categorias import ABMCategoriasWindow
 from productos.abm_productos import ABMProductosWindow
+from proveedores.abm_proveedores import ABMProveedoresWindow
 import sys
 
 class MainWindow(QMainWindow):
@@ -22,6 +23,10 @@ class MainWindow(QMainWindow):
     def show_products_window(self):
         self.product_window = ABMProductosWindow(self.app)
         self.product_window.show()
+
+    def show_proveedores_window(self):
+        self.proveedores_window = ABMProveedoresWindow(self.app)
+        self.proveedores_window.show()
 
     def show_reports_window(self):
         show_reports_window(self)
