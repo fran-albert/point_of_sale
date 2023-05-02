@@ -130,8 +130,6 @@ class ABMCategoriasWindow(QMainWindow):
         self.producto_service = ProductoService()
         self.categorias = self.categoria_service.obtenerCategorias()
 
-
-
         # El resto del código en la función abmCategorias se coloca aquí.
         self.table = QTableWidget(len(self.categorias), 5)
 
@@ -224,8 +222,6 @@ class ABMCategoriasWindow(QMainWindow):
         # Establece el tamaño y la posición de la ventana
         self.setGeometry(100, 100, 450, 500)  # x, y, ancho, alto
 
-
-
     def actualizar_tabla(self):
             # Obtén la lista actualizada de categorías
             self.categorias = self.categoria_service.obtenerCategorias()
@@ -254,9 +250,6 @@ class ABMCategoriasWindow(QMainWindow):
                 delete_button = QPushButton("Eliminar")
                 delete_button.clicked.connect(self.on_delete_button_clicked)
                 self.table.setCellWidget(i, 4, delete_button)
-
-        
-        #def abmCategorias(app):
 
     def on_agregar_categoria_clicked(self):
         dialog = AgregarCategoriaDialog(self.categoria_service)
@@ -301,13 +294,13 @@ class ABMCategoriasWindow(QMainWindow):
         # Obtiene el índice del elemento en la tabla
         index = self.table.indexAt(button.pos())
 
-        # Obtén la descripción de la categoría seleccionada
-        descripcion = self.table.item(index.row(), 0).text()
+        # Obtén el ID de la categoría seleccionada
+        categoria_id = self.table.item(index.row(), 0).text()
 
-        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar la categoría {descripcion}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar la categoría {categoria_id}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if respuesta == QMessageBox.Yes:
-            # Aquí va el código para eliminar la categoría de la base de datos utilizando la descripción
-            self.categoria_service.eliminarCategoria(descripcion)
+            # Aquí va el código para eliminar la categoría de la base de datos utilizando el ID
+            self.categoria_service.eliminarCategoria(categoria_id)
 
             # Elimina la fila seleccionada de la tabla
             self.table.removeRow(index.row())

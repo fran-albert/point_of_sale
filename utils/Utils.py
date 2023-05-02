@@ -119,6 +119,7 @@ def create_main_window_menu(parent):
     reporte_stock_action.triggered.connect(parent.generate_stock_report)
     reporte_ventas_action.triggered.connect(parent.generate_sales_report)
     categorias_action.triggered.connect(parent.show_categories_window)
+    productos_action.triggered.connect(parent.show_products_window)
 
 
 

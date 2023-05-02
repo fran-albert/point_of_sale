@@ -54,13 +54,11 @@ class CategoriaRepository:
             raise RuntimeError(f"Error al actualizar la categoria con ID {idCategoria}") from e
 
 
-
-    def eliminarCategoria(self, descripcion):
-        query = "DELETE FROM categorias WHERE Descripcion = %s"
+    def eliminarCategoria(self, categoria_id):
+        query = "DELETE FROM categorias WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (descripcion,))
+                cursor.execute(query, (categoria_id,))
                 self.connection.commit()
         except Exception as e:
-            raise RuntimeError(f"Error al eliminar la categoria {descripcion}") from e
-
+            raise RuntimeError(f"Error al eliminar la categoria con ID {categoria_id}") from e
