@@ -4,9 +4,13 @@ from entities.producto import Producto
 
 
 class EditarProductoDialog(QDialog):
-    def __init__(self, producto, categorias, parent=None):
+    def __init__(self, producto,producto_service, categoria_service, categorias, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Editar Producto")
+
+
+        self.producto_service = producto_service
+        self.categoria_service = categoria_service
 
         self.producto = producto
         self.categorias = categorias
@@ -90,6 +94,8 @@ class EditarProductoDialog(QDialog):
                 self.producto.cantStock = nuevo_stock
                 self.producto.categoria = nueva_categoria
                 self.producto.impuestos = nuevos_impuestos
+                porcentaje = self.categoria_service.obtenerPorcentaje(nueva_categoria)
+                self.producto.precioVenta = Producto.calculoPrecioVenta(nuevo_precioCompra, porcentaje)
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")

@@ -209,7 +209,8 @@ class ABMProductosWindow(QMainWindow):
         
         # Obtén la lista de categorías
         categorias = self.categoria_service.obtenerCategorias()
-
+        categoria_service = CategoriaService()
+        producto_service = ProductoService()
         # Crea un diccionario que mapee las descripciones de las categorías a sus IDs
         categoria_descripcion_id_map = {categoria.descripcion: categoria.id for categoria in categorias}
 
@@ -227,7 +228,7 @@ class ABMProductosWindow(QMainWindow):
         fecha_venc = self.table.item(index.row(), 9).text()          
         producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria_id, impuestos, descuentos, proveedor, fecha_venc)
         # Muestra la ventana de edición y obtén el resultado
-        dialog = EditarProductoDialog(producto, categorias)
+        dialog = EditarProductoDialog(producto, producto_service, categoria_service, categorias )
         result = dialog.exec()
 
         if result == QDialog.Accepted:
