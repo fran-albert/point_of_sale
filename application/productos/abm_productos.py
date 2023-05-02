@@ -4,188 +4,13 @@ from pathlib import Path
 ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
     sys.path.append(ruta_principal)
-from PyQt5.QtWidgets import QMainWindow, QFrame, QHeaderView, QScrollArea, QSizePolicy, QDateEdit, QTableWidget, QComboBox, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
 from PyQt5.QtCore import Qt
-from servicios.producto_service import ProductoService
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.categoria_service import CategoriaService
+from servicios.producto_service import ProductoService
+from .agregar_producto import AgregarProductoDialog
+from .editar_producto import EditarProductoDialog
 from entities.producto import Producto
-
-
-
-class EditarProductoDialog(QDialog):
-    def __init__(self, producto, categorias, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Editar Producto")
-
-        self.producto = producto
-        self.categorias = categorias
-        layout = QVBoxLayout()
-
-        self.precioCompra_label = QLabel("Precio de compra:")
-        self.precioCompra_input = QLineEdit(str(producto.precioCompra))
-        layout.addWidget(self.precioCompra_label)
-        layout.addWidget(self.precioCompra_input)
-
-        self.stock_label = QLabel("Stock:")
-        self.stock_input = QLineEdit(str(producto.cantStock))
-        layout.addWidget(self.stock_label)
-        layout.addWidget(self.stock_input)
-
-        self.categoria_label = QLabel("Categoría:")
-        self.categoria_combo = QComboBox()
-        for categoria in self.categorias:
-            self.categoria_combo.addItem(categoria.descripcion, categoria.id)
-        index = self.categoria_combo.findData(producto.categoria)
-        self.categoria_combo.setCurrentIndex(index)
-        layout.addWidget(self.categoria_label)
-        layout.addWidget(self.categoria_combo)
-
-        self.impuestos_label = QLabel("Impuestos:")
-        self.impuestos_input = QLineEdit(str(producto.impuestos))
-        layout.addWidget(self.impuestos_label)
-        layout.addWidget(self.impuestos_input)
-
-        self.buttons_layout = QHBoxLayout()
-        self.guardar_button = QPushButton("Guardar")
-        self.cancelar_button = QPushButton("Cancelar")
-        self.buttons_layout.addWidget(self.guardar_button)
-        self.buttons_layout.addWidget(self.cancelar_button)
-
-        layout.addLayout(self.buttons_layout)
-        self.setLayout(layout)
-
-        self.guardar_button.clicked.connect(self.guardar_producto)
-        self.cancelar_button.clicked.connect(self.reject)
-
-        self.buttons_layout = QHBoxLayout()
-        self.guardar_button = QPushButton("Guardar")
-        self.cancelar_button = QPushButton("Cancelar")
-        self.buttons_layout.addWidget(self.guardar_button)
-        self.buttons_layout.addWidget(self.cancelar_button)
-
-        layout.addLayout(self.buttons_layout)
-        self.setLayout(layout)
-
-        self.guardar_button.clicked.connect(self.guardar_producto)
-        self.cancelar_button.clicked.connect(self.reject)
-
-    def guardar_producto(self):
-        nuevo_precioCompra = self.precioCompra_input.text().strip()
-        nuevo_stock = self.stock_input.text().strip()
-        nueva_categoria = self.categoria_combo.currentData()
-        nuevos_impuestos = self.impuestos_input.text().strip()
-
-        if nuevo_precioCompra and nuevo_stock and nuevos_impuestos:
-            try:
-                nuevo_precioCompra = float(nuevo_precioCompra)
-                nuevo_stock = int(nuevo_stock)
-                nuevos_impuestos = float(nuevos_impuestos)
-                self.producto.precioCompra = nuevo_precioCompra
-                self.producto.cantStock = nuevo_stock
-                self.producto.categoria = nueva_categoria
-                self.producto.impuestos = nuevos_impuestos
-                self.accept()
-            except ValueError:
-                QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
-        else:
-            QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
-
-class AgregarProductoDialog(QDialog):
-    def __init__(self, producto_service, categoria_service, parent=None):
-        super().__init__(parent)
-
-        self.producto_service = producto_service
-        self.categoria_service = categoria_service
-
-        self.setWindowTitle("Agregar Producto")
-        layout = QVBoxLayout()
-
-        self.codigo_label = QLabel("Código:")
-        self.codigo_input = QLineEdit()
-        layout.addWidget(self.codigo_label)
-        layout.addWidget(self.codigo_input)
-
-        self.nombre_label = QLabel("Nombre:")
-        self.nombre_input = QLineEdit()
-        layout.addWidget(self.nombre_label)
-        layout.addWidget(self.nombre_input)
-
-        self.precio_label = QLabel("Precio Compra:")
-        self.precio_input = QLineEdit()
-        layout.addWidget(self.precio_label)
-        layout.addWidget(self.precio_input)
-
-        self.cant_stock_label = QLabel("Cantidad en Stock:")
-        self.cant_stock_input = QLineEdit()
-        layout.addWidget(self.cant_stock_label)
-        layout.addWidget(self.cant_stock_input)
-
-        self.categoria_label = QLabel("Categoría:")
-        self.categoria_selector = QComboBox()
-        categorias = self.categoria_service.obtenerCategorias()
-        for categoria in categorias:
-            self.categoria_selector.addItem(categoria.descripcion, categoria.id)
-        layout.addWidget(self.categoria_label)
-        layout.addWidget(self.categoria_selector)
-
-        self.impuestos_label = QLabel("Impuestos:")
-        self.impuestos_input = QLineEdit()
-        layout.addWidget(self.impuestos_label)
-        layout.addWidget(self.impuestos_input)
-
-        self.descuentos_label = QLabel("Descuentos:")
-        self.descuentos_input = QLineEdit()
-        layout.addWidget(self.descuentos_label)
-        layout.addWidget(self.descuentos_input)
-
-        self.proveedor_label = QLabel("Proveedor:")
-        self.proveedor_input = QLineEdit()
-        layout.addWidget(self.proveedor_label)
-        layout.addWidget(self.proveedor_input)
-
-        self.fecha_venc_label = QLabel("Fecha de Vencimiento:")
-        self.fecha_venc_input = QDateEdit()
-        layout.addWidget(self.fecha_venc_label)
-        layout.addWidget(self.fecha_venc_input)
-
-        self.buttons_layout = QHBoxLayout()
-        self.agregar_button = QPushButton("Agregar")
-        self.cancelar_button = QPushButton("Cancelar")
-        self.buttons_layout.addWidget(self.agregar_button)
-        self.buttons_layout.addWidget(self.cancelar_button)
-
-        layout.addLayout(self.buttons_layout)
-        self.setLayout(layout)
-
-        self.agregar_button.clicked.connect(self.agregar_producto)
-        self.cancelar_button.clicked.connect(self.reject)
-
-    def agregar_producto(self):
-        codigo = self.codigo_input.text().strip()
-        nombre = self.nombre_input.text().strip()
-        precioCompra = self.precio_input.text().strip()
-        cant_stock = self.cant_stock_input.text().strip()
-        categoria = self.categoria_selector.currentData()
-        impuestos = self.impuestos_input.text().strip()
-        descuentos = self.descuentos_input.text().strip()
-        proveedor = self.proveedor_input.text().strip()
-        fecha_venc = self.fecha_venc_input.date().toString("yyyy-MM-dd")
-
-        if codigo and nombre and precioCompra and cant_stock and categoria and impuestos and descuentos and proveedor and fecha_venc:
-            try:
-                precioCompra = float(precioCompra)
-                cant_stock = int(cant_stock)
-                impuestos = float(impuestos)
-                descuentos = float(descuentos)
-                porcentaje = self.categoria_service.obtenerPorcentaje(categoria)
-                precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
-                producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
-                self.producto_service.insertarProducto(producto)
-                self.accept()
-            except ValueError:
-                QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
-        else:
-            QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
 
 class ABMProductosWindow(QMainWindow):
     def __init__(self, app, parent=None):
@@ -215,7 +40,7 @@ class ABMProductosWindow(QMainWindow):
             item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
             item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
             item_cant_stock = QTableWidgetItem(str(prod.cantStock))
-            item_categoria = QTableWidgetItem(self.categoria_descripcion_map[prod.categoria])
+            item_categoria = QTableWidgetItem(self.categoria_descripcion_map.get(int(float(prod.categoria)), "Desconocida"))
             # Usa el diccionario para obtener la descripción y Convierte la clave en entero
             item_impuestos = QTableWidgetItem(str(prod.impuestos))
             item_descuentos = QTableWidgetItem(str(prod.descuentos))
@@ -306,8 +131,15 @@ class ABMProductosWindow(QMainWindow):
         # Establece el título de la ventana
         self.setWindowTitle("Productos")
 
-        # Establece el tamaño y la posición de la ventana
         self.setGeometry(100, 100, 900, 400)  # x, y, ancho, alto
+        # Obtener la geometría de la pantalla y calcular la posición central
+        screen = QDesktopWidget().availableGeometry()
+        x = (screen.width() - self.width()) // 2
+        y = (screen.height() - self.height()) // 2
+
+        # Establecer la posición de la ventana en el centro de la pantalla
+        self.move(x, y)
+
 
     def actualizar_tabla(self):
         # Obtén la lista actualizada de productos
@@ -330,7 +162,7 @@ class ABMProductosWindow(QMainWindow):
             item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
             item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
             item_cant_stock = QTableWidgetItem(str(prod.cantStock))
-            item_categoria = QTableWidgetItem(categoria_descripcion_map[int(float(prod.categoria))])
+            item_categoria = QTableWidgetItem(categoria_descripcion_map.get(int(float(prod.categoria)), "Desconocida"))
     # Usa el diccionario para obtener la descripción y Convierte la clave en entero
             item_impuestos = QTableWidgetItem(str(prod.impuestos))
             item_descuentos = QTableWidgetItem(str(prod.descuentos))
@@ -377,27 +209,42 @@ class ABMProductosWindow(QMainWindow):
         
         # Obtén la lista de categorías
         categorias = self.categoria_service.obtenerCategorias()
+
+        # Crea un diccionario que mapee las descripciones de las categorías a sus IDs
+        categoria_descripcion_id_map = {categoria.descripcion: categoria.id for categoria in categorias}
+
         
         nombre = self.table.item(index.row(), 0).text()
         codigo = self.table.item(index.row(), 1).text()
         precioCompra = self.table.item(index.row(), 2).text()
         precioVenta = self.table.item(index.row(), 3).text()
         cant_stock = self.table.item(index.row(), 4).text()
-        categoria = self.table.item(index.row(), 5).text()
+        categoria_descripcion = self.table.item(index.row(), 5).text()
+        categoria_id = categoria_descripcion_id_map.get(categoria_descripcion)
         impuestos = self.table.item(index.row(), 6).text()
         descuentos = self.table.item(index.row(), 7).text()
         proveedor = self.table.item(index.row(), 8).text()
         fecha_venc = self.table.item(index.row(), 9).text()          
-        producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
-
+        producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria_id, impuestos, descuentos, proveedor, fecha_venc)
         # Muestra la ventana de edición y obtén el resultado
         dialog = EditarProductoDialog(producto, categorias)
         result = dialog.exec()
 
         if result == QDialog.Accepted:
             # Actualiza el producto en la base de datos
-            self.producto_service.actualizarProducto(producto)
-
+            self.producto_service.actualizarProducto(
+                producto.codigo,
+                producto.nombre,
+                producto.precioCompra,
+                producto.precioVenta,
+                producto.cantStock,
+                producto.categoria,
+                producto.impuestos,
+                producto.descuentos,
+                producto.proveedor,
+                producto.fechaVenc,
+                producto.codigo
+            )
             # Actualiza la tabla para mostrar los cambios
             self.actualizar_tabla()
 
@@ -415,7 +262,3 @@ class ABMProductosWindow(QMainWindow):
             self.producto_service.eliminarProducto(producto_codigo)
             #Elimina la fila seleccionada de la tabla
             self.table.removeRow(index.row())
-
-
-
-

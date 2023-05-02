@@ -1,15 +1,12 @@
-from PyQt5.QtWidgets import QApplication, QMenuBar, QMenu, QAction, QMainWindow, QDialog, QPushButton, QMessageBox, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QToolButton, QSpacerItem, QSizePolicy
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
 from servicios.usuario_service import UsuarioService
-from utils.Utils import init_header,  create_main_window_menu, show_pdf_preview, show_reports_window, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
-from ABMCategorias import ABMCategoriasWindow
-from cargoProductos import ABMProductosWindow
-from ABMProductos import AgregarProductoWindow, ModificarProductoWindow, EliminarProductoWindow
+from utils.Utils import init_header,  create_main_window_menu, show_reports_window, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
+from categorias.abm_categorias import ABMCategoriasWindow
+from productos.abm_productos import ABMProductosWindow
 import sys
-
-
 
 class MainWindow(QMainWindow):
 
@@ -18,9 +15,6 @@ class MainWindow(QMainWindow):
     def init_header(self, username):
         init_header(self, self.width(), username)
 
-    #def init_table(self):
-        #init_table(self)
-
     def show_categories_window(self):
         self.categoria_window = ABMCategoriasWindow(self.app)
         self.categoria_window.show()
@@ -28,9 +22,6 @@ class MainWindow(QMainWindow):
     def show_products_window(self):
         self.product_window = ABMProductosWindow(self.app)
         self.product_window.show()
-
-    #def init_button_menu(self):
-        #init_button_menu(self)
 
     def show_reports_window(self):
         show_reports_window(self)
@@ -64,30 +55,15 @@ class MainWindow(QMainWindow):
         self.app = app
         create_main_window_menu(self)
         init_header(self, self.width(), self.current_username, self.menuBar().height())
-        #self.init_button_menu()
         self.init_right_side_buttons()
         self.logged_out.connect(self.open_login_window)
         self.login_window = None
-        #self.init_button_menu()
         self.init_right_side_buttons()
-
 
     def resizeEvent(self, event):
         init_header(self, self.width(), self.current_username, self.menuBar().height())
         super().resizeEvent(event)
 
-    def abrir_ventana_agregar_producto(self):
-        self.agregar_producto_window = AgregarProductoWindow()
-        self.agregar_producto_window.show()
-
-    def abrir_ventana_modificar_producto(self):
-        self.modificar_producto_window = ModificarProductoWindow()
-        self.modificar_producto_window.show()
-
-    def abrir_ventana_eliminar_producto(self):
-        self.eliminar_producto_window = EliminarProductoWindow()
-        self.eliminar_producto_window.show()
-       
     def cerrar_sesion(self):
         respuesta = QMessageBox.question(
             self, "Cerrar sesión", "¿Está seguro de que desea cerrar sesión?",

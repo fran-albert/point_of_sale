@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from reportlab.lib import colors
-from application.ABMCategorias import ABMCategoriasWindow
+from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
 import fitz, os, time, traceback, io
 

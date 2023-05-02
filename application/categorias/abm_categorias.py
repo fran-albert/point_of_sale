@@ -4,121 +4,13 @@ from pathlib import Path
 ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
     sys.path.append(ruta_principal)
-from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.categoria_service import CategoriaService
 from servicios.producto_service import ProductoService
-from entities.categoria import Categoria
+from .agregar_categoria import AgregarCategoriaDialog
+from .editar_categoria import EditarCategoriaDialog
 
-
-
-class EditarCategoriaDialog(QDialog):
-        def __init__(self, descripcion, porcentaje, idCategoria, parent=None):
-            super().__init__(parent)
-            self.setWindowTitle("Editar Categoría")
-
-            layout = QVBoxLayout()
-
-            self.descripcion_label = QLabel("Descripción:")
-            self.descripcion_input = QLineEdit(descripcion)
-            layout.addWidget(self.descripcion_label)
-            layout.addWidget(self.descripcion_input)
-
-            self.porcentaje_label = QLabel("Porcentaje:")
-            self.porcentaje_input = QLineEdit(str(porcentaje))
-            layout.addWidget(self.porcentaje_label)
-            layout.addWidget(self.porcentaje_input)
-
-            self.idCategoria_label = QLabel("Id Categoria:")
-            self.idCategoria_input = QLineEdit(str(idCategoria))
-            self.idCategoria_input.setReadOnly(True)
-            layout.addWidget(self.idCategoria_label)
-            layout.addWidget(self.idCategoria_input)
-
-            palette = self.idCategoria_input.palette()
-            palette.setColor(QPalette.Base, QColor(240, 240, 240))
-            self.idCategoria_input.setPalette(palette)
-
-            self.buttons_layout = QHBoxLayout()
-            self.guardar_button = QPushButton("Guardar")
-            self.cancelar_button = QPushButton("Cancelar")
-            self.buttons_layout.addWidget(self.guardar_button)
-            self.buttons_layout.addWidget(self.cancelar_button)
-
-            layout.addLayout(self.buttons_layout)
-            self.setLayout(layout)
-
-            self.guardar_button.clicked.connect(self.guardar_categoria)
-            self.cancelar_button.clicked.connect(self.reject)
-
-        def guardar_categoria(self):
-            nueva_descripcion = self.descripcion_input.text().strip()
-            nuevo_porcentaje = self.porcentaje_input.text().strip()
-            actual_idcategoria = self.idCategoria_input.text().strip()
-
-            if nueva_descripcion and nuevo_porcentaje and actual_idcategoria:
-                try:
-                    nuevo_porcentaje = float(nuevo_porcentaje)
-                    self.nueva_descripcion = nueva_descripcion
-                    self.nuevo_porcentaje = nuevo_porcentaje
-                    self.actual_idcategoria = actual_idcategoria
-                    self.accept()
-                except ValueError:
-                    QMessageBox.warning(self, "Error", "Por favor, ingrese un porcentaje válido.")
-            else:
-                QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
-
-class AgregarCategoriaDialog(QDialog):
-        def __init__(self, categoria_service, parent=None):
-            super().__init__(parent)
-
-            self.categoria_service = categoria_service
-
-            self.setWindowTitle("Agregar Categoría")
-
-            layout = QVBoxLayout()
-
-            self.descripcion_label = QLabel("Descripción:")
-            self.descripcion_input = QLineEdit()
-            layout.addWidget(self.descripcion_label)
-            layout.addWidget(self.descripcion_input)
-
-            self.porcentaje_label = QLabel("Porcentaje:")
-            self.porcentaje_input = QLineEdit()
-            layout.addWidget(self.porcentaje_label)
-            layout.addWidget(self.porcentaje_input)
-
-            self.buttons_layout = QHBoxLayout()
-            self.agregar_button = QPushButton("Agregar")
-            self.cancelar_button = QPushButton("Cancelar")
-            self.buttons_layout.addWidget(self.agregar_button)
-            self.buttons_layout.addWidget(self.cancelar_button)
-
-            layout.addLayout(self.buttons_layout)
-            self.setLayout(layout)
-
-            self.agregar_button.clicked.connect(self.agregar_categoria)
-            self.cancelar_button.clicked.connect(self.reject)
-
-        def agregar_categoria(self):
-            descripcion = self.descripcion_input.text().strip()
-            porcentaje = self.porcentaje_input.text().strip()
-
-            if descripcion and porcentaje:
-                try:
-                    porcentaje = float(porcentaje)
-                    categoria = Categoria(1, descripcion, porcentaje)
-                    self.categoria_service.insertarCategoria(categoria)
-                    self.accept()
-                except ValueError:
-                    QMessageBox.warning(self, "Error", "Por favor, ingrese un porcentaje válido.")
-            else:
-                QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
-
-            self.accept()
-
-    # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
 
 class ABMCategoriasWindow(QMainWindow):
     def __init__(self, app, parent=None):
@@ -222,6 +114,13 @@ class ABMCategoriasWindow(QMainWindow):
         # Establece el tamaño y la posición de la ventana
         self.setGeometry(100, 100, 450, 500)  # x, y, ancho, alto
 
+        screen = QDesktopWidget().availableGeometry()
+        x = (screen.width() - self.width()) // 2
+        y = (screen.height() - self.height()) // 2
+
+        # Establecer la posición de la ventana en el centro de la pantalla
+        self.move(x, y)
+
     def actualizar_tabla(self):
             # Obtén la lista actualizada de categorías
             self.categorias = self.categoria_service.obtenerCategorias()
@@ -304,7 +203,3 @@ class ABMCategoriasWindow(QMainWindow):
 
             # Elimina la fila seleccionada de la tabla
             self.table.removeRow(index.row())
-
-
-
-
