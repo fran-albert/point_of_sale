@@ -41,10 +41,10 @@ class ProductoRepository:
 
     def obtenerProducto(self, codigo):
         producto = None
-        query = "SELECT * FROM productos WHERE categoria = %s"
+        query = "SELECT * FROM productos WHERE codigo = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (codigo))
+                cursor.execute(query, (codigo,))
                 row = cursor.fetchone()
                 if row:
                     producto = row[0]
