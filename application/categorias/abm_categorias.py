@@ -188,18 +188,16 @@ class ABMCategoriasWindow(QMainWindow):
             self.actualizar_tabla()
 
     def on_delete_button_clicked(self):
-        # Obtén el botón que emitió la señal
         button = self.app.sender()
-        # Obtiene el índice del elemento en la tabla
         index = self.table.indexAt(button.pos())
 
-        # Obtén el ID de la categoría seleccionada
-        categoria_id = self.table.item(index.row(), 0).text()
+        idCategoria = self.table.item(index.row(), 0).text()
 
-        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar la categoría {categoria_id}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar la categoría {idCategoria}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if respuesta == QMessageBox.Yes:
-            # Aquí va el código para eliminar la categoría de la base de datos utilizando el ID
-            self.categoria_service.eliminarCategoria(categoria_id)
-
-            # Elimina la fila seleccionada de la tabla
-            self.table.removeRow(index.row())
+            productosAsociados = self.producto_service.existeProductosConCategoria(idCategoria)
+            if(productosAsociados == 0):
+                self.categoria_service.eliminarCategoria(idCategoria)
+                self.table.removeRow(index.row())
+            else:
+                QMessageBox.warning(None, "Advertencia", "La categoría que desea eliminar tiene productos asociados", QMessageBox.Ok)

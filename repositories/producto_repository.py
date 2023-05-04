@@ -79,3 +79,13 @@ class ProductoRepository:
                 self.connection.commit()
         except Exception as e:
             raise RuntimeError(f"Error al eliminar el producto {codigo}") from e
+        
+    def ExisteProductosConCategoria(self, codigo):
+        query = "SELECT COUNT(*) FROM productos WHERE categoria = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (codigo,))
+                result = cursor.fetchone()
+                return result[0]
+        except Exception as e:
+            raise RuntimeError(f"Error al eliminar la categoria {codigo} ya que tiene productos asociados") from e    

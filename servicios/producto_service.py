@@ -21,3 +21,6 @@ class ProductoService:
 
     def eliminarProducto(self, codigo):
         return self.producto_repository.eliminarProducto(codigo)
+    
+    def existeProductosConCategoria(self, idCategoria):
+        return self.producto_repository.ExisteProductosConCategoria(idCategoria)
