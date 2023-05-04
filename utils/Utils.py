@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from reportlab.lib import colors
+from servicios.producto_service import ProductoService
+from servicios.categoria_service import CategoriaService
 from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
 import fitz, os, time, traceback, io
@@ -121,8 +123,7 @@ def create_main_window_menu(parent):
     categorias_action.triggered.connect(parent.show_categories_window)
     productos_action.triggered.connect(parent.show_products_window)
     proveedores_action.triggered.connect(parent.show_proveedores_window)
-
-
+    ventas_action.triggered.connect(parent.show_ventas_window)
 
 # HEADER
 def init_header(parent, width, username, menu_bar_height):
@@ -177,8 +178,6 @@ def init_header(parent, width, username, menu_bar_height):
     main_layout.setStretchFactor(right_layout, 1)
     header.setLayout(main_layout)
 
-
-
 # PRINCIPAL TABLE
 def init_table(self):
     self.table = QTableWidget(self)
@@ -198,73 +197,6 @@ def init_table(self):
     # Establecer el modo de redimensionamiento QHeaderView.Stretch para las otras columnas
     for col_index in [1, 2, 4, 5]:
         header.setSectionResizeMode(col_index, QHeaderView.Stretch)
-
-# MENU BUTTON
-def init_button_menu(self):
-    button_menu = QFrame(self)
-    button_menu.setGeometry(0, 100, self.width(), 40)
-
-    button_layout = QHBoxLayout(button_menu)
-    button_layout.setContentsMargins(0, 0, 0, 0)
-
-    def create_tool_button(icon_path, tooltip_text):
-        tool_button = QToolButton(button_menu)
-        icon = QIcon(icon_path)
-        tool_button.setIcon(icon)
-        tool_button.setIconSize(QSize(32, 32))
-        tool_button.setToolTip(tooltip_text)
-        return tool_button
-
-    usuarios_button = create_tool_button("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png", "Usuarios")
-    addproductos_button = create_tool_button("img/icons8-addproduct.png", "Agregar Producto")
-    editproductos_button = create_tool_button("img/icons8-editproduct.png", "Editar Producto")
-    deleteproductos_button = create_tool_button("img/icons8-deleteproduct.png", "Eliminar Producto")
-    stock_button = create_tool_button("img/icons8-almacén-48.png", "Stock")
-    reportes_button = create_tool_button("img/icons8-pdf-48.png", "Reportes")
-    ventas_button = create_tool_button("img/icons8-caja-registradora-48.png", "Ventas")
-    logout_button = create_tool_button("img/icons8-salida-48.png", "Cerrar Sesión")
-
-    button_layout.addWidget(usuarios_button)
-    button_layout.addWidget(addproductos_button)
-    button_layout.addWidget(editproductos_button)
-    button_layout.addWidget(deleteproductos_button)
-    button_layout.addWidget(stock_button)
-    button_layout.addWidget(ventas_button)
-    button_layout.addWidget(reportes_button)
-    button_layout.addWidget(logout_button)
-
-    spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)  # Agregar un "spacer" expansible
-    button_layout.addItem(spacer)  # Añadir el "spacer" al layout
-
-    button_menu.setLayout(button_layout)
-
-    # usuarios_button.clicked.connect(self.abrir_ventana_agregar_producto) CODIGO PARA GESTIONAR USUARIOS
-    addproductos_button.clicked.connect(self.abrir_ventana_agregar_producto)
-    editproductos_button.clicked.connect(self.abrir_ventana_modificar_producto)
-    deleteproductos_button.clicked.connect(self.abrir_ventana_eliminar_producto)
-    logout_button.clicked.connect(self.cerrar_sesion)
-    reportes_button.clicked.connect(self.show_reports_window)
-
-# PDF WINDOWS ----------- ELIMINAR
-def show_reports_window(main_window):
-    reports_window = QDialog(main_window)
-    reports_window.setWindowTitle("Reportes")
-    reports_window.setFixedSize(300, 200)
-
-    stock_report_button = QPushButton("Reporte Stock")
-    sales_report_button = QPushButton("Reporte Ventas")
-
-    layout = QVBoxLayout()
-    layout.addWidget(QLabel("Seleccione el tipo de reporte:"))
-    layout.addWidget(stock_report_button)
-    layout.addWidget(sales_report_button)
-
-    reports_window.setLayout(layout)
-
-    stock_report_button.clicked.connect(main_window.generate_stock_report)
-    sales_report_button.clicked.connect(main_window.generate_sales_report)
-
-    reports_window.exec_()
 
 # PDF GENERATES (SALES - STOCK)
 def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
@@ -315,7 +247,6 @@ def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
         QMessageBox.critical(main_window, "Error", f"Ocurrió un error al mostrar la vista previa del PDF: {e}")
         return False
     
-
 def generate_pdf(main_window, title, data=None):
     pdf_buffer = io.BytesIO()
 
@@ -352,26 +283,32 @@ def generate_pdf(main_window, title, data=None):
 
 def generate_stock_report(main_window):
     try:
-        # Datos de ejemplo para la tabla
-        data = [['Producto', 'Cantidad', 'Precio'],
-                ['Producto 1', '10', '100'],
-                ['Producto 2', '5', '150'],
-                ['Producto 3', '8', '200']]
+        categoria_service = CategoriaService()
+        categorias = categoria_service.obtenerCategorias()
+        categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
+
+        producto_service = ProductoService()
+
+        # Obtener datos del stock desde la base de datos
+        stock_data = producto_service.obtenerProductos()
+
+        # Preparar datos para la tabla en el reporte
+        data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor', 'Fecha Vencimiento']]
+        for producto in stock_data:
+            data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
+
 
         pdf_buffer = generate_pdf(main_window, "Reporte de Stock", data)
 
-        stock_headers = ["ID", "Producto", "Cantidad"]
-        stock_data = [
-            [1, "Producto 1", 10],
-            [2, "Producto 2", 5],
-            [3, "Producto 3", 20]
-        ]
-
-        show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+                # Preparar datos para mostrar en el visor de PDF
+        stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor", "Fecha Vencimiento"]
+        stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc] for producto in stock_data]
+        
+        show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
     except Exception as e:
         print("Error al generar el reporte de stock:")
-        #traceback.print_exc()  # Imprimir el traceback de la excepción
         QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
+
 
 
 def generate_sales_report(main_window):

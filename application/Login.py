@@ -6,7 +6,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 from servicios.usuario_service import UsuarioService
 from utils.Utils import create_login_ui
-import Ventas
+import Main
 
 
 
@@ -36,7 +36,7 @@ class LoginWindow(QWidget):
         if usuario_service.validate_login(usuario, contrasena):
             self.hide()
             # Pasa las credenciales del usuario al constructor de la clase Ventas
-            self.main_window = Ventas.MainWindow(usuario, contrasena, app)
+            self.main_window = Main.MainWindow(usuario, contrasena, app)
             self.main_window.show()
         else:
             QMessageBox.warning(self, "Error", "Usuario o contraseña incorrecto")
