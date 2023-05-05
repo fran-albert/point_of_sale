@@ -47,7 +47,18 @@ class ProductoRepository:
                 cursor.execute(query, (codigo,))
                 row = cursor.fetchone()
                 if row:
-                    producto = row[0]
+                    codigo = row[0]
+                    nombre = row[1]
+                    precioCompra = row[2]
+                    precioVenta = row[3]
+                    cant_stock = row[4]
+                    categoria = row[5]
+                    impuestos = row[6]
+                    descuentos = row[7]
+                    proveedor = row[8]
+                    fecha_venc = row[9]
+
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
             return producto
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el código {codigo}", e)

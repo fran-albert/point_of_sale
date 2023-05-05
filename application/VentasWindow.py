@@ -60,10 +60,12 @@ class VentasWindow(QMainWindow):
 
         row_count = self.table.rowCount()
         self.table.insertRow(row_count)
-        self.table.setItem(row_count, 0, QTableWidgetItem(producto))
-        # self.table.setItem(row_count, 1, QTableWidgetItem(producto.nombre))
-        # self.table.setItem(row_count, 2, QTableWidgetItem("1"))  # Puedes establecer una cantidad predeterminada
-        # self.table.setItem(row_count, 3, QTableWidgetItem(str(producto.precio)))
+        self.table.setItem(row_count, 0, QTableWidgetItem(producto.codigo))
+        self.table.setItem(row_count, 1, QTableWidgetItem(producto.nombre))
+        self.table.setItem(row_count, 2, QTableWidgetItem("1"))  # Puedes establecer una cantidad predeterminada
+        self.table.setItem(row_count, 3, QTableWidgetItem(str(producto.precioVenta)))
+        # nueva columna: precio total : cantidad * producto.precioVenta
+        # self.table.setItem(row_count, 3, QTableWidgetItem(str(producto.precioVenta)))
 
         self.codigo_input.clear()
         self.nombre_input.clear()
