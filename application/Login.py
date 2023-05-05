@@ -5,7 +5,7 @@ sys.path.append(project_root)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 from servicios.usuario_service import UsuarioService
-from utils.Utils import create_login_ui
+from utils.Utils import Utils
 import Main
 
 
@@ -20,7 +20,7 @@ class LoginWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        create_login_ui(self)
+        Utils.create_login_ui(self)
     
     def enter_pressed(self):
         self.iniciar_sesion()

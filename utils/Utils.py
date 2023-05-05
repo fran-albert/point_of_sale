@@ -10,67 +10,327 @@ from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
 import fitz, os, time, traceback, io
 
-# LOGIN WINDOW
-def create_login_ui(self):
-        # Agrega un logo
-        logo = QPixmap("img/logo2.0.jpg").scaled(300, 250, Qt.KeepAspectRatio)
-        logo_mask = logo.createMaskFromColor(Qt.white)
-        logo.setMask(logo_mask)
-        logo_label = QLabel(self)
-        logo_label.setPixmap(logo)
 
-        # Agrega un campo de texto para ingresar el usuario
-        self.usuario_edit = QLineEdit(self)
-        usuario_label = QLabel("Usuario:", self)
-        self.usuario_edit.returnPressed.connect(self.enter_pressed)  # Conecta la señal returnPressed al método enter_pressed
+class Utils:
+    # LOGIN WINDOW
+    def create_login_ui(self):
+            # Agrega un logo
+            logo = QPixmap("img/logo2.0.jpg").scaled(300, 250, Qt.KeepAspectRatio)
+            logo_mask = logo.createMaskFromColor(Qt.white)
+            logo.setMask(logo_mask)
+            logo_label = QLabel(self)
+            logo_label.setPixmap(logo)
 
-        # Agrega un campo de texto para ingresar la contraseña
-        self.contrasena_edit = QLineEdit(self)
-        self.contrasena_edit.setEchoMode(QLineEdit.Password)
-        contrasena_label = QLabel("Contraseña:", self)
-        self.contrasena_edit.returnPressed.connect(self.enter_pressed)  # Conecta la señal returnPressed al método enter_pressed
+            # Agrega un campo de texto para ingresar el usuario
+            self.usuario_edit = QLineEdit(self)
+            usuario_label = QLabel("Usuario:", self)
+            self.usuario_edit.returnPressed.connect(self.enter_pressed)  # Conecta la señal returnPressed al método enter_pressed
 
-        # Botón "Iniciar sesión"
-        iniciar_sesion_btn = QPushButton("Entrar", self)
-        iniciar_sesion_btn.setFixedSize(100, 25)  # Establece el tamaño del botón
-        iniciar_sesion_btn.clicked.connect(self.iniciar_sesion)
+            # Agrega un campo de texto para ingresar la contraseña
+            self.contrasena_edit = QLineEdit(self)
+            self.contrasena_edit.setEchoMode(QLineEdit.Password)
+            contrasena_label = QLabel("Contraseña:", self)
+            self.contrasena_edit.returnPressed.connect(self.enter_pressed)  # Conecta la señal returnPressed al método enter_pressed
 
-        # Botón "Salir"
-        salir_btn = QPushButton("Salir", self)
-        salir_btn.setFixedSize(100, 25)  # Establece el tamaño del botón
-        salir_btn.clicked.connect(self.salir)
+            # Botón "Iniciar sesión"
+            iniciar_sesion_btn = QPushButton("Entrar", self)
+            iniciar_sesion_btn.setFixedSize(100, 25)  # Establece el tamaño del botón
+            iniciar_sesion_btn.clicked.connect(self.iniciar_sesion)
 
-        # Cambia el tamaño de la fuente de los campos de texto
-        font = QFont()
-        font.setPointSize(14)  # Ajusta el tamaño de la fuente a 14
-        self.usuario_edit.setFont(font)
-        self.contrasena_edit.setFont(font)
+            # Botón "Salir"
+            salir_btn = QPushButton("Salir", self)
+            salir_btn.setFixedSize(100, 25)  # Establece el tamaño del botón
+            salir_btn.clicked.connect(self.salir)
 
-        # Coloca los widgets en un layout de cuadrícula (grid)
-        layout = QGridLayout()
-        layout.addWidget(logo_label, 0, 0, 1, 2, alignment=Qt.AlignCenter)
-        layout.setRowStretch(1, 1)  # Añade una fila para estirar en la parte superior
-        layout.addWidget(usuario_label, 2, 0)
-        layout.addWidget(self.usuario_edit, 2, 1)
-        layout.addWidget(contrasena_label, 3, 0)
-        layout.addWidget(self.contrasena_edit, 3, 1)
-        layout.setRowStretch(4, 1)  # Añade una fila de estiramiento entre los campos de texto y los botones
-        layout.addWidget(iniciar_sesion_btn, 5, 0, alignment=Qt.AlignRight)  # Alinea el botón a la derecha
-        layout.addWidget(salir_btn, 5, 1, alignment=Qt.AlignLeft)  # Alinea el botón a la izquierda
-        layout.setRowStretch(6, 1)  # Añade una fila para estirar en la parte inferior
-        layout.setColumnStretch(2, 1)
-        layout.setVerticalSpacing(20)  # Aumenta el espacio vertical entre los widgets
+            # Cambia el tamaño de la fuente de los campos de texto
+            font = QFont()
+            font.setPointSize(14)  # Ajusta el tamaño de la fuente a 14
+            self.usuario_edit.setFont(font)
+            self.contrasena_edit.setFont(font)
 
-        # Establece el espacio horizontal entre los widgets a 0
-        layout.setSpacing(0)
+            # Coloca los widgets en un layout de cuadrícula (grid)
+            layout = QGridLayout()
+            layout.addWidget(logo_label, 0, 0, 1, 2, alignment=Qt.AlignCenter)
+            layout.setRowStretch(1, 1)  # Añade una fila para estirar en la parte superior
+            layout.addWidget(usuario_label, 2, 0)
+            layout.addWidget(self.usuario_edit, 2, 1)
+            layout.addWidget(contrasena_label, 3, 0)
+            layout.addWidget(self.contrasena_edit, 3, 1)
+            layout.setRowStretch(4, 1)  # Añade una fila de estiramiento entre los campos de texto y los botones
+            layout.addWidget(iniciar_sesion_btn, 5, 0, alignment=Qt.AlignRight)  # Alinea el botón a la derecha
+            layout.addWidget(salir_btn, 5, 1, alignment=Qt.AlignLeft)  # Alinea el botón a la izquierda
+            layout.setRowStretch(6, 1)  # Añade una fila para estirar en la parte inferior
+            layout.setColumnStretch(2, 1)
+            layout.setVerticalSpacing(20)  # Aumenta el espacio vertical entre los widgets
 
-        # Establece el ancho de la primera columna de la cuadrícula
-        layout.setColumnMinimumWidth(0, int(self.width() / 2))
+            # Establece el espacio horizontal entre los widgets a 0
+            layout.setSpacing(0)
 
-        # Alinea los widgets horizontalmente al centro
-        layout.setAlignment(Qt.AlignHCenter)
+            # Establece el ancho de la primera columna de la cuadrícula
+            layout.setColumnMinimumWidth(0, int(self.width() / 2))
 
-        self.setLayout(layout)
+            # Alinea los widgets horizontalmente al centro
+            layout.setAlignment(Qt.AlignHCenter)
+
+            self.setLayout(layout)
+
+    # PAYMENT WINDOW
+    def show_payment_window(self, total, parent):
+        payment_window = QDialog(parent)
+        payment_window.setWindowTitle("Pago")
+        payment_window.setFixedSize(600, 400)  # Cambiar el tamaño de la ventana
+        payment_window.setStyleSheet("background-color: #FFFFFF;")  # Cambiar el color de fondo
+
+        # Crear el QLabel para mostrar el mensaje "TOTAL:"
+        total_label = QLabel(f"TOTAL: {total:.2f}")
+        total_label.setAlignment(Qt.AlignCenter)
+
+        # Layout superior
+        top_layout = QVBoxLayout()
+        top_layout.addWidget(total_label)
+
+        # Línea divisoria
+        divider = QFrame()
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        divider.setStyleSheet("color: #BDBDBD;")
+
+        # Crear botones de pago y agregarles iconos y estilos
+        button_style = """
+            QPushButton {
+            font: bold 14px;
+            color: white;
+            border: 1px solid #BDBDBD;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: #3F51B5;
+            }
+            QPushButton:hover {
+            background-color: #5C6BC0;
+            }
+            QPushButton:pressed {
+            background-color: #3949AB;
+            }
+            """
+
+        cash_button = QPushButton("Efectivo")
+        cash_button.setIcon(QIcon("img/icons8-efectivo-96.png"))  # Ruta a la imagen de efectivo
+        cash_button.setStyleSheet(button_style)
+        credit_debit_button = QPushButton("Débito/Crédito")
+        credit_debit_button.setIcon(QIcon("img/icons8-visa-96.png"))  # Ruta a la imagen de débito/crédito
+        credit_debit_button.setStyleSheet(button_style)
+        transfer_button = QPushButton("Transferencia")
+        transfer_button.setIcon(QIcon("img/icons8-edificio-del-banco-96.png"))  # Ruta a la imagen de transferencia
+        transfer_button.setStyleSheet(button_style)
+
+        # Layout inferior
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addWidget(cash_button)
+        bottom_layout.addWidget(credit_debit_button)
+        bottom_layout.addWidget(transfer_button)
+
+        # Layout principal
+        main_layout = QGridLayout()
+        main_layout.addLayout(top_layout, 0, 0, 1, 3)
+        main_layout.addWidget(divider)
+        main_layout.addLayout(bottom_layout, 1, 0, 1, 3)
+
+
+        # Crear QLineEdit y QLabel para "PAGA CON:" y "VUELTO:"
+        paga_con_label = QLabel("PAGA CON:")
+        paga_con_edit = QLineEdit()
+        vuelto_label = QLabel("VUELTO:")
+        vuelto_value_label = QLabel("0.00")
+        
+        #Añadir los widgets al layout principal
+        main_layout.addWidget(paga_con_label, 2, 0)
+        main_layout.addWidget(paga_con_edit, 2, 1)
+        main_layout.addWidget(vuelto_label, 3, 0)
+        main_layout.addWidget(vuelto_value_label, 3, 1)
+
+
+
+        #Ocultar los widgets al inicio
+        paga_con_label.hide()
+        paga_con_edit.hide()
+        vuelto_label.hide()
+        vuelto_value_label.hide()
+
+        #Función para manejar el cálculo del vuelto
+        def calculate_vuelto():
+            try:
+                paga_con_str = paga_con_edit.text()
+                paga_con = float(paga_con_str) if paga_con_str else 0.0
+                total = float(total_label.text().split(": ")[1])
+                vuelto = paga_con - total
+
+                if vuelto < 0:
+                    vuelto_value_label.setText(" Insuficiente")
+                else:
+                    vuelto_value_label.setText(" {:.2f}".format(vuelto))
+            except ValueError as e:
+                print(f"Error al calcular el vuelto: {e}")
+
+
+        #Conectar el cambio de texto en paga_con_edit a la función calculate_vuelto
+        paga_con_edit.textChanged.connect(calculate_vuelto)
+
+        #Función para manejar el clic en el botón "Efectivo"
+        def cash_button_clicked():
+            paga_con_label.show()
+            paga_con_edit.show()
+            vuelto_label.show()
+            vuelto_value_label.show()
+
+        #Conectar el botón "Efectivo" a la función cash_button_clicked
+        cash_button.clicked.connect(cash_button_clicked)
+
+        # Espaciadores
+        spacer_top = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacer_bottom = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        main_layout.addItem(spacer_top, 2, 0, 1, 3)
+        main_layout.addItem(spacer_bottom, 5, 0, 1, 3)
+
+        # Aplicar el layout a la ventana de pago
+        payment_window.setLayout(main_layout)
+
+        # Mostrar la ventana de pago
+        payment_window.exec_()
+
+    # PDF GENERATES (SALES - STOCK)
+    def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
+        try:
+            pdf_buffer.seek(0)  # Asegurarse de que el puntero esté al inicio del archivo
+
+            # Convertir el PDF a una imagen utilizando PyMuPDF
+            doc = fitz.open("pdf", pdf_buffer.getvalue())
+            page = doc.load_page(0)  # Carga la primera página
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Renderiza la página a un pixmap con un factor de zoom de 2
+            img = QImage(pix.samples, pix.width, pix.height, QImage.Format_RGB888)  # Crea una QImage a partir de los datos de imagen del pixmap
+            image = QPixmap.fromImage(img)  # Convierte la QImage a QPixmap
+
+            # Crear un QGraphicsView y QGraphicsScene para mostrar la imagen
+            scene = QGraphicsScene()
+            scene.addPixmap(image)
+            view = QGraphicsView(scene)
+
+            preview_dialog = QDialog(main_window)
+            preview_dialog.setWindowTitle("Vista Previa")
+            preview_dialog.setFixedSize(800, 400)
+
+            save_pdf_button = QPushButton("Guardar PDF")
+
+            def save_pdf():
+                pdf_file = f"report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
+                pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
+
+                with open(pdf_path, 'wb') as f:
+                    f.write(pdf_buffer.getbuffer())
+
+                QMessageBox.information(main_window, "Éxito", f"PDF guardado exitosamente en {pdf_path}")
+                preview_dialog.accept()
+
+            save_pdf_button.clicked.connect(save_pdf)
+
+            layout = QVBoxLayout()
+            layout.addWidget(view)
+            layout.addWidget(save_pdf_button)
+            preview_dialog.setLayout(layout)
+
+            result = preview_dialog.exec()
+            view.setScene(None)  # Elimina la referencia a la escena antes de cerrar el diálogo
+            return True if result == QDialog.Accepted else False
+        except Exception as e:
+            print("Error al mostrar la vista previa del PDF:")
+            traceback.print_exc()  # Imprimir el traceback de la excepción
+            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al mostrar la vista previa del PDF: {e}")
+            return False
+        
+    def generate_pdf(main_window, title, data=None):
+        pdf_buffer = io.BytesIO()
+
+        doc = SimpleDocTemplate(pdf_buffer, pagesize=landscape(letter))
+        elements = []
+
+        # Título del reporte
+        title = title
+        elements.append(Paragraph(title, getSampleStyleSheet()['Heading1']))
+
+        # Tabla de datos
+        if data:
+            table = Table(data)
+
+            # Estilos de la tabla
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 14),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ]))
+
+            elements.append(table)
+
+        # Generar el PDF
+        doc.build(elements)
+
+        pdf_buffer.seek(0)
+        return pdf_buffer
+
+    def generate_stock_report(main_window):
+        try:
+            categoria_service = CategoriaService()
+            categorias = categoria_service.obtenerCategorias()
+            categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
+
+            producto_service = ProductoService()
+
+            # Obtener datos del stock desde la base de datos
+            stock_data = producto_service.obtenerProductos()
+
+            # Preparar datos para la tabla en el reporte
+            data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor', 'Fecha Vencimiento']]
+            for producto in stock_data:
+                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
+
+
+            pdf_buffer = main_window.generate_pdf(main_window, "Reporte de Stock", data)
+
+                    # Preparar datos para mostrar en el visor de PDF
+            stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor", "Fecha Vencimiento"]
+            stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc] for producto in stock_data]
+            
+            main_window.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
+        except Exception as e:
+            print("Error al generar el reporte de stock:")
+            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
+
+    def generate_sales_report(main_window):
+
+        try:
+            # Datos de ejemplo para la tabla
+            data = [['Producto', 'Cantidad', 'Precio'],
+                    ['Producto 1', '10', '100'],
+                    ['Producto 2', '5', '150'],
+                    ['Producto 3', '8', '200']]
+
+            pdf_buffer = main_window.generate_pdf(main_window, "Reporte de Ventas", data)
+
+            stock_headers = ["ID", "Producto", "Cantidad"]
+            stock_data = [
+                [1, "Producto 1", 10],
+                [2, "Producto 2", 5],
+                [3, "Producto 3", 20]
+            ]
+
+            main_window.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+        except Exception as e:
+            print("Error al generar el reporte de ventas:")
+            #traceback.print_exc()  # Imprimir el traceback de la excepción
+            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
 
 # Utils.py
 def create_main_window_menu(parent):
@@ -198,143 +458,6 @@ def init_table(self):
     for col_index in [1, 2, 4, 5]:
         header.setSectionResizeMode(col_index, QHeaderView.Stretch)
 
-# PDF GENERATES (SALES - STOCK)
-def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
-    try:
-        pdf_buffer.seek(0)  # Asegurarse de que el puntero esté al inicio del archivo
-
-        # Convertir el PDF a una imagen utilizando PyMuPDF
-        doc = fitz.open("pdf", pdf_buffer.getvalue())
-        page = doc.load_page(0)  # Carga la primera página
-        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Renderiza la página a un pixmap con un factor de zoom de 2
-        img = QImage(pix.samples, pix.width, pix.height, QImage.Format_RGB888)  # Crea una QImage a partir de los datos de imagen del pixmap
-        image = QPixmap.fromImage(img)  # Convierte la QImage a QPixmap
-
-        # Crear un QGraphicsView y QGraphicsScene para mostrar la imagen
-        scene = QGraphicsScene()
-        scene.addPixmap(image)
-        view = QGraphicsView(scene)
-
-        preview_dialog = QDialog(main_window)
-        preview_dialog.setWindowTitle("Vista Previa")
-        preview_dialog.setFixedSize(800, 400)
-
-        save_pdf_button = QPushButton("Guardar PDF")
-
-        def save_pdf():
-            pdf_file = f"report_{time.strftime('%Y%m%d_%H%M%S')}.pdf"
-            pdf_path = os.path.join(os.path.expanduser('~'), 'Desktop', pdf_file)
-
-            with open(pdf_path, 'wb') as f:
-                f.write(pdf_buffer.getbuffer())
-
-            QMessageBox.information(main_window, "Éxito", f"PDF guardado exitosamente en {pdf_path}")
-            preview_dialog.accept()
-
-        save_pdf_button.clicked.connect(save_pdf)
-
-        layout = QVBoxLayout()
-        layout.addWidget(view)
-        layout.addWidget(save_pdf_button)
-        preview_dialog.setLayout(layout)
-
-        result = preview_dialog.exec()
-        view.setScene(None)  # Elimina la referencia a la escena antes de cerrar el diálogo
-        return True if result == QDialog.Accepted else False
-    except Exception as e:
-        print("Error al mostrar la vista previa del PDF:")
-        traceback.print_exc()  # Imprimir el traceback de la excepción
-        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al mostrar la vista previa del PDF: {e}")
-        return False
-    
-def generate_pdf(main_window, title, data=None):
-    pdf_buffer = io.BytesIO()
-
-    doc = SimpleDocTemplate(pdf_buffer, pagesize=landscape(letter))
-    elements = []
-
-    # Título del reporte
-    title = title
-    elements.append(Paragraph(title, getSampleStyleSheet()['Heading1']))
-
-    # Tabla de datos
-    if data:
-        table = Table(data)
-
-        # Estilos de la tabla
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 14),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
-        ]))
-
-        elements.append(table)
-
-    # Generar el PDF
-    doc.build(elements)
-
-    pdf_buffer.seek(0)
-    return pdf_buffer
-
-def generate_stock_report(main_window):
-    try:
-        categoria_service = CategoriaService()
-        categorias = categoria_service.obtenerCategorias()
-        categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
-
-        producto_service = ProductoService()
-
-        # Obtener datos del stock desde la base de datos
-        stock_data = producto_service.obtenerProductos()
-
-        # Preparar datos para la tabla en el reporte
-        data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor', 'Fecha Vencimiento']]
-        for producto in stock_data:
-            data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
-
-
-        pdf_buffer = generate_pdf(main_window, "Reporte de Stock", data)
-
-                # Preparar datos para mostrar en el visor de PDF
-        stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor", "Fecha Vencimiento"]
-        stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc] for producto in stock_data]
-        
-        show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
-    except Exception as e:
-        print("Error al generar el reporte de stock:")
-        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
-
-
-
-def generate_sales_report(main_window):
-
-    try:
-        # Datos de ejemplo para la tabla
-        data = [['Producto', 'Cantidad', 'Precio'],
-                ['Producto 1', '10', '100'],
-                ['Producto 2', '5', '150'],
-                ['Producto 3', '8', '200']]
-
-        pdf_buffer = generate_pdf(main_window, "Reporte de Ventas", data)
-
-        stock_headers = ["ID", "Producto", "Cantidad"]
-        stock_data = [
-            [1, "Producto 1", 10],
-            [2, "Producto 2", 5],
-            [3, "Producto 3", 20]
-        ]
-
-        show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
-    except Exception as e:
-        print("Error al generar el reporte de ventas:")
-        #traceback.print_exc()  # Imprimir el traceback de la excepción
-        QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
-
 
 # RIGHT SIDE BUTTONS (COBRAR)
 def init_right_side_buttons(self):
@@ -362,75 +485,4 @@ def init_right_side_buttons(self):
     # Aplicar el layout al QFrame
     buttons_frame.setLayout(buttons_layout)
 
-# PAYMENT WINDOW
-def show_payment_window(self):
-    payment_window = QDialog(self)
-    payment_window.setWindowTitle("Pago")
-    payment_window.setFixedSize(600, 400)  # Cambiar el tamaño de la ventana
-    payment_window.setStyleSheet("background-color: #FFFFFF;")  # Cambiar el color de fondo
 
-    # Crear el QLabel para mostrar el mensaje "TOTAL:"
-    total_label = QLabel("TOTAL:")
-    total_label.setAlignment(Qt.AlignCenter)
-
-    # Layout superior
-    top_layout = QVBoxLayout()
-    top_layout.addWidget(total_label)
-
-    # Línea divisoria
-    divider = QFrame()
-    divider.setFrameShape(QFrame.HLine)
-    divider.setFrameShadow(QFrame.Sunken)
-    divider.setStyleSheet("color: #BDBDBD;")
-
-    # Crear botones de pago y agregarles iconos y estilos
-    button_style = """
-        QPushButton {
-        font: bold 14px;
-        color: white;
-        border: 1px solid #BDBDBD;
-        border-radius: 5px;
-        padding: 5px;
-        background-color: #3F51B5;
-        }
-        QPushButton:hover {
-        background-color: #5C6BC0;
-        }
-        QPushButton:pressed {
-        background-color: #3949AB;
-        }
-        """
-
-    cash_button = QPushButton("Efectivo")
-    cash_button.setIcon(QIcon("img/icons8-efectivo-96.png"))  # Ruta a la imagen de efectivo
-    cash_button.setStyleSheet(button_style)
-    credit_debit_button = QPushButton("Débito/Crédito")
-    credit_debit_button.setIcon(QIcon("img/icons8-visa-96.png"))  # Ruta a la imagen de débito/crédito
-    credit_debit_button.setStyleSheet(button_style)
-    transfer_button = QPushButton("Transferencia")
-    transfer_button.setIcon(QIcon("img/icons8-edificio-del-banco-96.png"))  # Ruta a la imagen de transferencia
-    transfer_button.setStyleSheet(button_style)
-
-    # Layout inferior
-    bottom_layout = QHBoxLayout()
-    bottom_layout.addWidget(cash_button)
-    bottom_layout.addWidget(credit_debit_button)
-    bottom_layout.addWidget(transfer_button)
-
-    # Layout principal
-    main_layout = QVBoxLayout()
-    main_layout.addLayout(top_layout)
-    main_layout.addWidget(divider)
-    main_layout.addLayout(bottom_layout)
-
-    # Espaciadores
-    spacer_top = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
-    spacer_bottom = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
-    main_layout.insertSpacerItem(0, spacer_top)
-    main_layout.insertSpacerItem(-1, spacer_bottom)
-
-    # Aplicar el layout a la ventana de pago
-    payment_window.setLayout(main_layout)
-
-    # Mostrar la ventana de pago
-    payment_window.exec_()

@@ -3,8 +3,9 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
 from servicios.usuario_service import UsuarioService
-from utils.Utils import init_header,  create_main_window_menu, generate_sales_report, generate_stock_report, init_right_side_buttons, show_payment_window
+from utils.Utils import init_header,  create_main_window_menu
 from categorias.abm_categorias import ABMCategoriasWindow
+from utils.Utils import Utils
 from productos.abm_productos import ABMProductosWindow
 from VentasWindow import VentasWindow
 from proveedores.abm_proveedores import ABMProveedoresWindow
@@ -33,24 +34,21 @@ class MainWindow(QMainWindow):
         self.ventas_window = VentasWindow(self.app)
         self.ventas_window.show()
 
-
     def generate_sales_report_wrapper(self):
-        generate_sales_report(self)
+        self.generate_sales_report(self)
 
     def generate_stock_report_wrapper(self):
-        generate_stock_report(self)
+        self.generate_stock_report(self)
 
     def generate_stock_report(self):
-        generate_stock_report(self)
+        self.generate_stock_report(self)
 
     def generate_sales_report(self):
-        generate_sales_report(self)
+        self.generate_sales_report(self)
 
     def init_right_side_buttons(self):
-        init_right_side_buttons(self)
+        self.init_right_side_buttons(self)
     
-    def show_payment_window(self):
-        show_payment_window(self)
 
     def __init__(self, current_username, current_password, app):
         self.usuario_service = UsuarioService()
@@ -63,10 +61,8 @@ class MainWindow(QMainWindow):
         self.app = app
         create_main_window_menu(self)
         init_header(self, self.width(), self.current_username, self.menuBar().height())
-        self.init_right_side_buttons()
         self.logged_out.connect(self.open_login_window)
         self.login_window = None
-        self.init_right_side_buttons()
 
     def resizeEvent(self, event):
         init_header(self, self.width(), self.current_username, self.menuBar().height())
