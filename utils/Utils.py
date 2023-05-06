@@ -79,13 +79,20 @@ class Utils:
     def show_payment_window(total, parent):
         payment_window = QDialog(parent)
         payment_window.setWindowTitle("Pago")
-        payment_window.setFixedSize(600, 400)  # Cambiar el tamaño de la ventana
+        payment_window.setFixedSize(400, 280)  # Cambiar el tamaño de la ventana
         payment_window.setStyleSheet("background-color: #FFFFFF;")  # Cambiar el color de fondo
 
         # Crear el QLabel para mostrar el mensaje "TOTAL:"
         total_label = QLabel(f"TOTAL: {total:.2f}")
         total_label.setAlignment(Qt.AlignCenter)
 
+        # Establecer el estilo de total_label con fuente en negrita y tamaño de fuente 3 px más grande
+        total_label.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                font-size: 16px larger;
+            }
+        """)
         # Layout superior
         top_layout = QVBoxLayout()
         top_layout.addWidget(total_label)
@@ -113,19 +120,80 @@ class Utils:
         vuelto_label = QLabel("VUELTO:")
         vuelto_value_label = QLabel("0.00")
 
+        # Crear el botón "Cobrar YA" y aplicar estilo personalizado
+        cobrar_button = QPushButton("Cobrar YA")
+        cobrar_button.setStyleSheet("""
+            QPushButton {
+                font-weight: bold;
+                background-color: #3498db;
+                border: 1px solid #2980b9;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QPushButton:pressed {
+                background-color: #1c6ba0;
+            }
+        """)
+        # Función para manejar el clic en el botón "Cobrar YA"
+        def cobrar_ya():
+            print("Venta realizada")
+
+        # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
+        cobrar_button.clicked.connect(cobrar_ya)
+
+        # Crear un QHBoxLayout para centrar el botón horizontalmente
+        cobrar_button_layout = QHBoxLayout()
+        cobrar_button_layout.addStretch()
+        cobrar_button_layout.addWidget(cobrar_button)
+        cobrar_button_layout.addStretch()
+
+
+        # Centrar los QLabel y el QLineEdit
+        paga_con_label.setAlignment(Qt.AlignCenter)
+        vuelto_label.setAlignment(Qt.AlignCenter)
+        vuelto_value_label.setAlignment(Qt.AlignCenter)
+        paga_con_edit.setAlignment(Qt.AlignCenter)
+
+        # Establecer el ancho fijo del QLineEdit y su política de tamaño
+        paga_con_edit.setFixedWidth(80)
+        paga_con_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
         # Añadir los widgets al layout de la pestaña de efectivo
         efectivo_layout = QVBoxLayout()
+
+        # Centrar QLineEdit horizontalmente
+        paga_con_edit_layout = QHBoxLayout()
+        paga_con_edit_layout.addStretch()
+        paga_con_edit_layout.addWidget(paga_con_edit)
+        paga_con_edit_layout.addStretch()
+
         efectivo_layout.addWidget(paga_con_label)
-        efectivo_layout.addWidget(paga_con_edit)
+        efectivo_layout.addLayout(paga_con_edit_layout)
         efectivo_layout.addWidget(vuelto_label)
         efectivo_layout.addWidget(vuelto_value_label)
+        efectivo_layout.addLayout(cobrar_button_layout)
         efectivo_tab.setLayout(efectivo_layout)
+
+
+        # Agregamos iconos a los selectores de pestañas
+        tab_widget.tabBar().setTabIcon(0, QIcon("img/icons8-efectivo-96.png"))
+        tab_widget.tabBar().setTabIcon(1, QIcon("img/icons8-visa-96.png"))
+        tab_widget.tabBar().setTabIcon(2, QIcon("img/icons8-edificio-del-banco-96.png"))
+
+
 
         # Layout principal
         main_layout = QVBoxLayout()
         main_layout.addLayout(top_layout)
         main_layout.addWidget(divider)
         main_layout.addWidget(tab_widget)
+
+
+
 
         # Función para manejar el cambio de pestaña
         def tab_changed(index):
@@ -175,7 +243,30 @@ class Utils:
 
         # Mostrar la ventana de pago
         payment_window.exec_()
+    
+    def create_efectivo_tab_label():
+        # Crear un QWidget personalizado para la etiqueta de la pestaña
+        custom_widget = QWidget()
+        custom_layout = QHBoxLayout()
 
+        # Crear QLabel para el texto de efectivo en negrita
+        efectivo_label = QLabel()
+        efectivo_label.setText("<span style='font-weight: bold;'>Efectivo</span>")
+
+        # Crear QLabel para el ícono
+        icono_efectivo = QPixmap("icono_efectivo.png")
+        efectivo_icon = QLabel()
+        efectivo_icon.setPixmap(icono_efectivo)
+        efectivo_icon.setFixedSize(24, 24)
+
+        # Agregar el texto y el ícono al layout personalizado
+        custom_layout.addWidget(efectivo_label)
+        custom_layout.addWidget(efectivo_icon)
+        custom_widget.setLayout(custom_layout)
+
+        return custom_widget
+
+    
 
     # PDF GENERATES (SALES - STOCK)
     def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
