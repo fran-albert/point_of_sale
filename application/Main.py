@@ -35,16 +35,10 @@ class MainWindow(QMainWindow):
         self.ventas_window.show()
 
     def generate_sales_report_wrapper(self):
-        self.generate_sales_report(self)
+        Utils.generate_sales_report(self)
 
     def generate_stock_report_wrapper(self):
-        self.generate_stock_report(self)
-
-    def generate_stock_report(self):
-        self.generate_stock_report(self)
-
-    def generate_sales_report(self):
-        self.generate_sales_report(self)
+        Utils.generate_stock_report(self)
 
     def init_right_side_buttons(self):
         self.init_right_side_buttons(self)

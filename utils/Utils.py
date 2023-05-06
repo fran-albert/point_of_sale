@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMenuBar, QMenu, QAction, QGraphicsView, QGraphicsScene, QLabel, QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame
+from PyQt5.QtWidgets import QMenuBar, QMenu, QAction, QGraphicsView, QGraphicsScene, QLabel, QWidget,QLineEdit, QDialog, QTableWidget, QMessageBox, QToolButton, QSpacerItem, QSizePolicy, QHeaderView, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QFrame,  QTabWidget
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QImage
 from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
@@ -75,7 +75,8 @@ class Utils:
             self.setLayout(layout)
 
     # PAYMENT WINDOW
-    def show_payment_window(self, total, parent):
+    @staticmethod
+    def show_payment_window(total, parent):
         payment_window = QDialog(parent)
         payment_window.setWindowTitle("Pago")
         payment_window.setFixedSize(600, 400)  # Cambiar el tamaño de la ventana
@@ -95,68 +96,57 @@ class Utils:
         divider.setFrameShadow(QFrame.Sunken)
         divider.setStyleSheet("color: #BDBDBD;")
 
-        # Crear botones de pago y agregarles iconos y estilos
-        button_style = """
-            QPushButton {
-            font: bold 14px;
-            color: white;
-            border: 1px solid #BDBDBD;
-            border-radius: 5px;
-            padding: 5px;
-            background-color: #3F51B5;
-            }
-            QPushButton:hover {
-            background-color: #5C6BC0;
-            }
-            QPushButton:pressed {
-            background-color: #3949AB;
-            }
-            """
+        # Crear el widget de pestañas y agregar pestañas
+        tab_widget = QTabWidget()
 
-        cash_button = QPushButton("Efectivo")
-        cash_button.setIcon(QIcon("img/icons8-efectivo-96.png"))  # Ruta a la imagen de efectivo
-        cash_button.setStyleSheet(button_style)
-        credit_debit_button = QPushButton("Débito/Crédito")
-        credit_debit_button.setIcon(QIcon("img/icons8-visa-96.png"))  # Ruta a la imagen de débito/crédito
-        credit_debit_button.setStyleSheet(button_style)
-        transfer_button = QPushButton("Transferencia")
-        transfer_button.setIcon(QIcon("img/icons8-edificio-del-banco-96.png"))  # Ruta a la imagen de transferencia
-        transfer_button.setStyleSheet(button_style)
+        efectivo_tab = QWidget()
+        tarjeta_tab = QWidget()
+        transferencia_tab = QWidget()
 
-        # Layout inferior
-        bottom_layout = QHBoxLayout()
-        bottom_layout.addWidget(cash_button)
-        bottom_layout.addWidget(credit_debit_button)
-        bottom_layout.addWidget(transfer_button)
-
-        # Layout principal
-        main_layout = QGridLayout()
-        main_layout.addLayout(top_layout, 0, 0, 1, 3)
-        main_layout.addWidget(divider)
-        main_layout.addLayout(bottom_layout, 1, 0, 1, 3)
-
+        tab_widget.addTab(efectivo_tab, "Efectivo")
+        tab_widget.addTab(tarjeta_tab, "Débito/Crédito")
+        tab_widget.addTab(transferencia_tab, "Transferencia")
 
         # Crear QLineEdit y QLabel para "PAGA CON:" y "VUELTO:"
         paga_con_label = QLabel("PAGA CON:")
         paga_con_edit = QLineEdit()
         vuelto_label = QLabel("VUELTO:")
         vuelto_value_label = QLabel("0.00")
-        
-        #Añadir los widgets al layout principal
-        main_layout.addWidget(paga_con_label, 2, 0)
-        main_layout.addWidget(paga_con_edit, 2, 1)
-        main_layout.addWidget(vuelto_label, 3, 0)
-        main_layout.addWidget(vuelto_value_label, 3, 1)
 
+        # Añadir los widgets al layout de la pestaña de efectivo
+        efectivo_layout = QVBoxLayout()
+        efectivo_layout.addWidget(paga_con_label)
+        efectivo_layout.addWidget(paga_con_edit)
+        efectivo_layout.addWidget(vuelto_label)
+        efectivo_layout.addWidget(vuelto_value_label)
+        efectivo_tab.setLayout(efectivo_layout)
 
+        # Layout principal
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(top_layout)
+        main_layout.addWidget(divider)
+        main_layout.addWidget(tab_widget)
 
-        #Ocultar los widgets al inicio
-        paga_con_label.hide()
-        paga_con_edit.hide()
-        vuelto_label.hide()
-        vuelto_value_label.hide()
+        # Función para manejar el cambio de pestaña
+        def tab_changed(index):
+            if index == 0:  # Pestaña "Efectivo"
+                paga_con_label.show()
+                paga_con_edit.show()
+                vuelto_label.show()
+                vuelto_value_label.show()
+            else:  # Otras pestañas
+                paga_con_label.hide()
+                paga_con_edit.hide()
+                vuelto_label.hide()
+                vuelto_value_label.hide()
 
-        #Función para manejar el cálculo del vuelto
+        # Conectar el cambio de pestaña a la función tab_changed
+        tab_widget.currentChanged.connect(tab_changed)
+
+        # Inicializar el estado de los widgets según la pestaña actual
+        tab_changed(tab_widget.currentIndex())
+
+            # Función para manejar el cálculo del vuelto
         def calculate_vuelto():
             try:
                 paga_con_str = paga_con_edit.text()
@@ -171,31 +161,21 @@ class Utils:
             except ValueError as e:
                 print(f"Error al calcular el vuelto: {e}")
 
-
-        #Conectar el cambio de texto en paga_con_edit a la función calculate_vuelto
+        # Conectar el cambio de texto en paga_con_edit a la función calculate_vuelto
         paga_con_edit.textChanged.connect(calculate_vuelto)
-
-        #Función para manejar el clic en el botón "Efectivo"
-        def cash_button_clicked():
-            paga_con_label.show()
-            paga_con_edit.show()
-            vuelto_label.show()
-            vuelto_value_label.show()
-
-        #Conectar el botón "Efectivo" a la función cash_button_clicked
-        cash_button.clicked.connect(cash_button_clicked)
 
         # Espaciadores
         spacer_top = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
         spacer_bottom = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        main_layout.addItem(spacer_top, 2, 0, 1, 3)
-        main_layout.addItem(spacer_bottom, 5, 0, 1, 3)
+        main_layout.addSpacerItem(spacer_top)
+        main_layout.addSpacerItem(spacer_bottom)
 
         # Aplicar el layout a la ventana de pago
         payment_window.setLayout(main_layout)
 
         # Mostrar la ventana de pago
         payment_window.exec_()
+
 
     # PDF GENERATES (SALES - STOCK)
     def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
@@ -297,13 +277,13 @@ class Utils:
                 data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
 
 
-            pdf_buffer = main_window.generate_pdf(main_window, "Reporte de Stock", data)
+            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)
 
                     # Preparar datos para mostrar en el visor de PDF
             stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor", "Fecha Vencimiento"]
             stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc] for producto in stock_data]
             
-            main_window.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
+            Utils.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
         except Exception as e:
             print("Error al generar el reporte de stock:")
             QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
@@ -317,7 +297,7 @@ class Utils:
                     ['Producto 2', '5', '150'],
                     ['Producto 3', '8', '200']]
 
-            pdf_buffer = main_window.generate_pdf(main_window, "Reporte de Ventas", data)
+            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 
             stock_headers = ["ID", "Producto", "Cantidad"]
             stock_data = [
@@ -326,7 +306,7 @@ class Utils:
                 [3, "Producto 3", 20]
             ]
 
-            main_window.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+            Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
         except Exception as e:
             print("Error al generar el reporte de ventas:")
             #traceback.print_exc()  # Imprimir el traceback de la excepción
@@ -378,8 +358,8 @@ def create_main_window_menu(parent):
     acerca_menu = QMenu("Acerca", parent)
     menu_bar.addMenu(acerca_menu)
 
-    reporte_stock_action.triggered.connect(parent.generate_stock_report)
-    reporte_ventas_action.triggered.connect(parent.generate_sales_report)
+    reporte_stock_action.triggered.connect(parent.generate_stock_report_wrapper)
+    reporte_ventas_action.triggered.connect(parent.generate_sales_report_wrapper)
     categorias_action.triggered.connect(parent.show_categories_window)
     productos_action.triggered.connect(parent.show_products_window)
     proveedores_action.triggered.connect(parent.show_proveedores_window)
