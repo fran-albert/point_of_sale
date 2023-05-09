@@ -7,10 +7,10 @@ class CategoriaRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarProdVendido(self, prod_vendido):
-        sql = "INSERT INTO productos_vendidos(idProdVendido, idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO productos_vendidos(idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total) VALUES (%s, %s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql, (prod_vendido.get_idProdVendido(), prod_vendido.get_idTicket(), prod_vendido.get_prod_vendido(), prod_vendido.get_codigo(), prod_vendido.get_cant_vendida(), prod_vendido.get_precio_venta(), prod_vendido.get_precio_venta_total()))
+                cursor.execute(sql, (prod_vendido.get_idTicket(), prod_vendido.get_prod_vendido(), prod_vendido.get_codigo(), prod_vendido.get_cant_vendida(), prod_vendido.get_precio_venta(), prod_vendido.get_precio_venta_total()))
             self.connection.commit()
         except Error as e:
             raise RuntimeError("Error al insertar el producto vendido", e)
@@ -34,23 +34,3 @@ class CategoriaRepository:
             return prodVendidos
         except Error as e:
             raise RuntimeError("Error al obtener los productos vendidos", e)
-    
-    def actualizarProdVendidos(self, nuevaidProdVendido, nuevoidTicket, nuevoProdVendido, codigo, ):
-        query = "UPDATE categorias SET Descripcion = %s, Porcentaje = %s WHERE id = %s"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, (nuevaDescripcion, nuevoPorcentaje, idCategoria))
-                self.connection.commit()
-        except Exception as e:
-            raise RuntimeError(f"Error al actualizar la categoria con ID {idCategoria}") from e
-
-
-    def eliminarProdVendidos(self, categoria_id):
-        query = "DELETE FROM categorias WHERE id = %s"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, (categoria_id,))
-                self.connection.commit()
-        except Exception as e:
-            raise RuntimeError(f"Error al eliminar la categoria con ID {categoria_id}") from e
-

@@ -139,7 +139,12 @@ class Utils:
             }
         """)
         # Función para manejar el clic en el botón "Cobrar YA"
-        def cobrar_ya():
+        def cobrar_ya(): 
+            #llamar a los services.
+            # ALGUN PARAMETRO PARA SABER SI USO 0 EFECTIO 1 CARD o 2 TRANSFE
+            # 1) INSERTAR TICKET
+            # 2) INSERTAR LOS PRODUCTOS VENDIDOS A PARTIR DEL IDTICKET QUE SE GENERO EN 1)
+            # 3) DESCONTAR DEL STOCK DE PRODUCTO (COD DE PRODUCTO)
             print("Venta realizada")
 
         # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
@@ -150,7 +155,6 @@ class Utils:
         cobrar_button_layout.addStretch()
         cobrar_button_layout.addWidget(cobrar_button)
         cobrar_button_layout.addStretch()
-
 
         # Centrar los QLabel y el QLineEdit
         paga_con_label.setAlignment(Qt.AlignCenter)
