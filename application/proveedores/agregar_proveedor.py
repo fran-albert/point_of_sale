@@ -59,7 +59,7 @@ class AgregarProveedorDialog(QDialog):
         layout.addWidget(self.cuenta_bancaria_label)
         layout.addWidget(self.cuenta_bancaria_input)
 
-        self.fecha_alta_label = QLabel("Fecha Alta:")
+        self.fecha_alta_label = QDateEdit("Fecha Alta:")
         self.fecha_alta_input = QDateEdit()
         layout.addWidget(self.fecha_alta_label)
         layout.addWidget(self.fecha_alta_input)
@@ -91,7 +91,7 @@ class AgregarProveedorDialog(QDialog):
         if nombre and direccion and codigo_postal and ciudad and provincia and telefono and email and cuenta_bancaria and fecha_alta:
             try:
                 fecha_alta = datetime.strptime(fecha_alta, "%Y-%m-%d")
-                proveedor = Proveedor(1, nombre, direccion, codigo_postal, ciudad, provincia, telefono, email, comentario, cuenta_bancaria, fecha_alta)
+                proveedor = Proveedor(nombre, direccion, codigo_postal, ciudad, provincia, telefono, email, comentario, cuenta_bancaria, fecha_alta)
                 self.proveedor_service.insertarProveedor(proveedor)
                 self.accept()
             except ValueError:

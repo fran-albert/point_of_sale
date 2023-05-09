@@ -1,22 +1,19 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.proveedor_service import ProveedorService
-from .agregar_proveedor import AgregarProveedorDialog
-#from .editar_producto import EditarProductoDialog
 from entities.proveedor import Proveedor
+from .agregar_proveedor import AgregarProveedorDialog
+from .editar_proveedor import EditarProveedorDialog
 
 class ABMProveedoresWindow(QMainWindow):
     def __init__(self, app, parent=None):
         super().__init__(parent)    
-        # Crear una instancia de QApplication
+
         self.app = app
         self.proveedor_service = ProveedorService()
-        self.proveedores = self.proveedor_service.obtenerProveedor()
+        self.proveedores = self.proveedor_service.obtenerProveedores()
 
-        # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
         self.table = QTableWidget(len(self.proveedores), 13)
-
-        # Definir los encabezados de las columnas
         self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Dirección", "Código Postal", "Ciudad", "Provincia", "Teléfono", "Correo Electrónico", "Comentario", "Cuenta Bancaria", "Fecha de Alta", "", ""])
 
         # Rellena la tabla con los proveedores actualizados
@@ -31,7 +28,7 @@ class ABMProveedoresWindow(QMainWindow):
             item_correo_electronico = QTableWidgetItem(str(prov.correo_electronico))
             item_comentario = QTableWidgetItem(str(prov.comentario))
             item_cuenta_bancaria = QTableWidgetItem(prov.cuenta_bancaria)
-            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strftime("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strf("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
@@ -47,7 +44,7 @@ class ABMProveedoresWindow(QMainWindow):
 
             # Botón Editar
             edit_button = QPushButton("Editar")
-            #edit_button.clicked.connect(self.on_edit_button_clicked)
+            edit_button.clicked.connect(self.on_edit_button_clicked)
             self.table.setCellWidget(i, 11, edit_button)
 
             # Botón Eliminar
@@ -129,16 +126,12 @@ class ABMProveedoresWindow(QMainWindow):
 
 
     def actualizar_tabla(self):
-        # Obtén la lista actualizada de productos
-        self.proveedores = self.proveedor_service.obtenerProveedor()
-
-        # Limpia la tabla antes de agregar nuevas filas
+        
+        self.proveedores = self.proveedor_service.obtenerProveedores()
+        
         self.table.setRowCount(0)
-
-        # Establece el número de filas en la tabla según la longitud de la lista de productos
         self.table.setRowCount(len(self.proveedores))
 
-        # Rellena la tabla con los productos actualizados
         for i, prov in enumerate(self.proveedores):
             item_id = QTableWidgetItem(prov.id)
             item_nombre = QTableWidgetItem(prov.nombre)
@@ -150,7 +143,7 @@ class ABMProveedoresWindow(QMainWindow):
             item_correo_electronico = QTableWidgetItem(str(prov.correo_electronico))
             item_comentario = QTableWidgetItem(str(prov.comentario))
             item_cuenta_bancaria = QTableWidgetItem(prov.cuenta_bancaria)
-            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strftime("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strf("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
@@ -166,7 +159,7 @@ class ABMProveedoresWindow(QMainWindow):
 
             # Botón Editar
             edit_button = QPushButton("Editar")
-            #edit_button.clicked.connect(self.on_edit_button_clicked)
+            edit_button.clicked.connect(self.on_edit_button_clicked)
             self.table.setCellWidget(i, 11, edit_button)
 
             # Botón Eliminar
@@ -179,74 +172,57 @@ class ABMProveedoresWindow(QMainWindow):
         result = dialog.exec()
 
         if result == QDialog.Accepted:
-                #Actualiza la tabla para mostrar la nueva categoría agregada
             self.actualizar_tabla()
 
-    # def on_edit_button_clicked(self):
-    #     # Obtén el botón que emitió la señal
-    #     button = self.app.sender()
-    #     # Obtiene el índice del elemento en la tabla
-    #     index = self.table.indexAt(button.pos())
+    def on_edit_button_clicked(self):
 
-    #     proveedor = None
-
-    #     # Obtén la lista de proveedores
-    #     proveedores = self.proveedor_service.obtenerProveedor()
-    #     provedor_service = ProveedorService()
+        button = self.app.sender()
+        index = self.table.indexAt(button.pos())
+        proveedor = None
         
-    #     id = self.table.item(index.row(), 0).text()
-    #     nombre = self.table.item(index.row(), 1).text()
-    #     direccion = self.table.item(index.row(), 2).text()
-    #     cod_postal = self.table.item(index.row(), 3).text()
-    #     ciudad = self.table.item(index.row(), 4).text()
-    #     provincia = self.table.item(index.row(), 5).text()
-    #     telefono = self.table.item(index.row(), 6).text()
-    #     correo_electronico = self.table.item(index.row(), 7).text()
-    #     comentario = self.table.item(index.row(), 8).text()
-    #     cuenta_bancaria = self.table.item(index.row(), 9).text()
-    #     fecha_alta = self.table.item(index.row(), 10).text()          
-    #     proveedor = Proveedor(id, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
-        
-    #     # Muestra la ventana de edición y obtén el resultado
-    #     dialog = EditarProveedor(producto, producto_service, categoria_service, categorias )
-    #     result = dialog.exec()
+        id = self.table.item(index.row(), 0).text()
+        nombre = self.table.item(index.row(), 1).text()
+        direccion = self.table.item(index.row(), 2).text()
+        cod_postal = self.table.item(index.row(), 3).text()
+        ciudad = self.table.item(index.row(), 4).text()
+        provincia = self.table.item(index.row(), 5).text()
+        telefono = self.table.item(index.row(), 6).text()
+        correo_electronico = self.table.item(index.row(), 7).text()
+        comentario = self.table.item(index.row(), 8).text()
+        cuenta_bancaria = self.table.item(index.row(), 9).text()
+        fecha_alta = self.table.item(index.row(), 10).text()     
 
-    #     if result == QDialog.Accepted:
-    #         # Actualiza el producto en la base de datos
-    #         self.producto_service.actualizarProducto(
-    #             producto.codigo,
-    #             producto.nombre,
-    #             producto.precioCompra,
-    #             producto.precioVenta,
-    #             producto.cantStock,
-    #             producto.categoria,
-    #             producto.impuestos,
-    #             producto.descuentos,
-    #             producto.proveedor,
-    #             producto.fechaVenc,
-    #             producto.codigo
-    #         )
-    #         # Actualiza la tabla para mostrar los cambios
-    #         self.actualizar_tabla()
+        proveedor = Proveedor(nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
+        
+        dialog = EditarProveedorDialog(proveedor)
+        result = dialog.exec()
+
+        if result == QDialog.Accepted:
+            # Actualiza el producto en la base de datos
+            # self.proveedor_service.actualizarProveedor(
+            #     producto.codigo,
+            #     producto.nombre,
+            #     producto.precioCompra,
+            #     producto.precioVenta,
+            #     producto.cantStock,
+            #     producto.categoria,
+            #     producto.impuestos,
+            #     producto.descuentos,
+            #     producto.proveedor,
+            #     producto.fechaVenc,
+            #     producto.codigo
+            # )
+            # Actualiza la tabla para mostrar los cambios
+            self.actualizar_tabla()
 
     def on_delete_button_clicked(self):
-        #  Obtén el botón que emitió la señal
         button = self.app.sender()
-        #  Obtiene el índice del elemento en la tabla
         index = self.table.indexAt(button.pos())
-        # Obtén el código del producto seleccionado
+        
         id = self.table.item(index.row(), 0).text()
+        nombre = self.table.item(index.row(), 1).text()
 
-        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar el producto con código {id}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar el proveedor {nombre}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if respuesta == QMessageBox.Yes:
-           #  Aquí va el código para eliminar el producto de la base de datos utilizando el código
             self.proveedor_service.eliminarProveedor(id)
-            #Elimina la fila seleccionada de la tabla
             self.table.removeRow(index.row())
-
-
-
-
-
-
-

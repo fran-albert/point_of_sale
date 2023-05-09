@@ -1,5 +1,5 @@
 class Proveedor:
-    def __init__(self, id, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta):
+    def __init__(self, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta, id=None):
         self.id = id
         self.nombre = nombre
         self.direccion = direccion
