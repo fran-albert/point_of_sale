@@ -11,7 +11,10 @@ class TicketRepository:
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (ticket.get_usuario(),ticket.get_total(),ticket.get_tipo_de_pago(),ticket.get_fecha()))
-            self.connection.commit()
+                self.connection.commit()
+                last_inserted_id = cursor.lastrowid
+                return last_inserted_id
+
         except Error as e:
             raise RuntimeError("Error al insertar el nuevo ticket", e)
                 

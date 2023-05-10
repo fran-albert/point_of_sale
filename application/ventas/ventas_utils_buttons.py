@@ -85,7 +85,7 @@ class VentasUtilsButtons:
             total = round(total, 2)
             fecha = datetime.now()
             ticket = Ticket(usuario, total, tipo_de_pago, fecha)
-            tickets = ticket_service.insertarTicket(ticket)
+            idTicket_generado = ticket_service.insertarTicket(ticket)
             #llamar a los services.
             # ALGUN PARAMETRO PARA SABER SI USO 0 EFECTIO 1 CARD o 2 TRANSFE
             # 1) INSERTAR TICKET
