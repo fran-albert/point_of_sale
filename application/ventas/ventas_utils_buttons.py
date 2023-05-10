@@ -56,30 +56,49 @@ class VentasUtilsButtons:
         tab_widget.addTab(tarjeta_tab, "Débito/Crédito")
         tab_widget.addTab(transferencia_tab, "Transferencia")
 
-        # Crear QLineEdit y QLabel para "PAGA CON:" y "VUELTO:"
-        paga_con_label = QLabel("PAGA CON:")
-        paga_con_edit = QLineEdit()
-        vuelto_label = QLabel("VUELTO:")
-        vuelto_value_label = QLabel("0.00")
+        def create_tab_content():
+            # Crear el botón "Cobrar YA" y aplicar estilo personalizado
+            cobrar_button = QPushButton("Cobrar YA")
+            cobrar_button.setStyleSheet("""
+                QPushButton {
+                    font-weight: bold;
+                    background-color: #3498db;
+                    border: 1px solid #2980b9;
+                    color: white;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                }
+                QPushButton:hover {
+                    background-color: #2980b9;
+                }
+                QPushButton:pressed {
+                    background-color: #1c6ba0;
+                }
+            """)
+            # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
+            cobrar_button.clicked.connect(lambda: cobrar_ya(usuario, tab_widget.currentIndex(), total))
 
-        # Crear el botón "Cobrar YA" y aplicar estilo personalizado
-        cobrar_button = QPushButton("Cobrar YA")
-        cobrar_button.setStyleSheet("""
-            QPushButton {
-                font-weight: bold;
-                background-color: #3498db;
-                border: 1px solid #2980b9;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton:pressed {
-                background-color: #1c6ba0;
-            }
-        """)
+            # Crear un QHBoxLayout para centrar el botón horizontalmente
+            buttons_layout = QHBoxLayout()
+            buttons_layout.addStretch()
+            buttons_layout.addWidget(cobrar_button)
+            buttons_layout.addStretch()
+
+            # Crear un QVBoxLayout para la pestaña
+            tab_layout = QVBoxLayout()
+            tab_layout.addStretch()
+            tab_layout.addLayout(buttons_layout)
+            tab_layout.addStretch()
+
+            return tab_layout
+
+        # Añadir los widgets al layout de las pestañas de "Débito/Crédito" y "Transferencia"
+        efectivo_tab.setLayout(create_tab_content())
+        tarjeta_tab.setLayout(create_tab_content())
+        transferencia_tab.setLayout(create_tab_content())
+
+
+
         # Función para manejar el clic en el botón "Cobrar YA"
         def cobrar_ya(usuario, tipo_de_pago, total): 
             total = round(total, 2)
@@ -93,73 +112,21 @@ class VentasUtilsButtons:
             # 3) DESCONTAR DEL STOCK DE PRODUCTO (COD DE PRODUCTO)
             print("Venta realizada")
 
-        # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
-        cobrar_button.clicked.connect(lambda: cobrar_ya(usuario, tab_widget.currentIndex(), total))
-
-        # Crear el botón "Ver Ticket" y aplicar estilo personalizado
-        ver_ticket_button = QPushButton("Ver Ticket")
-        ver_ticket_button.setStyleSheet("""
-            QPushButton {
-                font-weight: bold;
-                background-color: #3498db;
-                border: 1px solid #2980b9;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton:pressed {
-                background-color: #1c6ba0;
-            }
-        """)  
-
-        # Conectar el clic en el botón "Ver Ticket" a la función show_ticket_window
-        #ver_ticket_button.clicked.connect(lambda: VentasUtilsButtons.show_ticket_window(parent, ticket, total ))
-
-
         # Crear un QHBoxLayout para centrar el botón horizontalmente
         buttons_layout = QHBoxLayout()
         buttons_layout.addStretch()
-        buttons_layout.addWidget(cobrar_button)
-        buttons_layout.addWidget(ver_ticket_button)
         buttons_layout.addStretch()
-
-        # Centrar los QLabel y el QLineEdit
-        paga_con_label.setAlignment(Qt.AlignCenter)
-        vuelto_label.setAlignment(Qt.AlignCenter)
-        vuelto_value_label.setAlignment(Qt.AlignCenter)
-        paga_con_edit.setAlignment(Qt.AlignCenter)
-
-        # Establecer el ancho fijo del QLineEdit y su política de tamaño
-        paga_con_edit.setFixedWidth(80)
-        paga_con_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # Añadir los widgets al layout de la pestaña de efectivo
         efectivo_layout = QVBoxLayout()
         
-
-        # Centrar QLineEdit horizontalmente
-        paga_con_edit_layout = QHBoxLayout()
-        paga_con_edit_layout.addStretch()
-        paga_con_edit_layout.addWidget(paga_con_edit)
-        paga_con_edit_layout.addStretch()
-
-        efectivo_layout.addWidget(paga_con_label)
-        efectivo_layout.addLayout(paga_con_edit_layout)
-        efectivo_layout.addWidget(vuelto_label)
-        efectivo_layout.addWidget(vuelto_value_label)
         efectivo_layout.addLayout(buttons_layout)
         efectivo_tab.setLayout(efectivo_layout)
-
 
         # Agregamos iconos a los selectores de pestañas
         tab_widget.tabBar().setTabIcon(0, QIcon("img/icons8-efectivo-96.png"))
         tab_widget.tabBar().setTabIcon(1, QIcon("img/icons8-visa-96.png"))
         tab_widget.tabBar().setTabIcon(2, QIcon("img/icons8-edificio-del-banco-96.png"))
-
-
 
         # Layout principal
         main_layout = QVBoxLayout()
@@ -167,21 +134,14 @@ class VentasUtilsButtons:
         main_layout.addWidget(divider)
         main_layout.addWidget(tab_widget)
 
-
-
-
         # Función para manejar el cambio de pestaña
         def tab_changed(index):
             if index == 0:  # Pestaña "Efectivo"
-                paga_con_label.show()
-                paga_con_edit.show()
-                vuelto_label.show()
-                vuelto_value_label.show()
-            else:  # Otras pestañas
-                paga_con_label.hide()
-                paga_con_edit.hide()
-                vuelto_label.hide()
-                vuelto_value_label.hide()
+                print('efectivo')
+            elif index == 1: 
+                print('tarjeta')
+            else: 
+                print('transferencia')
 
         # Conectar el cambio de pestaña a la función tab_changed
         tab_widget.currentChanged.connect(tab_changed)
@@ -189,23 +149,6 @@ class VentasUtilsButtons:
         # Inicializar el estado de los widgets según la pestaña actual
         tab_changed(tab_widget.currentIndex())
 
-            # Función para manejar el cálculo del vuelto
-        def calculate_vuelto():
-            try:
-                paga_con_str = paga_con_edit.text()
-                paga_con = float(paga_con_str) if paga_con_str else 0.0
-                total = float(total_label.text().split(": ")[1])
-                vuelto = paga_con - total
-
-                if vuelto < 0:
-                    vuelto_value_label.setText(" Insuficiente")
-                else:
-                    vuelto_value_label.setText(" {:.2f}".format(vuelto))
-            except ValueError as e:
-                print(f"Error al calcular el vuelto: {e}")
-
-        # Conectar el cambio de texto en paga_con_edit a la función calculate_vuelto
-        paga_con_edit.textChanged.connect(calculate_vuelto)
 
         # Espaciadores
         spacer_top = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
