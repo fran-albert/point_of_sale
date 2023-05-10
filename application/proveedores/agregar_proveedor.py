@@ -59,7 +59,7 @@ class AgregarProveedorDialog(QDialog):
         layout.addWidget(self.cuenta_bancaria_label)
         layout.addWidget(self.cuenta_bancaria_input)
 
-        self.fecha_alta_label = QDateEdit("Fecha Alta:")
+        self.fecha_alta_label = QLabel("Fecha Alta:")
         self.fecha_alta_input = QDateEdit()
         layout.addWidget(self.fecha_alta_label)
         layout.addWidget(self.fecha_alta_input)

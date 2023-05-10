@@ -28,7 +28,7 @@ class ABMProveedoresWindow(QMainWindow):
             item_correo_electronico = QTableWidgetItem(str(prov.correo_electronico))
             item_comentario = QTableWidgetItem(str(prov.comentario))
             item_cuenta_bancaria = QTableWidgetItem(prov.cuenta_bancaria)
-            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strf("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strftime("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
@@ -143,7 +143,7 @@ class ABMProveedoresWindow(QMainWindow):
             item_correo_electronico = QTableWidgetItem(str(prov.correo_electronico))
             item_comentario = QTableWidgetItem(str(prov.comentario))
             item_cuenta_bancaria = QTableWidgetItem(prov.cuenta_bancaria)
-            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strf("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(prov.fecha_alta.strftime("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
