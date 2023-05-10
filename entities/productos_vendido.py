@@ -1,4 +1,4 @@
-class ProductosVendidos:
+class ProductosVendido:
     def __init__(self, idProdVendido, idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total):
         self.idProdVendido = idProdVendido
         self.idTicket = idTicket

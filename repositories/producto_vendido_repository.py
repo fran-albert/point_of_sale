@@ -1,8 +1,8 @@
 from mysqlx import Error
-from entities.productos_vendidos import ProductosVendidos
+from entities.productos_vendido import ProductosVendido
 from access.mysql_connection import MySQLConnection
 
-class CategoriaRepository:
+class ProductoVendidoRepository:
     def __init__(self):
         self.connection = MySQLConnection.get_connection()
 
@@ -29,7 +29,7 @@ class CategoriaRepository:
                     cant_vendida = row[4]
                     precio_venta = row[5]
                     precio_venta_total = row[6]
-                    nuevaProdVendido = ProductosVendidos(idProdVendido, idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total)
+                    nuevaProdVendido = ProductosVendido(idProdVendido, idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total)
                     prodVendidos.append(nuevaProdVendido)
             return prodVendidos
         except Error as e:

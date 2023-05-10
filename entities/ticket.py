@@ -1,5 +1,5 @@
 class Ticket:
-    def __init__(self, idTicket, usuario, total, tipo_de_pago, fecha):
+    def __init__(self, usuario, total, tipo_de_pago, fecha, idTicket=None):
         self.idTicket = idTicket
         self.usuario = usuario
         self.total = total

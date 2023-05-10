@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QHBoxLayout, QSpinBox, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.producto_service import ProductoService
 from utils.Utils import Utils
+from ventas.ventas_utils_buttons import VentasUtilsButtons
 
 class VentasWindow(QMainWindow):
     def __init__(self, app, parent=None):
@@ -92,14 +93,14 @@ class VentasWindow(QMainWindow):
 
         # Mover el botón "Cobrar" debajo de Subtotal, IVA y Total
         cobrar_button = QPushButton("Cobrar")
-        cobrar_button.clicked.connect(lambda: self.Utils.show_payment_window(self.total, self))
+        cobrar_button.clicked.connect(lambda: VentasUtilsButtons.show_payment_window('test', self.total, self))
         main_layout.addWidget(cobrar_button, alignment=Qt.AlignRight)
 
         # Conectar la señal editingFinished del QLineEdit codigo_input a la función buscar_producto
         self.codigo_input.textChanged.connect(self.on_codigo_input_text_changed)
 
     def show_payment_window(self):
-        Utils.show_payment_window(self)
+        VentasUtilsButtons.show_payment_window(self)
 
     def on_codigo_input_text_changed(self, text):
         # No ejecutar la función si el cambio de texto fue causado por limpiar los campos
