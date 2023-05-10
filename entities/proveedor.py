@@ -1,6 +1,5 @@
 class Proveedor:
     def __init__(self, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta, id=None):
-        self.id = id
         self.nombre = nombre
         self.direccion = direccion
         self.cod_postal = cod_postal
@@ -11,6 +10,7 @@ class Proveedor:
         self.comentario = comentario
         self.cuenta_bancaria = cuenta_bancaria
         self.fecha_alta = fecha_alta
+        self.id = id
 
     def set_id(self, id):
         self.id = id

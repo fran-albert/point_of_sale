@@ -2,11 +2,12 @@ from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLab
 from entities.producto import Producto
 
 class AgregarProductoDialog(QDialog):
-    def __init__(self, producto_service, categoria_service, parent=None):
+    def __init__(self, producto_service, categoria_service, proveedor_service, parent=None):
         super().__init__(parent)
 
         self.producto_service = producto_service
         self.categoria_service = categoria_service
+        self.proveedor_service = proveedor_service
 
         self.setWindowTitle("Agregar Producto")
         layout = QVBoxLayout()
@@ -50,9 +51,12 @@ class AgregarProductoDialog(QDialog):
         layout.addWidget(self.descuentos_input)
 
         self.proveedor_label = QLabel("Proveedor:")
-        self.proveedor_input = QLineEdit()
+        self.proveedor_selector = QComboBox()
+        proveedores = self.proveedor_service.obtenerProveedores()
+        for proveedor in proveedores:
+            self.proveedor_selector.addItem(proveedor.nombre, proveedor.id)
         layout.addWidget(self.proveedor_label)
-        layout.addWidget(self.proveedor_input)
+        layout.addWidget(self.proveedor_selector)
 
         self.fecha_venc_label = QLabel("Fecha de Vencimiento:")
         self.fecha_venc_input = QDateEdit()
@@ -79,7 +83,7 @@ class AgregarProductoDialog(QDialog):
         categoria = self.categoria_selector.currentData()
         impuestos = self.impuestos_input.text().strip()
         descuentos = self.descuentos_input.text().strip()
-        proveedor = self.proveedor_input.text().strip()
+        proveedor = self.proveedor_selector.currentData()
         fecha_venc = self.fecha_venc_input.date().toString("yyyy-MM-dd")
 
         if codigo and nombre and precioCompra and cant_stock and categoria and impuestos and descuentos and proveedor and fecha_venc:
