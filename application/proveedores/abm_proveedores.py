@@ -133,7 +133,7 @@ class ABMProveedoresWindow(QMainWindow):
         self.table.setRowCount(len(self.proveedores))
 
         for i, prov in enumerate(self.proveedores):
-            item_id = QTableWidgetItem(prov.id)
+            item_id = QTableWidgetItem(str(prov.id))
             item_nombre = QTableWidgetItem(prov.nombre)
             item_direccion = QTableWidgetItem(prov.direccion)
             item_cod_postal = QTableWidgetItem(str(prov.cod_postal))
@@ -179,8 +179,10 @@ class ABMProveedoresWindow(QMainWindow):
         button = self.app.sender()
         index = self.table.indexAt(button.pos())
         proveedor = None
+
+        proveedor_service = ProveedorService()
         
-        id = self.table.item(index.row(), 0).text()
+        id = int(self.table.item(index.row(), 0).text())
         nombre = self.table.item(index.row(), 1).text()
         direccion = self.table.item(index.row(), 2).text()
         cod_postal = self.table.item(index.row(), 3).text()
@@ -193,25 +195,25 @@ class ABMProveedoresWindow(QMainWindow):
         fecha_alta = self.table.item(index.row(), 10).text()     
 
         proveedor = Proveedor(nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
-        
-        dialog = EditarProveedorDialog(proveedor)
+        proveedor.set_id(id)
+        dialog = EditarProveedorDialog(proveedor, proveedor_service)
         result = dialog.exec()
 
         if result == QDialog.Accepted:
             # Actualiza el producto en la base de datos
-            # self.proveedor_service.actualizarProveedor(
-            #     producto.codigo,
-            #     producto.nombre,
-            #     producto.precioCompra,
-            #     producto.precioVenta,
-            #     producto.cantStock,
-            #     producto.categoria,
-            #     producto.impuestos,
-            #     producto.descuentos,
-            #     producto.proveedor,
-            #     producto.fechaVenc,
-            #     producto.codigo
-            # )
+            self.proveedor_service.actualizarProveedor(
+                proveedor.nombre,
+                proveedor.direccion,
+                proveedor.cod_postal,
+                proveedor.ciudad,
+                proveedor.provincia,
+                proveedor.telefono,
+                proveedor.correo_electronico,
+                proveedor.comentario,
+                proveedor.cuenta_bancaria,
+                proveedor.fecha_alta,
+                proveedor.id
+            )
             # Actualiza la tabla para mostrar los cambios
             self.actualizar_tabla()
 

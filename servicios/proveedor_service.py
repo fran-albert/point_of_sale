@@ -10,8 +10,8 @@ class ProveedorService:
     def obtenerProveedores(self):
         return self.proveedor_repository.obtenerProveedores()
     
-    def actualizarProeedor(self, nuevoNombre, nuevaDireccion, nuevoCodPostal, nuevaCiudad, nuevaProvincia, nuevoTelefono, nuevoCorreo, nuevoComentario, nuevaCBU):
-        return self.proveedor_repository.actualizarProveedor(nuevoNombre, nuevaDireccion, nuevoCodPostal, nuevaCiudad, nuevaProvincia, nuevoTelefono, nuevoCorreo, nuevoComentario, nuevaCBU)
-    
+    def actualizarProveedor(self, nuevoNombre, nuevaDireccion, nuevoCodPostal, nuevaCiudad, nuevaProvincia, nuevoTelefono, nuevoCorreo, nuevoComentario, nuevaCBU, fecha_alta, id):
+        return self.proveedor_repository.actualizarProveedor(nuevoNombre, nuevaDireccion, nuevoCodPostal, nuevaCiudad, nuevaProvincia, nuevoTelefono, nuevoCorreo, nuevoComentario, nuevaCBU, fecha_alta, id)
+
     def eliminarProveedor(self, id):
         return self.proveedor_repository.eliminarProveedor(id)

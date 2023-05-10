@@ -170,7 +170,7 @@ class ABMProductosWindow(QMainWindow):
             item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
             item_cant_stock = QTableWidgetItem(str(prod.cantStock))
             item_categoria = QTableWidgetItem(categoria_descripcion_map.get(int(float(prod.categoria)), "Desconocida"))
-    # Usa el diccionario para obtener la descripción y Convierte la clave en entero
+            # Usa el diccionario para obtener la descripción y Convierte la clave en entero
             item_impuestos = QTableWidgetItem(str(prod.impuestos))
             item_descuentos = QTableWidgetItem(str(prod.descuentos))
             item_proveedor = QTableWidgetItem(proveedor_nombre_map.get(int(prod.proveedor), "Desconocido"))

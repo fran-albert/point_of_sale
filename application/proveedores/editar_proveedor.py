@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox, QDateEdit
-from PyQt5.QtGui import QColor, QPalette
+from PyQt5.QtCore import  QDate
+from datetime import datetime
 
 class EditarProveedorDialog(QDialog):
         def __init__(self, proveedor, proveedor_service, parent=None):
@@ -9,6 +10,13 @@ class EditarProveedorDialog(QDialog):
             self.proveedor = proveedor
             self.proveedor_service = proveedor_service
             layout = QVBoxLayout()
+
+            self.id_proveedor_label = QLabel("ID Proveedor:")
+            self.id_proveedor_input = QLineEdit(str(proveedor.id))  # Asegúrate de convertir el ID a string
+            self.id_proveedor_input.setReadOnly(True)  # Hacer el campo de solo lectura
+            layout.addWidget(self.id_proveedor_label)
+            layout.addWidget(self.id_proveedor_input)
+
 
             self.nombre_label = QLabel("Nombre:")
             self.nombre_input = QLineEdit(proveedor.nombre)
@@ -56,7 +64,8 @@ class EditarProveedorDialog(QDialog):
             layout.addWidget(self.cuenta_bancaria_input)
 
             self.fecha_alta_label = QLabel("Fecha Alta:")
-            self.fecha_alta_input = QDateEdit(proveedor.fecha_alta)
+            fecha_alta = QDate.fromString(proveedor.fecha_alta, "yyyy-MM-dd")
+            self.fecha_alta_input = QDateEdit(fecha_alta)
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)
 
@@ -73,30 +82,29 @@ class EditarProveedorDialog(QDialog):
             self.cancelar_button.clicked.connect(self.reject)
 
         def guardar_proveedor(self):
-            self.proveedor.nombre = self.nombre_input.text().strip()
-            self.proveedor.codigo_postal = self.codigo_postal_label.text().strip()
-            self.proveedor.direccion = self.direccion_label.text().strip()
-            self.proveedor.ciudad = self.ciudad_label.text().strip()
-            self.proveedor.provincia = self.provincia_label.text().strip()
-            self.proveedor.telefono = self.telefono_label.text().strip()
-            self.proveedor.correo_electronico = self.email_label.text().strip()
-            self.proveedor.comentario = self.comentario_label.text().strip()
-            self.proveedor.cuenta_bancaria = self.cuenta_bancaria_label.text().strip()
-            self.proveedor.fecha_alta = self.fecha_alta_label.text().strip()
+            nuevo_nombre = self.nombre_input.text().strip()
+            nuevo_codigo_postal = self.codigo_postal_input.text().strip()
+            nueva_direccion = self.direccion_input.text().strip()
+            nueva_ciudad = self.ciudad_input.text().strip()
+            nueva_provincia = self.provincia_input.text().strip()
+            nuevo_telefono = self.telefono_input.text().strip()
+            nuevo_correo_electronico = self.email_input.text().strip()
+            nuevo_comentario = self.comentario_input.text().strip()
+            nueva_cuenta_bancaria = self.cuenta_bancaria_input.text().strip()
+            nueva_fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
 
-            if self.proveedor.nombre: #nuevo_precioCompra and nuevo_stock and nuevos_impuestos:
-                try:
-                    # nuevo_precioCompra = float(nuevo_precioCompra)
-                    # nuevo_stock = int(nuevo_stock)
-                    # nuevos_impuestos = float(nuevos_impuestos)
-                    # self.producto.precioCompra = nuevo_precioCompra
-                    # self.producto.cantStock = nuevo_stock
-                    # self.producto.categoria = nueva_categoria
-                    # self.producto.impuestos = nuevos_impuestos
-                    # porcentaje = self.categoria_service.obtenerPorcentaje(nueva_categoria)
-                    # self.producto.precioVenta = Producto.calculoPrecioVenta(nuevo_precioCompra, porcentaje)
-                    self.accept()
-                except ValueError:
-                    QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
+            if nuevo_nombre and nuevo_codigo_postal and nueva_direccion and nueva_ciudad and nueva_provincia and nuevo_telefono and nuevo_correo_electronico and nuevo_comentario and nueva_cuenta_bancaria and nueva_fecha_alta:
+                self.proveedor.nombre = nuevo_nombre
+                self.proveedor.direccion = nueva_direccion
+                self.proveedor.cod_postal = nuevo_codigo_postal
+                self.proveedor.ciudad = nueva_ciudad
+                self.proveedor.provincia = nueva_provincia
+                self.proveedor.telefono = nuevo_telefono
+                self.proveedor.correo_electronico = nuevo_correo_electronico
+                self.proveedor.comentario = nuevo_comentario
+                self.proveedor.cuenta_bancaria = nueva_cuenta_bancaria
+                nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
+                self.proveedor.fecha_alta = nueva_fecha_alta
+                self.accept()  # Cerrar el diálogo
             else:
                 QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
