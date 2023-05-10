@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.categoria_service import CategoriaService
 from servicios.producto_service import ProductoService
+from servicios.proveedor_service import ProveedorService
 from .agregar_producto import AgregarProductoDialog
 from .editar_producto import EditarProductoDialog
 from entities.producto import Producto
@@ -18,13 +19,18 @@ class ABMProductosWindow(QMainWindow):
         # Crear una instancia de QApplication
         self.app = app
         self.producto_service = ProductoService()
+        self.proveedor_service = ProveedorService()
         self.categoria_service = CategoriaService()
         self.producto  = self.producto_service.obtenerProductos()
         # En el método __init__ de la clase ABMProductosWindow
         self.categorias = self.categoria_service.obtenerCategorias()
+        self.proveedores = self.proveedor_service.obtenerProveedores()
 
         # Crear un diccionario que mapee los IDs de las categorías a sus descripciones
         self.categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in self.categorias}
+        self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
+
+
 
 
         # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
@@ -44,7 +50,7 @@ class ABMProductosWindow(QMainWindow):
             # Usa el diccionario para obtener la descripción y Convierte la clave en entero
             item_impuestos = QTableWidgetItem(str(prod.impuestos))
             item_descuentos = QTableWidgetItem(str(prod.descuentos))
-            item_proveedor = QTableWidgetItem(prod.proveedor)
+            item_proveedor = QTableWidgetItem(self.proveedor_nombre_map.get(int(prod.proveedor), "Desconocido"))
             item_fecha_venc = QTableWidgetItem(prod.fechaVenc.strftime("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_nombre)
@@ -144,10 +150,11 @@ class ABMProductosWindow(QMainWindow):
     def actualizar_tabla(self):
         # Obtén la lista actualizada de productos
         self.productos = self.producto_service.obtenerProductos()
-
+        self.proveedores = self.proveedor_service.obtenerProveedores()
         # Obtén una lista de categorías y crea un diccionario que mapee los IDs a las descripciones
         self.categorias = self.categoria_service.obtenerCategorias()
         categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in self.categorias}
+        proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
 
         # Limpia la tabla antes de agregar nuevas filas
         self.table.setRowCount(0)
@@ -166,7 +173,7 @@ class ABMProductosWindow(QMainWindow):
     # Usa el diccionario para obtener la descripción y Convierte la clave en entero
             item_impuestos = QTableWidgetItem(str(prod.impuestos))
             item_descuentos = QTableWidgetItem(str(prod.descuentos))
-            item_proveedor = QTableWidgetItem(prod.proveedor)
+            item_proveedor = QTableWidgetItem(proveedor_nombre_map.get(int(prod.proveedor), "Desconocido"))
             item_fecha_venc = QTableWidgetItem(prod.fechaVenc.strftime("%Y-%m-%d"))
 
             self.table.setItem(i, 0, item_nombre)
@@ -191,7 +198,7 @@ class ABMProductosWindow(QMainWindow):
             self.table.setCellWidget(i, 11, delete_button)
 
     def on_agregar_producto_clicked(self):
-        dialog = AgregarProductoDialog(self.producto_service, self.categoria_service, self)
+        dialog = AgregarProductoDialog(self.producto_service, self.categoria_service, self.proveedor_service)
         result = dialog.exec()
 
         if result == QDialog.Accepted:

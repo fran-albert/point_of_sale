@@ -2,11 +2,12 @@ from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLa
 from PyQt5.QtGui import QColor, QPalette
 
 class EditarProveedorDialog(QDialog):
-        def __init__(self, proveedor, parent=None):
+        def __init__(self, proveedor, proveedor_service, parent=None):
             super().__init__(parent)
             self.setWindowTitle("Editar Proveedor")
 
             self.proveedor = proveedor
+            self.proveedor_service = proveedor_service
             layout = QVBoxLayout()
 
             self.nombre_label = QLabel("Nombre:")
@@ -59,10 +60,6 @@ class EditarProveedorDialog(QDialog):
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)
 
-            # palette = self.idProveedor_input.palette()
-            # palette.setColor(QPalette.Base, QColor(240, 240, 240))
-            # self.idProveedor_input.setPalette(palette)
-
             self.buttons_layout = QHBoxLayout()
             self.guardar_button = QPushButton("Guardar")
             self.cancelar_button = QPushButton("Cancelar")
@@ -77,12 +74,15 @@ class EditarProveedorDialog(QDialog):
 
         def guardar_proveedor(self):
             self.proveedor.nombre = self.nombre_input.text().strip()
-            self.proveedor.co = self.codigo_postal_label.text().strip()
+            self.proveedor.codigo_postal = self.codigo_postal_label.text().strip()
             self.proveedor.direccion = self.direccion_label.text().strip()
-            # nuevo_precioCompra = self.precioCompra_input.text().strip()
-            # nuevo_stock = self.stock_input.text().strip()
-            # nueva_categoria = self.categoria_combo.currentData()
-            # nuevos_impuestos = self.impuestos_input.text().strip()
+            self.proveedor.ciudad = self.ciudad_label.text().strip()
+            self.proveedor.provincia = self.provincia_label.text().strip()
+            self.proveedor.telefono = self.telefono_label.text().strip()
+            self.proveedor.correo_electronico = self.email_label.text().strip()
+            self.proveedor.comentario = self.comentario_label.text().strip()
+            self.proveedor.cuenta_bancaria = self.cuenta_bancaria_label.text().strip()
+            self.proveedor.fecha_alta = self.fecha_alta_label.text().strip()
 
             if self.proveedor.nombre: #nuevo_precioCompra and nuevo_stock and nuevos_impuestos:
                 try:
