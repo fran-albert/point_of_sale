@@ -2,12 +2,10 @@ from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLab
 from PyQt5.QtCore import  QDate
 from entities.producto import Producto
 
-
 class EditarProductoDialog(QDialog):
-    def __init__(self, producto,producto_service, categoria_service, categorias, parent=None):
+    def __init__(self, producto, producto_service, categoria_service, categorias, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Editar Producto")
-
 
         self.producto_service = producto_service
         self.categoria_service = categoria_service

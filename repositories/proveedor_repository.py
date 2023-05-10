@@ -7,15 +7,15 @@ class ProveedorRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarProveedor(self, proveedor):
-        sql = "INSERT INTO proveedores(id, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO proveedores(nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql, (proveedor.get_id(),proveedor.get_nombre(), proveedor.get_direccion(),proveedor.get_cod_postal(),proveedor.get_ciudad(),proveedor.get_provincia(),proveedor.get_telefono(),proveedor.get_correo_electronico(),proveedor.get_comentario(),proveedor.get_cuenta_bancaria(),proveedor.get_fecha_alta(),))
+                cursor.execute(sql, (proveedor.get_nombre(), proveedor.get_direccion(),proveedor.get_cod_postal(),proveedor.get_ciudad(),proveedor.get_provincia(),proveedor.get_telefono(),proveedor.get_correo_electronico(),proveedor.get_comentario(),proveedor.get_cuenta_bancaria(),proveedor.get_fecha_alta(),))
             self.connection.commit()
         except Error as e:
             raise RuntimeError("Error al insertar el nuevo proveedor", e)
 
-    def obtenerProveedor(self):
+    def obtenerProveedores(self):
         proveedor = []
         query = "SELECT * FROM proveedores"
         try:
@@ -33,7 +33,7 @@ class ProveedorRepository:
                     comentario = row[8]
                     cuenta_bancaria = row[9]
                     fecha_alta = row[10]
-                    nuevoProveedor = Proveedor(id, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
+                    nuevoProveedor = Proveedor(nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta, id)
                     proveedor.append(nuevoProveedor)
             return proveedor
         except Error as e:
