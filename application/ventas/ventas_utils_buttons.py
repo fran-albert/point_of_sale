@@ -71,10 +71,7 @@ class VentasUtilsButtons:
                     background-color: #1c6ba0;
                 }
             """)
-            # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
-            cobrar_button.clicked.connect(lambda: cobrar_ya(usuario, tab_widget.currentIndex(), total, save_ticket_checkbox.isChecked()))
-
-
+            
             # Crear un checkbox para "Guardar Ticket"
             save_ticket_checkbox = QCheckBox("Guardar Ticket")
 
