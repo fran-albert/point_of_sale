@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QWidget,QLineEdit, QDialog, QSpacerItem, QSizePolicy, QPushButton, QVBoxLayout, QHBoxLayout, QFrame,  QTabWidget
+from PyQt5.QtWidgets import QLabel, QWidget,QCheckBox, QDialog, QSpacerItem, QSizePolicy, QPushButton, QVBoxLayout, QHBoxLayout, QFrame,  QTabWidget
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from utils.Utils import Utils
@@ -52,10 +52,6 @@ class VentasUtilsButtons:
         tarjeta_tab = QWidget()
         transferencia_tab = QWidget()
 
-        tab_widget.addTab(efectivo_tab, "Efectivo")
-        tab_widget.addTab(tarjeta_tab, "Débito/Crédito")
-        tab_widget.addTab(transferencia_tab, "Transferencia")
-
         def create_tab_content():
             # Crear el botón "Cobrar YA" y aplicar estilo personalizado
             cobrar_button = QPushButton("Cobrar YA")
@@ -76,12 +72,17 @@ class VentasUtilsButtons:
                 }
             """)
             # Conectar el clic en el botón "Cobrar YA" a la función cobrar_ya
-            cobrar_button.clicked.connect(lambda: cobrar_ya(usuario, tab_widget.currentIndex(), total))
+            cobrar_button.clicked.connect(lambda: cobrar_ya(usuario, tab_widget.currentIndex(), total, save_ticket_checkbox.isChecked()))
 
-            # Crear un QHBoxLayout para centrar el botón horizontalmente
+
+            # Crear un checkbox para "Guardar Ticket"
+            save_ticket_checkbox = QCheckBox("Guardar Ticket")
+
+            # Crear un QHBoxLayout para centrar el botón y el checkbox horizontalmente
             buttons_layout = QHBoxLayout()
             buttons_layout.addStretch()
             buttons_layout.addWidget(cobrar_button)
+            buttons_layout.addWidget(save_ticket_checkbox)
             buttons_layout.addStretch()
 
             # Crear un QVBoxLayout para la pestaña
@@ -90,27 +91,45 @@ class VentasUtilsButtons:
             tab_layout.addLayout(buttons_layout)
             tab_layout.addStretch()
 
-            return tab_layout
+            return tab_layout, cobrar_button, save_ticket_checkbox 
 
-        # Añadir los widgets al layout de las pestañas de "Débito/Crédito" y "Transferencia"
-        efectivo_tab.setLayout(create_tab_content())
-        tarjeta_tab.setLayout(create_tab_content())
-        transferencia_tab.setLayout(create_tab_content())
 
+        # Crear contenido para cada pestaña
+        tab_layout_efectivo, cobrar_button_efectivo, save_ticket_checkbox_efectivo = create_tab_content()
+        efectivo_tab.setLayout(tab_layout_efectivo)
+        cobrar_button_efectivo.clicked.connect(lambda: cobrar_ya(usuario, 0, total, save_ticket_checkbox_efectivo))
+
+        tab_layout_tarjeta, cobrar_button_tarjeta, save_ticket_checkbox_tarjeta = create_tab_content()
+        tarjeta_tab.setLayout(tab_layout_tarjeta)
+        cobrar_button_tarjeta.clicked.connect(lambda: cobrar_ya(usuario, 1, total, save_ticket_checkbox_tarjeta))
+
+        tab_layout_transferencia, cobrar_button_transferencia, save_ticket_checkbox_transferencia = create_tab_content()
+        transferencia_tab.setLayout(tab_layout_transferencia)
+        cobrar_button_transferencia.clicked.connect(lambda: cobrar_ya(usuario, 2, total, save_ticket_checkbox_transferencia))
+
+        # Agregar las pestañas al widget de pestañas
+        tab_widget.addTab(efectivo_tab, "Efectivo")
+        tab_widget.addTab(tarjeta_tab, "Débito/Crédito")
+        tab_widget.addTab(transferencia_tab, "Transferencia")
+
+        
+        tab_layout_efectivo, cobrar_button_efectivo, save_ticket_checkbox_efectivo = create_tab_content()
+        efectivo_tab.setLayout(tab_layout_efectivo)
+        cobrar_button_efectivo.clicked.connect(lambda: cobrar_ya(usuario, 0, total, save_ticket_checkbox_efectivo))
 
 
         # Función para manejar el clic en el botón "Cobrar YA"
-        def cobrar_ya(usuario, tipo_de_pago, total): 
+        def cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket): 
             total = round(total, 2)
             fecha = datetime.now()
             ticket = Ticket(usuario, total, tipo_de_pago, fecha)
             idTicket_generado = ticket_service.insertarTicket(ticket)
-            #llamar a los services.
-            # ALGUN PARAMETRO PARA SABER SI USO 0 EFECTIO 1 CARD o 2 TRANSFE
-            # 1) INSERTAR TICKET
-            # 2) INSERTAR LOS PRODUCTOS VENDIDOS A PARTIR DEL IDTICKET QUE SE GENERO EN 1)
-            # 3) DESCONTAR DEL STOCK DE PRODUCTO (COD DE PRODUCTO)
+
+            if guardar_ticket:
+                with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
+                    f.write(f"Usuario: {usuario}\nTotal: {total}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
             print("Venta realizada")
+
 
         # Crear un QHBoxLayout para centrar el botón horizontalmente
         buttons_layout = QHBoxLayout()
@@ -148,7 +167,6 @@ class VentasUtilsButtons:
 
         # Inicializar el estado de los widgets según la pestaña actual
         tab_changed(tab_widget.currentIndex())
-
 
         # Espaciadores
         spacer_top = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
