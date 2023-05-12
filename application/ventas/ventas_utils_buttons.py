@@ -127,7 +127,7 @@ class VentasUtilsButtons:
 
             if guardar_ticket:
                 with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
-                    f.write(f"Usuario: {usuario}\nTotal: {total}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
+                    f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
             print("Venta realizada")
 
 
