@@ -171,7 +171,7 @@ class Utils:
             # Preparar datos para la tabla en el reporte
             data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor', 'Fecha Vencimiento']]
             for producto in stock_data:
-                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
+                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, "{:.2f}".format(float(producto.precioVenta)), categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
 
 
             pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)

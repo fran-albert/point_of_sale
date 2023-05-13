@@ -31,8 +31,6 @@ class ABMProductosWindow(QMainWindow):
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
 
 
-
-
         # Crear una instancia de QTableWidget con cuatro columnas y el número de filas igual a la longitud de la lista de datos
         self.table = QTableWidget(len(self.producto), 12)
 
