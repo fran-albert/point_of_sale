@@ -7,6 +7,6 @@ class ProductoVendidoService:
     def insertarProdVendido(self, producto_vendido):
         return self.producto_vendido_repository.insertarProdVendido(producto_vendido)
     
-    def obtenerProductosVendidos(self):
-        return self.producto_vendido_repository.obtenerProductosVendidos()
+    def obtenerProductosVendidos(self, idTicket):
+        return self.producto_vendido_repository.obtenerProductosVendidos(idTicket)
 

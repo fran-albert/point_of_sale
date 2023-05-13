@@ -13,14 +13,16 @@ class ProductoVendidoRepository:
                 cursor.execute(sql, (prod_vendido.get_idTicket(), prod_vendido.get_prod_vendido(), prod_vendido.get_codigo(), prod_vendido.get_cant_vendida(), prod_vendido.get_precio_venta(), prod_vendido.get_precio_venta_total()))
             self.connection.commit()
         except Error as e:
+            print("Error al insertar el producto vendido: ", e)
             raise RuntimeError("Error al insertar el producto vendido", e)
-        
-    def obtenerProductosVendidos(self):
+
+
+    def obtenerProductosVendidos(self, idTicket):
         prodVendidos = []
-        query = "SELECT * FROM productos_vendidos"
+        query = "SELECT * FROM productos_vendidos WHERE idTicket = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, (idTicket,))
                 for row in cursor.fetchall():
                     idProdVendido = row[0]
                     idTicket = row[1]
@@ -34,3 +36,4 @@ class ProductoVendidoRepository:
             return prodVendidos
         except Error as e:
             raise RuntimeError("Error al obtener los productos vendidos", e)
+
