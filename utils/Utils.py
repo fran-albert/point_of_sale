@@ -6,9 +6,11 @@ from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from reportlab.lib import colors
 from servicios.producto_service import ProductoService
 from servicios.categoria_service import CategoriaService
+from servicios.proveedor_service import ProveedorService
 from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
 import fitz, os, time, traceback, io
+
 
 
 class Utils:
@@ -163,22 +165,27 @@ class Utils:
             categorias = categoria_service.obtenerCategorias()
             categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
 
+            proveedor_service = ProveedorService()
+            proveedores = proveedor_service.obtenerProveedores()
+            proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in proveedores}
+
             producto_service = ProductoService()
 
             # Obtener datos del stock desde la base de datos
             stock_data = producto_service.obtenerProductos()
 
+
             # Preparar datos para la tabla en el reporte
             data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor', 'Fecha Vencimiento']]
             for producto in stock_data:
-                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, "{:.2f}".format(float(producto.precioVenta)), categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc])
-
+                nombre_del_proveedor = proveedor_nombre_map.get(int(producto.proveedor), "Proveedor Desconocido")
+                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, "{:.2f}".format(float(producto.precioVenta)), categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor, producto.fechaVenc])
 
             pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)
 
                     # Preparar datos para mostrar en el visor de PDF
             stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor", "Fecha Vencimiento"]
-            stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), producto.proveedor, producto.fechaVenc] for producto in stock_data]
+            stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor, producto.fechaVenc] for producto in stock_data]
             
             Utils.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
         except Exception as e:
