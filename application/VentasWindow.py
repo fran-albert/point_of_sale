@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from entities.productos_vendido import ProductosVendido
 # Agrega la carpeta principal al sys.path
 ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
@@ -93,11 +94,28 @@ class VentasWindow(QMainWindow):
 
         # Mover el botón "Cobrar" debajo de Subtotal, IVA y Total
         cobrar_button = QPushButton("Cobrar")
-        cobrar_button.clicked.connect(lambda: VentasUtilsButtons.show_payment_window('test', self.total, self))
+        cobrar_button.clicked.connect(lambda: VentasUtilsButtons.show_payment_window('test', self.total, self, self.lista_productos_vendidos(self.table)))
+
         main_layout.addWidget(cobrar_button, alignment=Qt.AlignRight)
 
         # Conectar la señal editingFinished del QLineEdit codigo_input a la función buscar_producto
         self.codigo_input.textChanged.connect(self.on_codigo_input_text_changed)
+    def lista_productos_vendidos(self, table) :
+        productos_vendidos = []
+        for row in range(table.rowCount()):
+            row_data = []
+            for column in range(table.columnCount()):
+                cell = table.item(row, column)
+                if cell is not None:
+                    cell_value = str(table.item(row, column).text())
+                    row_data.append(cell_value)
+                else:
+                    cantidad_spinbox = table.cellWidget(row, column)
+                    cantidad_spinbox.value()
+                    row_data.append(cantidad_spinbox.value())
+            producto_vendido = ProductosVendido(None, None, row_data[1],  row_data[0],  row_data[2],  row_data[3],  row_data[4])
+            productos_vendidos.append(producto_vendido)
+        return productos_vendidos
 
     def show_payment_window(self):
         VentasUtilsButtons.show_payment_window(self)
@@ -162,30 +180,6 @@ class VentasWindow(QMainWindow):
         precio_total_str = "{:.2f}".format(precio_total)  # Formatear el número con dos decimales
         self.table.setItem(row, 4, self.create_read_only_table_widget_item(precio_total_str))
         self.update_totals()  # Actualizar Subtotal, IVA y Total
-
-    def buscar_producto(self):        
-        codigo = self.codigo_input.text()
-        producto = self.producto_service.obtenerProducto(codigo)
-        
-        if producto is None:
-            QMessageBox.warning(self, "Error", "El código ingresado no se encuentra en los productos.")
-            return
-        row_count = self.table.rowCount()
-        self.table.insertRow(row_count)
-        self.table.setItem(row_count, 0, QTableWidgetItem(producto.codigo))
-        self.table.setItem(row_count, 1, QTableWidgetItem(producto.nombre))
-        self.table.setItem(row_count, 2, QTableWidgetItem("1"))  # Puedes establecer una cantidad predeterminada
-        self.table.setItem(row_count, 3, QTableWidgetItem(str(producto.precioVenta)))
-
-        # Calcular el precio total y convertirlo en una cadena con dos decimales
-        precio_total = producto.precioVenta  # La cantidad predeterminada es 1
-        precio_total_str = "{:.2f}".format(precio_total)
-
-        self.table.setItem(row_count, 4, self.create_read_only_table_widget_item(precio_total_str))
-        self.update_totals()  # Actualizar Subtotal, IVA y Total
-
-        self.codigo_input.clear()
-        self.nombre_input.clear()
 
     def update_totals(self):
         subtotal = 0.0

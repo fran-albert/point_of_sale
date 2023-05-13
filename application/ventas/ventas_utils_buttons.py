@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QLabel, QWidget,QCheckBox, QDialog, QSpacerItem, QSi
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from utils.Utils import Utils
-from TicketWindow import TicketWindow
 from servicios.producto_vendido_service import ProductoVendidoService
 from datetime import datetime
 from servicios.ticket_service import TicketService
@@ -12,15 +11,12 @@ from entities.productos_vendido import ProductosVendido
 
 class VentasUtilsButtons:
 
-
-
     # PAYMENT WINDOW
     @staticmethod
-    def show_payment_window(usuario, total, parent):
+    def show_payment_window(usuario, total, parent, productos_vendidos):
 
         ticket_service = TicketService()
         producto_vendido_service = ProductoVendidoService()
-        productos_vendidos = []
 
         payment_window = QDialog(parent)
         payment_window.setWindowTitle("Pago")
@@ -130,31 +126,29 @@ class VentasUtilsButtons:
                 )
                 producto_vendido_service.insertarProdVendido(producto_vendido)
             # Luego, puedes llamar a cobrar_ya para guardar el ticket
-            cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket)
-
-
+            #cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket)
 
         # Función para manejar el clic en el botón "Cobrar YA"
-        def cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket):
-            total = round(total, 2)
-            fecha = datetime.now()
-            ticket = Ticket(usuario, total, tipo_de_pago, fecha)
-            idTicket_generado = ticket_service.insertarTicket(ticket)
+        # def cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket):
+        #     total = round(total, 2)
+        #     fecha = datetime.now()
+        #     ticket = Ticket(usuario, total, tipo_de_pago, fecha)
+        #     idTicket_generado = ticket_service.insertarTicket(ticket)
 
-            # Obtén la lista de productos vendidos
-            productos_vendidos = producto_vendido_service.obtenerProductosVendidos(idTicket_generado)
+        #     # Obtén la lista de productos vendidos
+        #     productos_vendidos = producto_vendido_service.obtenerProductosVendidos(idTicket_generado)
 
-            if guardar_ticket:
-                with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
-                    f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
-                    # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
-                    for producto in productos_vendidos:
-                        f.write(f"Producto Vendido: {producto.get_nombre()}\n")
-                        f.write(f"Codigo: {producto.get_codigo()}\n")
-                        f.write(f"Cantidad Vendida: {producto.get_cantStock()}\n")
-                        f.write(f"Precio de Venta: {producto.get_precioVenta()}\n")
-                        f.write(f"Precio Total de Venta: {producto.get_precioVenta() * producto.get_cantStock()}\n\n")
-            print("Venta realizada")
+        #     if guardar_ticket:
+        #         with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
+        #             f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
+        #             # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
+        #             for producto in productos_vendidos:
+        #                 f.write(f"Producto Vendido: {producto.get_nombre()}\n")
+        #                 f.write(f"Codigo: {producto.get_codigo()}\n")
+        #                 f.write(f"Cantidad Vendida: {producto.get_cantStock()}\n")
+        #                 f.write(f"Precio de Venta: {producto.get_precioVenta()}\n")
+        #                 f.write(f"Precio Total de Venta: {producto.get_precioVenta() * producto.get_cantStock()}\n\n")
+        #     print("Venta realizada")
 
 
         # Crear un QHBoxLayout para centrar el botón horizontalmente
@@ -227,12 +221,3 @@ class VentasUtilsButtons:
         custom_widget.setLayout(custom_layout)
 
         return custom_widget
-
-    @staticmethod
-    def show_ticket_window(parent, ticket, total):
-        # Crear una instancia de TicketWindow con los argumentos requeridos
-        ticket_instance = TicketWindow(ticket, total)
-
-        # Mostrar la ventana del ticket
-        ticket_instance.show()
-
