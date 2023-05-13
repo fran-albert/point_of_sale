@@ -115,14 +115,18 @@ class VentasUtilsButtons:
             idTicket_generado = ticket_service.insertarTicket(ticket)
             # Aquí puedes insertar cada producto comprado en la base de datos
             for producto in productos_vendidos:
+                previo_venta = float(producto.get_precio_venta())
+                previo_venta = "{:.2f}".format(previo_venta)
+                precio_venta_total = float(producto.get_precio_venta()) * float(producto.get_cant_vendida())
+                precio_venta_total = "{:.2f}".format(precio_venta_total)  # Ahora precio_venta_total debería ser un número flotante
                 producto_vendido = ProductosVendido(
                     None,  # idProdVendido se establecerá automáticamente en la base de datos
                     idTicket_generado,  # idTicket se establecerá después de insertar el ticket
                     producto.get_prod_vendido(),  
                     producto.get_codigo(),  
                     producto.get_cant_vendida(),  
-                    producto.get_precio_venta(),  
-                    producto.get_precio_venta_total() * producto.get_cant_vendida()  # precio_venta_total es el precio de venta por la cantidad
+                    previo_venta,  
+                    precio_venta_total
                 )
                 producto_vendido_service.insertarProdVendido(producto_vendido)
             # Luego, puedes llamar a cobrar_ya para guardar el ticket

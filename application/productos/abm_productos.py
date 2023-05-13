@@ -44,7 +44,7 @@ class ABMProductosWindow(QMainWindow):
             item_nombre = QTableWidgetItem(prod.nombre)
             item_codigo = QTableWidgetItem(prod.codigo)
             item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
-            item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
+            item_precioVenta = QTableWidgetItem("{:.2f}".format(float(prod.precioVenta)))
             item_cant_stock = QTableWidgetItem(str(prod.cantStock))
             item_categoria = QTableWidgetItem(self.categoria_descripcion_map.get(int(float(prod.categoria)), "Desconocida"))
             # Usa el diccionario para obtener la descripción y Convierte la clave en entero
@@ -167,7 +167,7 @@ class ABMProductosWindow(QMainWindow):
             item_nombre = QTableWidgetItem(prod.nombre)
             item_codigo = QTableWidgetItem(prod.codigo)
             item_precioCompra = QTableWidgetItem(str(prod.precioCompra))
-            item_precioVenta = QTableWidgetItem(str(prod.precioVenta))
+            item_precioVenta = QTableWidgetItem("{:.2f}".format(float(prod.precioVenta)))
             item_cant_stock = QTableWidgetItem(str(prod.cantStock))
             item_categoria = QTableWidgetItem(categoria_descripcion_map.get(int(float(prod.categoria)), "Desconocida"))
             # Usa el diccionario para obtener la descripción y Convierte la clave en entero
