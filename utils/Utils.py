@@ -322,50 +322,5 @@ def init_header(parent, width, username, menu_bar_height):
     main_layout.setStretchFactor(right_layout, 1)
     header.setLayout(main_layout)
 
-# PRINCIPAL TABLE
-def init_table(self):
-    self.table = QTableWidget(self)
-    self.table = QTableWidget(self)
-    table_width = int(self.width() * 3 / 4)
-    self.table.setGeometry(0, 140, table_width, self.height() - 160)
-    self.table.setColumnCount(6)
-    self.table.setHorizontalHeaderLabels(["No.", "Código de Barras", "Producto", "Cant.", "Precio Venta", "Precio Total"])
-    header = self.table.horizontalHeader()
-
-    # Establecer el modo de redimensionamiento y el ancho personalizado para las columnas "No." y "Cant."
-    header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-    header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-    self.table.setColumnWidth(0, 50)  # Ancho de la columna "No."
-    self.table.setColumnWidth(3, 50)  # Ancho de la columna "Cant."
-
-    # Establecer el modo de redimensionamiento QHeaderView.Stretch para las otras columnas
-    for col_index in [1, 2, 4, 5]:
-        header.setSectionResizeMode(col_index, QHeaderView.Stretch)
-
-# RIGHT SIDE BUTTONS (COBRAR)
-def init_right_side_buttons(self):
-    # Crear un QFrame para contener los botones
-    buttons_frame = QFrame(self)
-    buttons_frame.setGeometry(int(self.width() * 3 / 4), 140, int(self.width() / 4), self.height() - 160)
-
-    # Crear un QVBoxLayout para alinear los botones verticalmente
-    buttons_layout = QVBoxLayout(buttons_frame)
-
-    # Crear los botones y agregarlos al layout
-    hola_button = QPushButton("REMOVER ITEM F4", buttons_frame)
-    chau_button = QPushButton("CHAU", buttons_frame)
-    gracias_button = QPushButton("GRACIAS", buttons_frame)
-
-    cobrar_button = QPushButton("COBRAR", buttons_frame)
-    cobrar_button.clicked.connect(self.show_payment_window)  # Conectar el botón "COBRAR" a la función show_payment_window
-    buttons_layout.addWidget(cobrar_button)
-
-    buttons_layout.addWidget(hola_button)
-    buttons_layout.addWidget(chau_button)
-    buttons_layout.addWidget(gracias_button)
-    buttons_layout.addWidget(cobrar_button)
-
-    # Aplicar el layout al QFrame
-    buttons_frame.setLayout(buttons_layout)
 
 
