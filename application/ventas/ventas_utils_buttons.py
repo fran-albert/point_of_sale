@@ -5,6 +5,7 @@ from utils.Utils import Utils
 from servicios.producto_vendido_service import ProductoVendidoService
 from datetime import datetime
 from servicios.ticket_service import TicketService
+from servicios.producto_service import ProductoService
 from entities.ticket import Ticket
 from entities.productos_vendido import ProductosVendido
 
@@ -17,6 +18,7 @@ class VentasUtilsButtons:
 
         ticket_service = TicketService()
         producto_vendido_service = ProductoVendidoService()
+
 
         payment_window = QDialog(parent)
         payment_window.setWindowTitle("Pago")
@@ -113,6 +115,7 @@ class VentasUtilsButtons:
             fecha = datetime.now()
             ticket = Ticket(usuario, total, tipo_de_pago, fecha)
             idTicket_generado = ticket_service.insertarTicket(ticket)
+            producto_service = ProductoService()
             # Aquí puedes insertar cada producto comprado en la base de datos
             for producto in productos_vendidos:
                 previo_venta = float(producto.get_precio_venta())
@@ -129,7 +132,9 @@ class VentasUtilsButtons:
                     precio_venta_total
                 )
                 producto_vendido_service.insertarProdVendido(producto_vendido)
-            # Luego, puedes llamar a cobrar_ya para guardar el ticket
+                producto_service.actualizarStock(producto_vendido.get_codigo(), producto_vendido.get_cant_vendida())
+
+
             #cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket)
 
         # Función para manejar el clic en el botón "Cobrar YA"
