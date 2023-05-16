@@ -2,12 +2,14 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
 from ordenes.agregar_orden import AgregarOrdenDialog
+from servicios.proveedor_service import ProveedorService
 
 class OrdenesWindow(QMainWindow):
     def __init__(self, app, parent=None):
         super().__init__(parent)
 
         self.app = app
+        self.proveedor_service = ProveedorService()
 
         # Configurar ventana
         self.setWindowTitle("Órdenes de Compra")
@@ -45,5 +47,5 @@ class OrdenesWindow(QMainWindow):
         self.setCentralWidget(main_widget)
 
     def on_agregar_orden_clicked(self):
-        dialog = AgregarOrdenDialog()
+        dialog = AgregarOrdenDialog(self.proveedor_service)
         result = dialog.exec()

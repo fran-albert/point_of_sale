@@ -1,15 +1,16 @@
 import sys
 sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
-from PyQt5.QtWidgets import QDialog, QDesktopWidget, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout
+from PyQt5.QtCore import Qt, QStringListModel
+
 
 
 class AgregarOrdenDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, proveedor_service, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nueva Orden de Compra")
-        # Cambiar la política de tamaño de la ventana
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.proveedor_service = proveedor_service
 
         # Layout principal
         layout = QVBoxLayout()
@@ -30,16 +31,21 @@ class AgregarOrdenDialog(QDialog):
 
         # Proveedor: QComboBox
         proveedor_label = QLabel("Proveedor:")
-        proveedor_combo = QComboBox()
-        proveedor_combo.addItem("Proveedor 1")
-        proveedor_combo.addItem("Proveedor 2")
+        self.proveedor_combo = QComboBox()
+        proveedores = self.proveedor_service.obtenerProveedores()
+        for proveedor in proveedores:
+            self.proveedor_combo.addItem(proveedor.nombre, proveedor.id)
         rectangle_layout.addWidget(proveedor_label, 0, 0)
-        rectangle_layout.addWidget(proveedor_combo, 0, 1)
+        rectangle_layout.addWidget(self.proveedor_combo, 0, 1)
 
+        # Lista de productos (podrías obtenerla de tu base de datos o alguna otra fuente)
+        lista_productos = ["Producto 1", "Producto 2", "Producto 3", "Producto 4", "Producto 5"]
 
         # Input para buscar productos
         buscar_productos_label = QLabel("Buscar Productos:")
         buscar_productos_input = QLineEdit()
+        self.completer = QCompleter(lista_productos)
+        buscar_productos_input.setCompleter(self.completer)
         rectangle_layout.addWidget(buscar_productos_label, 1, 0)
         rectangle_layout.addWidget(buscar_productos_input, 1, 1)
 
@@ -49,12 +55,11 @@ class AgregarOrdenDialog(QDialog):
 
         # Tabla
         tabla = QTableWidget()
-        tabla.setColumnCount(7)
-        tabla.setHorizontalHeaderLabels(["ID", "ID Proveedor",  "Cantidad", "Cantidad", "Precio Compra", "Precio Total", "Fecha Recepción", "Recibido"])
+        tabla.setColumnCount(4)
+        tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra", "Precio Total"])
         # Cambiar la política de tamaño de las cabeceras horizontales
         tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         layout.addWidget(tabla)
-
 
         # Precio Total: QLineEdit
         precio_total_layout = QHBoxLayout()
@@ -79,15 +84,32 @@ class AgregarOrdenDialog(QDialog):
         confirmar_orden_button = QPushButton("Confirmar Orden")
         layout.addWidget(confirmar_orden_button)
 
+        # Cambiar la política de tamaño de la ventana
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
         self.resize(730, 300)
         self.centerOnScreen()
+
+        # Conectar la señal currentIndexChanged del QComboBox al slot update_product_list
+        self.proveedor_combo.currentIndexChanged.connect(self.update_product_list)
 
         # Conectar el botón para mostrar/ocultar el calendario
         fecha_recepcion_button.clicked.connect(fecha_recepcion_calendar.show)
 
         # Conectar el evento de selección de fecha
         fecha_recepcion_calendar.selectionChanged.connect(lambda: self.insertar_fecha(fecha_recepcion_calendar, fecha_recepcion_button))
+
+    # Actualizar la lista de productos cuando cambia el proveedor seleccionado
+    def update_product_list(self):
+        # Obtén el proveedor seleccionado
+        selected_provider = self.proveedor_combo.currentText()
+
+        # En base al proveedor seleccionado, obtén la lista de productos correspondiente
+        # Aquí simplemente generamos una nueva lista de ejemplo, pero tú deberías obtenerla de tu base de datos
+        new_product_list = ["Producto A", "Producto B", "Producto C"] if selected_provider == "Proveedor 1" else ["Producto X", "Producto Y", "Producto Z"]
+
+        # Actualiza el modelo de datos del QCompleter con la nueva lista de productos
+        self.completer.setModel(QStringListModel(new_product_list))
 
     def insertar_fecha(self, calendar, button):
         fecha_seleccionada = calendar.selectedDate()
@@ -99,4 +121,3 @@ class AgregarOrdenDialog(QDialog):
         resolution = QDesktopWidget().screenGeometry()
         self.move(round((resolution.width() / 2) - (self.frameSize().width() / 2)),
                 round((resolution.height() / 2) - (self.frameSize().height() / 2)))
-
