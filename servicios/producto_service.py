@@ -15,6 +15,9 @@ class ProductoService:
     
     def obtenerProductoPorProveedor(self, proveedor_id):
         return self.producto_repository.obtenerProductoPorProveedor(proveedor_id)
+    
+    def obtenerProductoPorNombre(self, nombre):
+        return self.producto_repository.obtenerProductoPorNombre(nombre)
 
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
         return self.producto_repository.actualizarProducto(nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo)

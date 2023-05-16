@@ -1,6 +1,6 @@
 import sys
 sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
-from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout
+from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt, QStringListModel
 
 
@@ -12,7 +12,6 @@ class AgregarOrdenDialog(QDialog):
 
         self.proveedor_service = proveedor_service
         self.producto_service = producto_service
-        
 
         # Layout principal
         layout = QVBoxLayout()
@@ -46,31 +45,34 @@ class AgregarOrdenDialog(QDialog):
 
         # Input para buscar productos
         buscar_productos_label = QLabel("Buscar Productos:")
-        buscar_productos_input = QLineEdit()
+        self.buscar_productos_input = QLineEdit()
         self.completer = QCompleter(lista_nombres_productos)
-        buscar_productos_input.setCompleter(self.completer)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.buscar_productos_input.setCompleter(self.completer)
         rectangle_layout.addWidget(buscar_productos_label, 1, 0)
-        rectangle_layout.addWidget(buscar_productos_input, 1, 1)
-
+        rectangle_layout.addWidget(self.buscar_productos_input, 1, 1)
 
         # Agregar el rectángulo al layout principal
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
         # Tabla
-        tabla = QTableWidget()
-        tabla.setColumnCount(4)
-        tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra", "Precio Total"])
+        self.tabla = QTableWidget()
+        self.tabla.setColumnCount(4)
+        self.tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra", "Precio Total"])
+        self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # Cambiar la política de tamaño de las cabeceras horizontales
-        tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        layout.addWidget(tabla)
+        self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        layout.addWidget(self.tabla)
 
         # Precio Total: QLineEdit
         precio_total_layout = QHBoxLayout()
         precio_total_label = QLabel("Total:")
-        precio_total_text = QLineEdit()
+        self.precio_total_text = QLabel()
+        self.precio_total_text.setAlignment(Qt.AlignCenter)
+        self.precio_total_text.setStyleSheet("color: black; font-size: 20px; font-weight: bold")
         precio_total_layout.addWidget(precio_total_label)
-        precio_total_layout.addWidget(precio_total_text)
+        precio_total_layout.addWidget(self.precio_total_text)
         layout.addLayout(precio_total_layout)
 
         # Fecha Recepción: QPushButton y QCalendarWidget
@@ -94,6 +96,9 @@ class AgregarOrdenDialog(QDialog):
         self.resize(730, 300)
         self.centerOnScreen()
 
+        # Conectar los productos a la tabla
+        self.completer.activated.connect(self.agregar_producto_a_tabla)
+
         # Conectar la señal currentIndexChanged del QComboBox al slot update_product_list
         self.proveedor_combo.currentIndexChanged.connect(self.update_product_list)
 
@@ -113,6 +118,40 @@ class AgregarOrdenDialog(QDialog):
 
         # Actualiza el modelo de datos del QCompleter con la nueva lista de productos
         self.completer.setModel(QStringListModel(new_product_list))
+
+    def agregar_producto_a_tabla(self):
+        producto_nombre = self.buscar_productos_input.text()
+        producto = self.producto_service.obtenerProductoPorNombre(producto_nombre)
+
+        if producto:
+            row_position = self.tabla.rowCount()
+            self.tabla.insertRow(row_position)
+
+            self.tabla.setItem(row_position, 0, QTableWidgetItem(producto.codigo))
+            self.tabla.setItem(row_position, 1, QTableWidgetItem(producto.nombre))
+
+            cantidad_spinbox = QSpinBox()
+            cantidad_spinbox.valueChanged.connect(self.actualizar_total)  # Conectar valueChanged a actualizar_total
+            self.tabla.setCellWidget(row_position, 2, cantidad_spinbox)
+
+            item = QTableWidgetItem(str(producto.precioCompra))
+            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+            self.tabla.setItem(row_position, 3, item)
+
+            self.actualizar_total()
+
+     
+    def actualizar_total(self):
+        total = 0.0
+
+        for row in range(self.tabla.rowCount()):
+            cantidad = self.tabla.cellWidget(row, 2).value()
+            precio_compra = float(self.tabla.item(row, 3).text())
+            total += cantidad * precio_compra
+
+        self.precio_total_text.setText("{:.2f}".format(total))
+
+
 
     def insertar_fecha(self, calendar, button):
         fecha_seleccionada = calendar.selectedDate()
