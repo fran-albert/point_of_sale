@@ -69,8 +69,8 @@ class ProductoRepository:
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (proveedor_id,))
-                row = cursor.fetchone()
-                if row:
+                rows = cursor.fetchall()  # Cambia esto
+                for row in rows:  # Y esto
                     codigo = row[0]
                     nombre = row[1]
                     precioCompra = row[2]
