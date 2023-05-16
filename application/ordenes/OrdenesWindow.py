@@ -1,8 +1,7 @@
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QHBoxLayout, QSpinBox, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
-from servicios.producto_service import ProductoService
-from utils.Utils import Utils
-from ventas.ventas_utils_buttons import VentasUtilsButtons
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
+from ordenes.agregar_orden import AgregarOrdenDialog
 
 class OrdenesWindow(QMainWindow):
     def __init__(self, app, parent=None):
@@ -12,7 +11,7 @@ class OrdenesWindow(QMainWindow):
 
         # Configurar ventana
         self.setWindowTitle("Órdenes de Compra")
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(100, 100, 150, 150)
 
         # Crear elementos gráficos
         main_widget = QWidget()
@@ -26,65 +25,25 @@ class OrdenesWindow(QMainWindow):
         title_label.setFont(font)
         main_layout.addWidget(title_label)
 
-        # Agregar los botones debajo del título "Ventas"
+       # Agregar los botones debajo del título "Ventas"
         buttons_layout = QHBoxLayout()
-        for button_text in ["Vendedor", "Clientes", "Mov. de Caja", "Corte Caja", "Cancelar"]:
+        for button_text in ["Nueva Orden de Compra", "Historial Órdenes de Compra", "Cancelar"]:
             button = QPushButton(button_text)
-            button.setFixedWidth(120)  # Ajustar el ancho de los botones
+            button.setFixedWidth(200)  # Ajustar el ancho de los botones
+            button.setFixedHeight(50)  # Establecer altura fija
+            button.setStyleSheet("font-size: 14px")  # Ajustar tamaño de fuente
             buttons_layout.addWidget(button)
-        buttons_layout.addStretch()  # Agregar un espacio flexible para alinear a la izquierda
 
-        # Agregar el contador de ventas alineado a la derecha
-        self.venta_numero_label = QLabel("Venta N°: ")
-        buttons_layout.addWidget(self.venta_numero_label)
+            if button_text == "Nueva Orden de Compra":
+                button.clicked.connect(self.on_agregar_orden_clicked)  # Conectar al método
+
+        buttons_layout.addStretch()  # Agregar espacio adicional
+
+
         main_layout.addLayout(buttons_layout)
-
-        input_layout = QHBoxLayout()
-
-        self.codigo_input = QLineEdit()
-        self.codigo_input.setPlaceholderText("Código del producto")
-        input_layout.addWidget(self.codigo_input)
-
-        self.nombre_input = QLineEdit()
-        self.nombre_input.setPlaceholderText("Nombre del producto")
-        input_layout.addWidget(self.nombre_input)
-
-        main_layout.addLayout(input_layout)
-
-        self.table = QTableWidget()
-        self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(["Código", "Descripción", "Cantidad", "Precio Unitario", "Precio Total"])
-        # Ajustar el ancho de cada columna
-        self.table.setColumnWidth(0, 100)  # Código
-        self.table.setColumnWidth(1, 400)  # Descripción
-        self.table.setColumnWidth(2, 80)   # Cantidad
-        self.table.setColumnWidth(3, 100)  # Precio
-        self.table.setColumnWidth(4, 100)  # Precio Total
-        main_layout.addWidget(self.table)
-
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-        # Configurar el tamaño y posición de la tabla
-        self.table.setMinimumWidth(800)
-        self.table.setMaximumHeight(300)
-
-        # Agregar Subtotal, IVA y Total debajo de la tabla
-        totals_layout = QVBoxLayout()
-
-        self.subtotal_label = QLabel("Subtotal: ")
-        self.iva_label = QLabel("I.V.A: ")
-        self.total_label = QLabel("Total: ")
-
-        totals_layout.addWidget(self.subtotal_label, alignment=Qt.AlignRight)
-        totals_layout.addWidget(self.iva_label, alignment=Qt.AlignRight)
-        totals_layout.addWidget(self.total_label, alignment=Qt.AlignRight)
-
-        main_layout.addLayout(totals_layout)
-
-        # Mover el botón "Cobrar" debajo de Subtotal, IVA y Total
-        cobrar_button = QPushButton("Cobrar")
-        cobrar_button.clicked.connect(lambda: VentasUtilsButtons.show_payment_window('test', self.total, self, self.lista_productos_vendidos(self.table)))
-
-        main_layout.addWidget(cobrar_button, alignment=Qt.AlignRight)
-
+    def on_agregar_orden_clicked(self):
+        dialog = AgregarOrdenDialog()
+        result = dialog.exec()
