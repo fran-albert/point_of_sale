@@ -9,7 +9,6 @@ from utils.Utils import Utils
 import Main
 
 
-
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()

@@ -7,7 +7,8 @@ from utils.Utils import init_header,  create_main_window_menu
 from categorias.abm_categorias import ABMCategoriasWindow
 from utils.Utils import Utils
 from productos.abm_productos import ABMProductosWindow
-from VentasWindow import VentasWindow
+from ventas.VentasWindow import VentasWindow
+from ordenes.OrdenesWindow import OrdenesWindow
 from proveedores.abm_proveedores import ABMProveedoresWindow
 import sys
 
@@ -33,6 +34,10 @@ class MainWindow(QMainWindow):
     def show_ventas_window(self):
         self.ventas_window = VentasWindow(self.app)
         self.ventas_window.show()
+
+    def show_ordenes_window(self):
+        self.ordenes_window = OrdenesWindow(self.app)
+        self.ordenes_window.show()
 
     def generate_sales_report_wrapper(self):
         Utils.generate_sales_report(self)

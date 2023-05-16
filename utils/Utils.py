@@ -226,8 +226,8 @@ def create_main_window_menu(parent):
     menu_menu = QMenu("Menú", parent)
     menu_bar.addMenu(menu_menu)
 
-    clientes_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Clientes", parent)
-    menu_menu.addAction(clientes_action)
+    vendedores_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Vendedores", parent)
+    menu_menu.addAction(vendedores_action)
 
     categorias_action = QAction(QIcon("img/icons8-almacén-48.png"),"Categorias", parent)
     menu_menu.addAction(categorias_action)
@@ -238,8 +238,8 @@ def create_main_window_menu(parent):
     proveedores_action = QAction(QIcon("img/icons8-proveedor-48.png"),"Proveedores", parent)
     menu_menu.addAction(proveedores_action)
 
-    usuarios_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Usuarios", parent)
-    menu_menu.addAction(usuarios_action)
+    ordenes_action = QAction(QIcon("img/icons8-recibo-48.png"),"Órdenes de Compra", parent)
+    menu_menu.addAction(ordenes_action)
 
     movimientos_menu = QMenu("Movimientos", parent)
     menu_bar.addMenu(movimientos_menu)
@@ -268,6 +268,8 @@ def create_main_window_menu(parent):
     productos_action.triggered.connect(parent.show_products_window)
     proveedores_action.triggered.connect(parent.show_proveedores_window)
     ventas_action.triggered.connect(parent.show_ventas_window)
+    ordenes_action.triggered.connect(parent.show_ordenes_window)
+    
 
 # HEADER
 def init_header(parent, width, username, menu_bar_height):
