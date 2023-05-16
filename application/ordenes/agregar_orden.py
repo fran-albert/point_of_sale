@@ -6,11 +6,13 @@ from PyQt5.QtCore import Qt, QStringListModel
 
 
 class AgregarOrdenDialog(QDialog):
-    def __init__(self, proveedor_service, parent=None):
+    def __init__(self, proveedor_service, producto_service, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nueva Orden de Compra")
 
         self.proveedor_service = proveedor_service
+        self.producto_service = producto_service
+        
 
         # Layout principal
         layout = QVBoxLayout()
@@ -39,15 +41,17 @@ class AgregarOrdenDialog(QDialog):
         rectangle_layout.addWidget(self.proveedor_combo, 0, 1)
 
         # Lista de productos (podrías obtenerla de tu base de datos o alguna otra fuente)
-        lista_productos = ["Producto 1", "Producto 2", "Producto 3", "Producto 4", "Producto 5"]
+        self.productos  = self.producto_service.obtenerProductos()
+        lista_nombres_productos = [producto.nombre for producto in self.productos]
 
         # Input para buscar productos
         buscar_productos_label = QLabel("Buscar Productos:")
         buscar_productos_input = QLineEdit()
-        self.completer = QCompleter(lista_productos)
+        self.completer = QCompleter(lista_nombres_productos)
         buscar_productos_input.setCompleter(self.completer)
         rectangle_layout.addWidget(buscar_productos_label, 1, 0)
         rectangle_layout.addWidget(buscar_productos_input, 1, 1)
+
 
         # Agregar el rectángulo al layout principal
         layout.addWidget(title_label)
@@ -102,11 +106,10 @@ class AgregarOrdenDialog(QDialog):
     # Actualizar la lista de productos cuando cambia el proveedor seleccionado
     def update_product_list(self):
         # Obtén el proveedor seleccionado
-        selected_provider = self.proveedor_combo.currentText()
+        selected_provider_id = self.proveedor_combo.currentData()
 
         # En base al proveedor seleccionado, obtén la lista de productos correspondiente
-        # Aquí simplemente generamos una nueva lista de ejemplo, pero tú deberías obtenerla de tu base de datos
-        new_product_list = ["Producto A", "Producto B", "Producto C"] if selected_provider == "Proveedor 1" else ["Producto X", "Producto Y", "Producto Z"]
+        new_product_list = [producto.nombre for producto in self.producto_service.obtenerProductoPorProveedor(selected_provider_id)]
 
         # Actualiza el modelo de datos del QCompleter con la nueva lista de productos
         self.completer.setModel(QStringListModel(new_product_list))

@@ -62,6 +62,30 @@ class ProductoRepository:
             return producto
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el código {codigo}", e)
+        
+    def obtenerProductoPorProveedor(self, proveedor_id):
+        productos = []
+        query = "SELECT * FROM productos WHERE proveedor = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (proveedor_id,))
+                row = cursor.fetchone()
+                if row:
+                    codigo = row[0]
+                    nombre = row[1]
+                    precioCompra = row[2]
+                    precioVenta = row[3]
+                    cant_stock = row[4]
+                    categoria = row[5]
+                    impuestos = row[6]
+                    descuentos = row[7]
+                    proveedor = row[8]
+                    fecha_venc = row[9]
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                    productos.append(producto)
+            return productos
+        except Error as e:
+            raise RuntimeError(f"Error al obtener los productos del proveedor con el ID {proveedor_id}", e)
     
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
         query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"
