@@ -15,7 +15,6 @@ class ProductoVendidoRepository:
         except Error as e:
             raise RuntimeError("Error al insertar el producto vendido", e)
 
-
     def obtenerProductosVendidos(self, idTicket):
         prodVendidos = []
         query = "SELECT * FROM productos_vendidos WHERE idTicket = %s"

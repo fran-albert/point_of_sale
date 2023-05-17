@@ -83,6 +83,7 @@ class AgregarOrdenDialog(QDialog):
 
         # Botón Confirmar Orden
         confirmar_orden_button = QPushButton("Confirmar Orden")
+        confirmar_orden_button.clicked.connect(self.nueva_orden)
         layout.addWidget(confirmar_orden_button)
 
         # Cambiar la política de tamaño de la ventana
@@ -102,6 +103,9 @@ class AgregarOrdenDialog(QDialog):
 
         # Conectar el evento de selección de fecha
         fecha_recepcion_calendar.selectionChanged.connect(lambda: self.insertar_fecha(fecha_recepcion_calendar, fecha_recepcion_button))
+
+    def nueva_orden(self, idProveedor, lista_productos, total, fecha):
+        print('holamudno')
 
     # Actualizar la lista de productos cuando cambia el proveedor seleccionado
     def update_product_list(self):

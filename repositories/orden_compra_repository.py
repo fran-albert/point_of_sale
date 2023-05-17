@@ -15,7 +15,7 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError("Error al insertar la orden de compra", e)
 
-    def obtenerProductosVendidos(self, id):
+    def obtenerOrdenes(self, id):
         ordenesCompra = []
         query = "SELECT * FROM orden_compra WHERE id = %s"
         try:
