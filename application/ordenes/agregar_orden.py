@@ -104,7 +104,7 @@ class AgregarOrdenDialog(QDialog):
         # Conectar el evento de selección de fecha
         fecha_recepcion_calendar.selectionChanged.connect(lambda: self.insertar_fecha(fecha_recepcion_calendar, fecha_recepcion_button))
 
-    def nueva_orden(self, idProveedor, lista_productos, total, fecha):
+    def nueva_orden(self):
         print('holamudno')
 
     # Actualizar la lista de productos cuando cambia el proveedor seleccionado

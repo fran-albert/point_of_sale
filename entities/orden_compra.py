@@ -1,17 +1,16 @@
 class OrdenCompra:
-    def __init__(self, id, idProveedor, precioCompra, precioTotal, fechaRecepcion, recibido):
-        self.id = id
+    def __init__(self, idOrdenCompra, idProveedor, precioTotalOrden, fechaRecepcion, recibido):
+        self.idOrdenCompra = idOrdenCompra
         self.idProveedor = idProveedor
-        self.precioCompra = precioCompra
-        self.precioTotal = precioTotal
+        self.precioTotalOrden = precioTotalOrden
         self.fechaRecepcion = fechaRecepcion
         self.recibido = recibido
 
-    def get_id(self):
-        return self.id
+    def get_idOrdenCompra(self):
+        return self.idOrdenCompra
 
-    def set_id(self, id):
-        self.id = id
+    def set_idOrdenCompra(self, idOrdenCompra):
+        self.idOrdenCompra = idOrdenCompra
 
     def get_idProveedor(self):
         return self.idProveedor
@@ -19,17 +18,11 @@ class OrdenCompra:
     def set_idProveedor(self, idProveedor):
         self.idProveedor = idProveedor
 
-    def get_precioCompra(self):
-        return self.precioCompra
+    def get_precioTotalOrden(self):
+        return self.precioTotalOrden
 
-    def set_precioCompra(self, precioCompra):
-        self.precioCompra = precioCompra
-
-    def get_precioTotal(self):
-        return self.precioTotal
-
-    def set_precioTotal(self, precioTotal):
-        self.precioTotal = precioTotal
+    def set_precioTotalOrden(self, precioTotalOrden):
+        self.precioTotalOrden = precioTotalOrden
 
     def get_fechaRecepcion(self):
         return self.fechaRecepcion
