@@ -111,8 +111,6 @@ class ProductoRepository:
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el nombre {nombre}", e)
 
-
-
     def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
         query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"
         try:

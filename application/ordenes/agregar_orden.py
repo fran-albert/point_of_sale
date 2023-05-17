@@ -3,8 +3,6 @@ sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
 from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt, QStringListModel
 
-
-
 class AgregarOrdenDialog(QDialog):
     def __init__(self, proveedor_service, producto_service, parent=None):
         super().__init__(parent)
@@ -33,20 +31,17 @@ class AgregarOrdenDialog(QDialog):
         # Proveedor: QComboBox
         proveedor_label = QLabel("Proveedor:")
         self.proveedor_combo = QComboBox()
+        self.proveedor_combo.addItem("Selecciona el Proveedor", None)
         proveedores = self.proveedor_service.obtenerProveedores()
         for proveedor in proveedores:
             self.proveedor_combo.addItem(proveedor.nombre, proveedor.id)
         rectangle_layout.addWidget(proveedor_label, 0, 0)
         rectangle_layout.addWidget(self.proveedor_combo, 0, 1)
 
-        # Lista de productos (podrías obtenerla de tu base de datos o alguna otra fuente)
-        self.productos  = self.producto_service.obtenerProductos()
-        lista_nombres_productos = [producto.nombre for producto in self.productos]
-
         # Input para buscar productos
         buscar_productos_label = QLabel("Buscar Productos:")
         self.buscar_productos_input = QLineEdit()
-        self.completer = QCompleter(lista_nombres_productos)
+        self.completer = QCompleter()
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.buscar_productos_input.setCompleter(self.completer)
         rectangle_layout.addWidget(buscar_productos_label, 1, 0)
@@ -112,10 +107,12 @@ class AgregarOrdenDialog(QDialog):
     def update_product_list(self):
         # Obtén el proveedor seleccionado
         selected_provider_id = self.proveedor_combo.currentData()
-
+        # Si no se ha seleccionado ningún proveedor, vacía la lista de productos
+        if selected_provider_id is None:
+            self.completer.setModel(QStringListModel([]))
+            return
         # En base al proveedor seleccionado, obtén la lista de productos correspondiente
         new_product_list = [producto.nombre for producto in self.producto_service.obtenerProductoPorProveedor(selected_provider_id)]
-
         # Actualiza el modelo de datos del QCompleter con la nueva lista de productos
         self.completer.setModel(QStringListModel(new_product_list))
 
@@ -140,7 +137,6 @@ class AgregarOrdenDialog(QDialog):
 
             self.actualizar_total()
 
-     
     def actualizar_total(self):
         total = 0.0
 
@@ -150,8 +146,6 @@ class AgregarOrdenDialog(QDialog):
             total += cantidad * precio_compra
 
         self.precio_total_text.setText("{:.2f}".format(total))
-
-
 
     def insertar_fecha(self, calendar, button):
         fecha_seleccionada = calendar.selectedDate()
