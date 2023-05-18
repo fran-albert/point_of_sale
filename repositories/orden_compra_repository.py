@@ -17,7 +17,7 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError("Error al insertar la orden de compra", e)
 
-    #OBTENER 1 ORDEN CON EL IDORDENCOMPRA
+    #OBTENER 1 ORDEN CON EL IDORDENCOMPRA PARA VER  EN HISTORIAL DE ORDENES Y SELECCIONAR UNA ORDEN Y MODIFICAR EL RECIBIDO
 
     def obtenerOrdenes(self):
         ordenesCompra = []
