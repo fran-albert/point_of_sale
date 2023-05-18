@@ -7,7 +7,7 @@ class ProductoPedidoRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarProdPedido(self, prod_pedido):
-        sql = "INSERT INTO productos_vendidos(idOrdenCompra, prod_pedido, codigo, cant_pedida, precio_compra, precio_total) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO productos_pedidos(idOrdenCompra, prod_pedido, codigo, cant_pedida, precio_compra, precio_total) VALUES (%s, %s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (prod_pedido.get_idOrdenCompra(), prod_pedido.get_prod_pedido(), prod_pedido.get_codigo(), prod_pedido.get_cant_pedida(), prod_pedido.get_precio_compra(), prod_pedido.get_precio_total()))

@@ -7,11 +7,13 @@ class OrdenCompraRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarOrden(self, ordenCompra):
-        sql = "INSERT INTO orden_compra(idProveedor, precioTotalOrden, fechaRecepcion, recibido) VALUES  %s, %s, %s, %s)"
+        sql = "INSERT INTO orden_compra(idProveedor, precioTotalOrden, fechaRecepcion, recibido) VALUES (%s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (ordenCompra.get_idProveedor(), ordenCompra.get_precioTotalOrden(), ordenCompra.get_fechaRecepcion(), ordenCompra.get_recibido()))
             self.connection.commit()
+            last_inserted_id = cursor.lastrowid
+            return last_inserted_id
         except Error as e:
             raise RuntimeError("Error al insertar la orden de compra", e)
 

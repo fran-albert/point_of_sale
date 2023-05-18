@@ -1,5 +1,5 @@
 class OrdenCompra:
-    def __init__(self, idOrdenCompra, idProveedor, precioTotalOrden, fechaRecepcion, recibido):
+    def __init__(self, idProveedor, precioTotalOrden, fechaRecepcion, recibido, idOrdenCompra = None):
         self.idOrdenCompra = idOrdenCompra
         self.idProveedor = idProveedor
         self.precioTotalOrden = precioTotalOrden

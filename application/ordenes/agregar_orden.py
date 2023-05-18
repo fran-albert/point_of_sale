@@ -2,14 +2,18 @@ import sys
 sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
 from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt, QStringListModel
+from servicios.productos_pedidos_service import ProductoPedidoService
+from entities.orden_compra import OrdenCompra
+from entities.productos_pedidos import ProductosPedidos
 
 class AgregarOrdenDialog(QDialog):
-    def __init__(self, proveedor_service, producto_service, parent=None):
+    def __init__(self, proveedor_service, producto_service, orden_compra_service, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nueva Orden de Compra")
 
         self.proveedor_service = proveedor_service
         self.producto_service = producto_service
+        self.orden_compra_service = orden_compra_service
 
         # Layout principal
         layout = QVBoxLayout()
@@ -54,7 +58,7 @@ class AgregarOrdenDialog(QDialog):
         # Tabla
         self.tabla = QTableWidget()
         self.tabla.setColumnCount(4)
-        self.tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra", "Precio Total"])
+        self.tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra"])
         self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # Cambiar la política de tamaño de las cabeceras horizontales
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
@@ -83,7 +87,7 @@ class AgregarOrdenDialog(QDialog):
 
         # Botón Confirmar Orden
         confirmar_orden_button = QPushButton("Confirmar Orden")
-        confirmar_orden_button.clicked.connect(self.nueva_orden)
+        confirmar_orden_button.clicked.connect(lambda: self.nueva_orden(self.proveedor_combo.currentData(),float(self.precio_total_text.text()), fecha_recepcion_calendar.selectedDate().toString("yyyy-MM-dd"), self.lista_productos_pedidos(self.tabla)))
         layout.addWidget(confirmar_orden_button)
 
         # Cambiar la política de tamaño de la ventana
@@ -104,8 +108,42 @@ class AgregarOrdenDialog(QDialog):
         # Conectar el evento de selección de fecha
         fecha_recepcion_calendar.selectionChanged.connect(lambda: self.insertar_fecha(fecha_recepcion_calendar, fecha_recepcion_button))
 
-    def nueva_orden(self):
-        print('holamudno')
+    def lista_productos_pedidos(self, table) :
+            productos_pedidos = []
+            for row in range(table.rowCount()):
+                row_data = []
+                for column in range(table.columnCount()):
+                    cell = table.item(row, column)
+                    if cell is not None:
+                        cell_value = str(table.item(row, column).text())
+                        row_data.append(cell_value)
+                    else:
+                        cantidad_spinbox = table.cellWidget(row, column)
+                        cantidad_spinbox.value()
+                        row_data.append(cantidad_spinbox.value())
+                producto_pedido = ProductosPedidos(None, None, row_data[1],  row_data[0],  row_data[2],  row_data[3], None)
+                productos_pedidos.append(producto_pedido)
+            return productos_pedidos
+
+    def nueva_orden(self, idProveedor, precioTotalOrden, fechaRecepcion, productos_pedidos):
+        orden = OrdenCompra(idProveedor, precioTotalOrden, fechaRecepcion, recibido = False)
+        orden_generada = self.orden_compra_service.insertarOrden(orden)
+        productos_pedidos_service = ProductoPedidoService()
+        for producto in productos_pedidos:
+                precio_compra = float(producto.get_precio_compra())
+                precio_compra = "{:.2f}".format(precio_compra)
+                precio_total = float(producto.get_precio_compra()) * float(producto.get_cant_pedida())
+                precio_total = "{:.2f}".format(precio_total)  # Ahora precio_total debería ser un número flotante
+                producto_pedido = ProductosPedidos(
+                    None,  # idProdPedido se establecerá automáticamente en la base de datos
+                    orden_generada,  # idTicket se establecerá después de insertar el ticket
+                    producto.get_prod_pedido(),  
+                    producto.get_codigo(),  
+                    producto.get_cant_pedida(),  
+                    precio_compra,  
+                    precio_total
+                )
+                productos_pedidos_service.insertarProdPedido(producto_pedido)
 
     # Actualizar la lista de productos cuando cambia el proveedor seleccionado
     def update_product_list(self):
