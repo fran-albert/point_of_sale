@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
 from servicios.vendedores_service import VendedorService
 from vendedores.agregar_vendedor import AgregarVendedorDialog
+from vendedores.lista_vendedores import ListaVendedoresDialog
 
 class VendedoresWindow(QMainWindow):
     def __init__(self, app, parent=None):
@@ -50,7 +51,8 @@ class VendedoresWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_lista_vendedores_clicked(self):
-        print('LISTA VENDEDOR')
+        dialog = ListaVendedoresDialog()
+        result = dialog.exec()
 
     def on_cancelar_clicked(self):
         self.close()  
