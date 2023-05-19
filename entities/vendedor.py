@@ -1,5 +1,5 @@
 class Vendedor:
-    def __init__(self, dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta):
+    def __init__(self, dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta, id= None):
         self.dni = dni
         self.nombre = nombre
         self.apellido = apellido
@@ -7,6 +7,13 @@ class Vendedor:
         self.correo = correo
         self.fechaNac = fechaNac
         self.fechaAlta = fechaAlta
+        self.id = id
+
+    def get_id(self):
+        return self.id
+
+    def set_id(self, id):
+        self.id = id
 
     def get_dni(self):
         return self.dni
