@@ -53,11 +53,12 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError("Error al obtener las órdenes de compra", e)
 
-    def actualizarOrdenRecibida(self, idOrdenCompra):
-        query = "UPDATE orden_compra SET recibido = TRUE WHERE idOrdenCompra = %s"
+    def actualizarOrden(self, idOrdenCompra, recibido):
+        query = "UPDATE orden_compra SET recibido = %s WHERE idOrdenCompra = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (idOrdenCompra,))
+                cursor.execute(query, (recibido, idOrdenCompra))
                 self.connection.commit()
         except Error as e:
             raise RuntimeError(f"Error al actualizar la orden de compra con el id {idOrdenCompra}", e)
+

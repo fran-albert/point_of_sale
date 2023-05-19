@@ -12,3 +12,6 @@ class OrdenCompraService:
     
     def obtenerOrden(self, idOrdenCompra):
         return self.orden_compra_repository.obtenerOrden(idOrdenCompra)
+    
+    def actualizarOrden(self, idOrdenCompra, recibido):
+        return self.orden_compra_repository.actualizarOrden(idOrdenCompra, recibido)

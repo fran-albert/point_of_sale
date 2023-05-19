@@ -47,7 +47,9 @@ class VerOrdenDialog(QDialog):
         self.tabla = QTableWidget(len(self.orden_compra), 5)
         self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
         self.tabla.setColumnWidth(0, 20)
+
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
+        self.ordenes_checkboxes = [] 
         
         for i, orden in enumerate(self.orden_compra):
             item_id = QTableWidgetItem(str(orden.idOrdenCompra))
@@ -58,6 +60,7 @@ class VerOrdenDialog(QDialog):
             checkbox_recibido = QCheckBox()
             checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
             checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;") 
+            self.ordenes_checkboxes.append(checkbox_recibido)
 
             self.tabla.setItem(i, 0, item_id)
             self.tabla.setItem(i, 1, item_idProveedor)
@@ -81,4 +84,8 @@ class VerOrdenDialog(QDialog):
         self.resize(500, 500)
     
     def guardar_cambios(self):
-        print("guardar cambios")
+        for i, checkbox in enumerate(self.ordenes_checkboxes):
+            idOrdenCompra = self.orden_compra[i].idOrdenCompra
+            recibido = checkbox.isChecked()
+
+            self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
