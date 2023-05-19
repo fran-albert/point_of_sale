@@ -1,16 +1,15 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
-from ordenes.agregar_orden import AgregarOrdenDialog
-from ordenes.historial_ordenes import VerOrdenDialog
-from servicios.producto_service import ProductoService
-from servicios.proveedor_service import ProveedorService
-from servicios.orden_compra_service import OrdenCompraService
+from servicios.vendedores_service import VendedorService
+from vendedores.agregar_vendedor import AgregarVendedorDialog
 
 class VendedoresWindow(QMainWindow):
     def __init__(self, app, parent=None):
         super().__init__(parent)
 
         self.app = app
+        self.vendedor_service = VendedorService()
+
         self.setWindowTitle("Vendedores")
         self.setGeometry(100, 100, 150, 150)
 
@@ -47,7 +46,8 @@ class VendedoresWindow(QMainWindow):
         self.setCentralWidget(main_widget)
 
     def on_agregar_vendedor_clicked(self):
-        print('AGREGAR VENDEDOR')
+        dialog = AgregarVendedorDialog(self.vendedor_service)
+        result = dialog.exec()
 
     def on_ver_lista_vendedores_clicked(self):
         print('LISTA VENDEDOR')
