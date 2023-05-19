@@ -1,12 +1,15 @@
-from PyQt5.QtWidgets import QDialog, QDateEdit, QCompleter, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QDateEdit, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QCheckBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt
-from servicios.productos_pedidos_service import ProductoPedidoService
-from entities.orden_compra import OrdenCompra
-from entities.productos_pedidos import ProductosPedidos
+from servicios.orden_compra_service import OrdenCompraService
+import datetime
 
 class VerOrdenDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.orden_compra_service = OrdenCompraService()
+        self.orden_compra = self.orden_compra_service.obtenerOrdenes()
+
         self.setWindowTitle("Historial de Órdenes de Compra")
 
         layout = QVBoxLayout()
@@ -38,9 +41,35 @@ class VerOrdenDialog(QDialog):
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
-        self.tabla = QTableWidget()
-        self.tabla.setColumnCount(4)
-        self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Recibido"])
+        self.tabla = QTableWidget(len(self.orden_compra), 5)
+        self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
+
+        for i, orden in enumerate(self.orden_compra):
+            print(f"Procesando orden {i}")
+            print(f"idOrdenCompra: {orden.idOrdenCompra}, tipo: {type(orden.idOrdenCompra)}")
+            print(f"idProveedor: {orden.idProveedor}, tipo: {type(orden.idProveedor)}")
+            print(f"precioTotalOrden: {orden.precioTotalOrden}, tipo: {type(orden.precioTotalOrden)}")
+            print(f"fechaRecepcion: {orden.fechaRecepcion}, tipo: {type(orden.fechaRecepcion)}")
+            print(f"recibido: {orden.recibido}, tipo: {type(orden.recibido)}")
+            item_id = QTableWidgetItem(orden.idOrdenCompra)
+            item_idProveedor = QTableWidgetItem(orden.idProveedor)
+            item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precioTotalOrden)))
+            if orden.fechaRecepcion is not None:
+                item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
+            else:
+                item_fechaRecepcion = QTableWidgetItem("")
+
+
+            checkbox_recibido = QCheckBox()
+            checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
+            checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;") 
+
+            self.tabla.setItem(i, 0, item_id)
+            self.tabla.setItem(i, 1, item_idProveedor)
+            self.tabla.setItem(i, 2, item_precioTotalOrden)
+            self.tabla.setItem(i, 3, item_fechaRecepcion)
+            self.tabla.setCellWidget(i, 4, checkbox_recibido)
+
         self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         layout.addWidget(self.tabla)

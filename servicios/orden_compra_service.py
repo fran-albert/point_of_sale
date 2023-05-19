@@ -9,3 +9,6 @@ class OrdenCompraService:
     
     def obtenerOrdenes(self):
         return self.orden_compra_repository.obtenerOrdenes()
+    
+    def obtenerOrden(self, idOrdenCompra):
+        return self.orden_compra_repository.obtenerOrden(idOrdenCompra)

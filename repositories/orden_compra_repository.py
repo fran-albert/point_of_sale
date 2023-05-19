@@ -38,17 +38,17 @@ class OrdenCompraRepository:
         
     def obtenerOrdenes(self):
         ordenesCompra = []
-        query = "SELECT * FROM orden_compra"
+        query = "SELECT idOrdenCompra, idProveedor, precioTotalOrden, fechaRecepcion, recibido FROM orden_compra"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query)
                 for row in cursor.fetchall():
                     id = row[0]
-                    idProovedor = row[1]
+                    idProveedor = row[1]
                     precioTotalOrden = row[2]
                     fechaRecepcion = row[3]
                     recibido = row[4]
-                    nuevaOrdenCompra = OrdenCompra(id, idProovedor, precioTotalOrden, fechaRecepcion, recibido)
+                    nuevaOrdenCompra = OrdenCompra(id, idProveedor, precioTotalOrden, fechaRecepcion, recibido)
                     ordenesCompra.append(nuevaOrdenCompra)
             return ordenesCompra
         except Error as e:
