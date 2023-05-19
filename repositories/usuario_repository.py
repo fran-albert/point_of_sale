@@ -1,5 +1,5 @@
 from mysqlx import Error
-from entities.vendedor import Vendedor
+from entities.usuario import Usuario
 from access.mysql_connection import MySQLConnection
 
 class UsuarioRepository:
@@ -28,7 +28,7 @@ class UsuarioRepository:
                     id = row[0]
                     username = row[1]
                     password = row[2]
-                    nuevoUsuario = Vendedor(id, username, password)
+                    nuevoUsuario = Usuario(id, username, password)
                     usuarios.append(nuevoUsuario)
             return usuarios
         except Error as e:
