@@ -88,4 +88,6 @@ class VerOrdenDialog(QDialog):
             idOrdenCompra = self.orden_compra[i].idOrdenCompra
             recibido = checkbox.isChecked()
 
-            self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
+            if recibido:
+                self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
+                checkbox.setEnabled(False) 
