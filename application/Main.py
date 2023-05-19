@@ -9,6 +9,7 @@ from utils.Utils import Utils
 from productos.abm_productos import ABMProductosWindow
 from ventas.VentasWindow import VentasWindow
 from ordenes.OrdenesWindow import OrdenesWindow
+from vendedores.VendedoresWindow import VendedoresWindow
 from proveedores.abm_proveedores import ABMProveedoresWindow
 import sys
 
@@ -38,6 +39,10 @@ class MainWindow(QMainWindow):
     def show_ordenes_window(self):
         self.ordenes_window = OrdenesWindow(self.app)
         self.ordenes_window.show()
+
+    def show_vendedores_window(self):
+        self.vendedores_window = VendedoresWindow(self.app)
+        self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
         Utils.generate_sales_report(self)

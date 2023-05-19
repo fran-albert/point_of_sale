@@ -269,6 +269,7 @@ def create_main_window_menu(parent):
     proveedores_action.triggered.connect(parent.show_proveedores_window)
     ventas_action.triggered.connect(parent.show_ventas_window)
     ordenes_action.triggered.connect(parent.show_ordenes_window)
+    vendedores_action.triggered.connect(parent.show_vendedores_window)
     
 
 # HEADER

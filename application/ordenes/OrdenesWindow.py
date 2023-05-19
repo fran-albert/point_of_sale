@@ -41,13 +41,13 @@ class OrdenesWindow(QMainWindow):
             buttons_layout.addWidget(button)
 
             if button_text == "Nueva Orden de Compra":
-                button.clicked.connect(self.on_agregar_orden_clicked)  # Conectar al método
+                button.clicked.connect(self.on_agregar_orden_clicked)  
             if button_text == "Historial Órdenes de Compra":
-                button.clicked.connect(self.on_ver_orden_clicked)  # Conectar al método
+                button.clicked.connect(self.on_ver_orden_clicked)
+            if button_text == "Cancelar":
+                button.clicked.connect(self.on_cancelar_clicked) 
 
-        buttons_layout.addStretch()  # Agregar espacio adicional
-
-
+        buttons_layout.addStretch() 
         main_layout.addLayout(buttons_layout)
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
@@ -59,3 +59,6 @@ class OrdenesWindow(QMainWindow):
     def on_ver_orden_clicked(self):
         dialog = VerOrdenDialog()
         result = dialog.exec()
+
+    def on_cancelar_clicked(self):
+        self.close() 
