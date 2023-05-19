@@ -45,20 +45,10 @@ class VerOrdenDialog(QDialog):
         self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
 
         for i, orden in enumerate(self.orden_compra):
-            print(f"Procesando orden {i}")
-            print(f"idOrdenCompra: {orden.idOrdenCompra}, tipo: {type(orden.idOrdenCompra)}")
-            print(f"idProveedor: {orden.idProveedor}, tipo: {type(orden.idProveedor)}")
-            print(f"precioTotalOrden: {orden.precioTotalOrden}, tipo: {type(orden.precioTotalOrden)}")
-            print(f"fechaRecepcion: {orden.fechaRecepcion}, tipo: {type(orden.fechaRecepcion)}")
-            print(f"recibido: {orden.recibido}, tipo: {type(orden.recibido)}")
-            item_id = QTableWidgetItem(orden.idOrdenCompra)
-            item_idProveedor = QTableWidgetItem(orden.idProveedor)
+            item_id = QTableWidgetItem(str(orden.idOrdenCompra))
+            item_idProveedor = QTableWidgetItem(str(orden.idProveedor))
             item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precioTotalOrden)))
-            if orden.fechaRecepcion is not None:
-                item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
-            else:
-                item_fechaRecepcion = QTableWidgetItem("")
-
+            item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
 
             checkbox_recibido = QCheckBox()
             checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
