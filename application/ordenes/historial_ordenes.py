@@ -59,7 +59,11 @@ class VerOrdenDialog(QDialog):
 
             checkbox_recibido = QCheckBox()
             checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
-            checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;") 
+            checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;")
+            
+            if orden.recibido:
+                checkbox_recibido.setEnabled(False)
+
             self.ordenes_checkboxes.append(checkbox_recibido)
 
             self.tabla.setItem(i, 0, item_id)
@@ -87,7 +91,6 @@ class VerOrdenDialog(QDialog):
         for i, checkbox in enumerate(self.ordenes_checkboxes):
             idOrdenCompra = self.orden_compra[i].idOrdenCompra
             recibido = checkbox.isChecked()
-
             if recibido:
                 self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
-                checkbox.setEnabled(False) 
+                checkbox.setEnabled(False)
