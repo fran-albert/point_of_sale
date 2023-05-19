@@ -44,8 +44,6 @@ class LoginWindow(QWidget):
         """Cierra la aplicación."""
         self.close()
 
-
-
 # Código para ejecutar la aplicación
 if __name__ == "__main__":
     app = QApplication(sys.argv)

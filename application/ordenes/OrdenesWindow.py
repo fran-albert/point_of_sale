@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
 from ordenes.agregar_orden import AgregarOrdenDialog
+from ordenes.historial_ordenes import VerOrdenDialog
 from servicios.producto_service import ProductoService
 from servicios.proveedor_service import ProveedorService
 from servicios.orden_compra_service import OrdenCompraService
@@ -41,6 +42,8 @@ class OrdenesWindow(QMainWindow):
 
             if button_text == "Nueva Orden de Compra":
                 button.clicked.connect(self.on_agregar_orden_clicked)  # Conectar al método
+            if button_text == "Historial Órdenes de Compra":
+                button.clicked.connect(self.on_ver_orden_clicked)  # Conectar al método
 
         buttons_layout.addStretch()  # Agregar espacio adicional
 
@@ -51,4 +54,8 @@ class OrdenesWindow(QMainWindow):
 
     def on_agregar_orden_clicked(self):
         dialog = AgregarOrdenDialog(self.proveedor_service, self.producto_service, self.orden_compra_service)
+        result = dialog.exec()
+
+    def on_ver_orden_clicked(self):
+        dialog = VerOrdenDialog()
         result = dialog.exec()
