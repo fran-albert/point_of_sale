@@ -23,69 +23,52 @@ class ListaVendedoresDialog(QDialog):
         rectangle_frame.setFrameShadow(QFrame.Sunken)
         rectangle_frame.setLineWidth(1)
 
-        rectangle_layout = QGridLayout(rectangle_frame)
-
-        # desde_fecha_label = QLabel("Fecha desde:")
-        # self.desde_fecha_input = QDateEdit()
-        # self.desde_fecha_input.setCalendarPopup(True)
-
-        # hasta_fecha_label = QLabel("Fecha hasta:")
-        # self.hasta_fecha_input = QDateEdit()
-        # self.hasta_fecha_input.setCalendarPopup(True)
-
-        # rectangle_layout.addWidget(desde_fecha_label, 0, 0)
-        # rectangle_layout.addWidget(self.desde_fecha_input, 0, 1)
-        # rectangle_layout.addWidget(hasta_fecha_label, 1, 0)
-        # rectangle_layout.addWidget(self.hasta_fecha_input, 1, 1)
-
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
-        # self.tabla = QTableWidget(len(self.orden_compra), 5)
-        # self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
-        # self.tabla.setColumnWidth(0, 20)
+        self.table = QTableWidget(len(self.vendedores), 10)
+        self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Apellido", "DNI", "Teléfono", "Correo Electrónico", "Fecha Nacimiento", "Fecha Alta", "", ""])
+        self.table.setColumnWidth(0, 20)
+        self.table.setColumnWidth(5, 150)
+        self.table.setColumnWidth(6, 120)
 
+        for i, vend in enumerate(self.vendedores):
+            item_id = QTableWidgetItem(str(vend.id))
+            item_nombre = QTableWidgetItem(vend.nombre)
+            item_apellido = QTableWidgetItem(vend.apellido)
+            item_dni = QTableWidgetItem(str(vend.dni))
+            item_telefono = QTableWidgetItem(str(vend.telefono))
+            item_correo = QTableWidgetItem(vend.correo)
+            item_fecha_nacimiento = QTableWidgetItem(vend.fechaNac.strftime("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(vend.fechaAlta.strftime("%Y-%m-%d"))
 
-        # for i, orden in enumerate(self.orden_compra):
-        #     item_id = QTableWidgetItem(str(orden.idOrdenCompra))
-        #     item_idProveedor = QTableWidgetItem(self.proveedor_nombre_map.get(int(orden.idProveedor), "Desconocido"))
-        #     item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precioTotalOrden)))
-        #     item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
+            self.table.setItem(i, 0, item_id)
+            self.table.setItem(i, 1, item_nombre)
+            self.table.setItem(i, 2, item_apellido)
+            self.table.setItem(i, 3, item_dni)
+            self.table.setItem(i, 4, item_telefono)
+            self.table.setItem(i, 5, item_correo)
+            self.table.setItem(i, 6, item_fecha_nacimiento)
+            self.table.setItem(i, 7, item_fecha_alta)
 
-        #     checkbox_recibido = QCheckBox()
-        #     checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
-        #     checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;")
-            
-        #     if orden.recibido:
-        #         checkbox_recibido.setEnabled(False)
+            edit_button = QPushButton("Editar")
+            edit_button.clicked.connect(self.on_edit_button_clicked)
+            self.table.setCellWidget(i, 8, edit_button)
 
-        #     self.ordenes_checkboxes.append(checkbox_recibido)
+            delete_button = QPushButton("Eliminar")
+            delete_button.clicked.connect(self.on_delete_button_clicked)
+            self.table.setCellWidget(i, 9, delete_button)
 
-        #     self.tabla.setItem(i, 0, item_id)
-        #     self.tabla.setItem(i, 1, item_idProveedor)
-        #     self.tabla.setItem(i, 2, item_precioTotalOrden)
-        #     self.tabla.setItem(i, 3, item_fechaRecepcion)
-        #     self.tabla.setCellWidget(i, 4, checkbox_recibido)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        layout.addWidget(self.table)
 
-        # self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        # layout.addWidget(self.tabla)
-
-        guardar_btn = QPushButton("Guardar cambios")
-        guardar_btn.setFixedWidth(100)
-        guardar_btn.setFixedHeight(25)  
-        layout.addWidget(guardar_btn, alignment=Qt.AlignCenter)
-        guardar_btn.clicked.connect(self.guardar_cambios)
-        
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
-        self.resize(500, 500)
+        self.resize(1000, 500)
     
-    def guardar_cambios(self):
-        print('GUARDAR CAMBIOS')
-        # for i, checkbox in enumerate(self.ordenes_checkboxes):
-        #     idOrdenCompra = self.orden_compra[i].idOrdenCompra
-        #     recibido = checkbox.isChecked()
-        #     if recibido:
-        #         self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
-        #         checkbox.setEnabled(False)
+    def on_edit_button_clicked(self):
+        print('EDITAR')
+    
+    def on_delete_button_clicked(self):
+        print('ELIMINAR')
