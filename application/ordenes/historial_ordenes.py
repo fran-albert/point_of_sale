@@ -1,13 +1,16 @@
 from PyQt5.QtWidgets import QDialog, QDateEdit, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QCheckBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt
 from servicios.orden_compra_service import OrdenCompraService
-import datetime
+from servicios.proveedor_service import ProveedorService
 
 class VerOrdenDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.orden_compra_service = OrdenCompraService()
+        self.proveedor_service = ProveedorService()
+
+        self.proveedores = self.proveedor_service.obtenerProveedores()
         self.orden_compra = self.orden_compra_service.obtenerOrdenes()
 
         self.setWindowTitle("Historial de Órdenes de Compra")
@@ -43,10 +46,12 @@ class VerOrdenDialog(QDialog):
 
         self.tabla = QTableWidget(len(self.orden_compra), 5)
         self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
-
+        self.tabla.setColumnWidth(0, 20)
+        self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
+        
         for i, orden in enumerate(self.orden_compra):
             item_id = QTableWidgetItem(str(orden.idOrdenCompra))
-            item_idProveedor = QTableWidgetItem(str(orden.idProveedor))
+            item_idProveedor = QTableWidgetItem(self.proveedor_nombre_map.get(int(orden.idProveedor), "Desconocido"))
             item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precioTotalOrden)))
             item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
 
@@ -64,6 +69,16 @@ class VerOrdenDialog(QDialog):
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         layout.addWidget(self.tabla)
 
+        guardar_btn = QPushButton("Guardar cambios")
+        guardar_btn.setFixedWidth(100)
+        guardar_btn.setFixedHeight(25)  
+        layout.addWidget(guardar_btn, alignment=Qt.AlignCenter)
+        guardar_btn.clicked.connect(self.guardar_cambios)
+        
+
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
-        self.resize(430, 300)
+        self.resize(500, 500)
+    
+    def guardar_cambios(self):
+        print("guardar cambios")

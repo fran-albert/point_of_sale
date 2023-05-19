@@ -17,7 +17,6 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError("Error al insertar la orden de compra", e)
     
-    #OBTENER 1 ORDEN CON EL IDORDENCOMPRA PARA VER EN HISTORIAL DE ORDENES Y SELECCIONAR UNA ORDEN Y MODIFICAR EL RECIBIDO
     def obtenerOrden(self, idOrdenCompra):
         orden = None
         query = "SELECT * FROM orden_compra WHERE idOrdenCompra = %s"
@@ -54,3 +53,11 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError("Error al obtener las órdenes de compra", e)
 
+    def actualizarOrdenRecibida(self, idOrdenCompra):
+        query = "UPDATE orden_compra SET recibido = TRUE WHERE idOrdenCompra = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (idOrdenCompra,))
+                self.connection.commit()
+        except Error as e:
+            raise RuntimeError(f"Error al actualizar la orden de compra con el id {idOrdenCompra}", e)
