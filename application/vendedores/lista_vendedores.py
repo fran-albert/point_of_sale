@@ -1,13 +1,14 @@
-from PyQt5.QtWidgets import QDialog, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QCheckBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QMessageBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt
 from servicios.vendedores_service import VendedorService
 from vendedores.editar_vendedor import EditarVendedorDialog
 
 
 class ListaVendedoresDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, app, parent=None):
         super().__init__(parent)
 
+        self.app = app
         self.vendedores_service = VendedorService()
         self.vendedores = self.vendedores_service.obtenerVendedores()
 
@@ -78,4 +79,13 @@ class ListaVendedoresDialog(QDialog):
 
     
     def on_delete_button_clicked(self):
-        print('ELIMINAR')
+        button = self.app.sender()
+        index = self.table.indexAt(button.pos())
+        
+        id = self.table.item(index.row(), 0).text()
+        nombre = self.table.item(index.row(), 1).text()
+
+        respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar el vendedor {nombre}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if respuesta == QMessageBox.Yes:
+            self.vendedores_service.eliminarVendedor(id)
+            self.table.removeRow(index.row())
