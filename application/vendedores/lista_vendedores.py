@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QDialog, QDateEdit, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QCheckBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QCheckBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt
 from servicios.vendedores_service import VendedorService
+from vendedores.editar_vendedor import EditarVendedorDialog
 
 
 class ListaVendedoresDialog(QDialog):
@@ -68,7 +69,13 @@ class ListaVendedoresDialog(QDialog):
         self.resize(1000, 500)
     
     def on_edit_button_clicked(self):
-        print('EDITAR')
+
+        selected_row = self.table.currentRow()
+        vendedor = self.vendedores[selected_row]
+
+        dialog = EditarVendedorDialog(vendedor, self.vendedores_service)
+        result = dialog.exec()
+
     
     def on_delete_button_clicked(self):
         print('ELIMINAR')
