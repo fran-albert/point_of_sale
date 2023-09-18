@@ -44,13 +44,13 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.telefono_input)
 
             self.fechaNac_label = QLabel("Fecha Nacimiento:")
-            fechaNac = QDate(vendedor.fechaNac)
+            fechaNac = QDate.fromString(vendedor.fechaNac, "yyyy-MM-dd")
             self.fechaNac_input = QDateEdit(fechaNac)
             layout.addWidget(self.fechaNac_label)
             layout.addWidget(self.fechaNac_input)
 
             self.fecha_alta_label = QLabel("Fecha Alta:")
-            fecha_alta = QDate(vendedor.fechaAlta)
+            fecha_alta = QDate.fromString(vendedor.fechaAlta, "yyyy-MM-dd")
             self.fecha_alta_input = QDateEdit(fecha_alta)
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)

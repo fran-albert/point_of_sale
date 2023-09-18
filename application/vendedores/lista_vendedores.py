@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QDialog, QAbstractItemView, QSizePolicy, QHeaderView
 from PyQt5.QtCore import Qt
 from servicios.vendedores_service import VendedorService
 from vendedores.editar_vendedor import EditarVendedorDialog
+from entities.vendedor import Vendedor
 
 
 class ListaVendedoresDialog(QDialog):
@@ -68,16 +69,81 @@ class ListaVendedoresDialog(QDialog):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
         self.resize(1000, 500)
-    
+
+    def actualizar_tabla(self):
+        # Limpiamos la tabla primero
+        self.table.setRowCount(0)
+
+        # Volvemos a obtener los vendedores desde el servicio
+        self.vendedores = self.vendedores_service.obtenerVendedores()
+
+        # Llenamos la tabla con los nuevos datos
+        self.table.setRowCount(len(self.vendedores))
+
+        for i, vend in enumerate(self.vendedores):
+            item_id = QTableWidgetItem(str(vend.id))
+            item_nombre = QTableWidgetItem(vend.nombre)
+            item_apellido = QTableWidgetItem(vend.apellido)
+            item_dni = QTableWidgetItem(str(vend.dni))
+            item_telefono = QTableWidgetItem(str(vend.telefono))
+            item_correo = QTableWidgetItem(vend.correo)
+            item_fecha_nacimiento = QTableWidgetItem(vend.fechaNac.strftime("%Y-%m-%d"))
+            item_fecha_alta = QTableWidgetItem(vend.fechaAlta.strftime("%Y-%m-%d"))
+
+            self.table.setItem(i, 0, item_id)
+            self.table.setItem(i, 1, item_nombre)
+            self.table.setItem(i, 2, item_apellido)
+            self.table.setItem(i, 3, item_dni)
+            self.table.setItem(i, 4, item_telefono)
+            self.table.setItem(i, 5, item_correo)
+            self.table.setItem(i, 6, item_fecha_nacimiento)
+            self.table.setItem(i, 7, item_fecha_alta)
+
+            edit_button = QPushButton("Editar")
+            edit_button.clicked.connect(self.on_edit_button_clicked)
+            self.table.setCellWidget(i, 8, edit_button)
+
+            delete_button = QPushButton("Eliminar")
+            delete_button.clicked.connect(self.on_delete_button_clicked)
+            self.table.setCellWidget(i, 9, delete_button)
+
     def on_edit_button_clicked(self):
 
-        selected_row = self.table.currentRow()
-        vendedor = self.vendedores[selected_row]
+        button = self.sender()
+        index = self.table.indexAt(button.pos())
+        vendedor = None
 
-        dialog = EditarVendedorDialog(vendedor, self.vendedores_service)
+        vendedor_service = VendedorService()
+        
+        id = int(self.table.item(index.row(), 0).text())
+        nombre = self.table.item(index.row(), 1).text()
+        apellido = self.table.item(index.row(), 2).text()
+        dni = self.table.item(index.row(), 3).text()
+        telefono = self.table.item(index.row(), 4).text()
+        correo = self.table.item(index.row(), 5).text()
+        fechaNac = self.table.item(index.row(), 6).text()
+        fechaAlta = self.table.item(index.row(), 7).text()
+
+        vendedor = Vendedor(nombre, apellido, dni, telefono, correo, fechaNac, fechaAlta)
+        vendedor.set_id(id)
+
+        dialog = EditarVendedorDialog(vendedor, vendedor_service)
         result = dialog.exec()
 
-    
+        if result == QDialog.Accepted:
+            self.vendedores_service.actualizarVendedor(
+                vendedor.nombre,
+                vendedor.apellido,
+                vendedor.dni,
+                vendedor.telefono,
+                vendedor.correo,
+                vendedor.fechaNac,
+                vendedor.fechaAlta,
+                vendedor.id
+            )
+            self.actualizar_tabla()
+
+
     def on_delete_button_clicked(self):
         button = self.app.sender()
         index = self.table.indexAt(button.pos())
