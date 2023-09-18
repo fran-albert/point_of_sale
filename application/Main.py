@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
-from servicios.usuario_service import UsuarioService
+from servicios.vendedores_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
 from categorias.abm_categorias import ABMCategoriasWindow
 from utils.Utils import Utils
@@ -55,10 +55,10 @@ class MainWindow(QMainWindow):
     
 
     def __init__(self, current_username, current_password, app):
-        self.usuario_service = UsuarioService()
+        self.vendedores_service = VendedorService()
         super().__init__()
         self.setWindowTitle("Point Of Sale")
-        self.current_username = self.usuario_service.get_username(current_username, current_password)
+        self.current_username = self.vendedores_service.get_username(current_username, current_password)
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
         self.setFixedSize(1000, 900)
         self.categoria_window = None

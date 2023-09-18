@@ -4,7 +4,8 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_root)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
-from servicios.usuario_service import UsuarioService
+# from servicios.usuario_service import UsuarioService
+from servicios.vendedores_service import VendedorService
 from utils.Utils import Utils
 import Main
 
@@ -29,10 +30,11 @@ class LoginWindow(QWidget):
         contrasena = self.contrasena_edit.text()
 
         # Crea una instancia de UsuarioService
-        usuario_service = UsuarioService()
+        # usuario_service = UsuarioService()
+        vendedor_service = VendedorService()
 
         # Verifica si el usuario y la contraseña son correctos usando la base de datos
-        if usuario_service.validate_login(usuario, contrasena):
+        if vendedor_service.validate_login(usuario, contrasena):
             self.hide()
             # Pasa las credenciales del usuario al constructor de la clase Ventas
             self.main_window = Main.MainWindow(usuario, contrasena, app)

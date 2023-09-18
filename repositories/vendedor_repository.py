@@ -16,16 +16,16 @@ class VendedorRepository:
             except Error as e:
                 raise RuntimeError("Error al insertar el nuevo vendedor", e)
             
-    # def validate_login(self, username, password):
-    #     valid = False
-    #     query = "SELECT COUNT(*) FROM usuarios WHERE user = %s AND pass = %s"
-    #     cursor = self.connection.cursor()
-    #     cursor.execute(query, (username, password))
-    #     result = cursor.fetchone()
-    #     if result and result[0] > 0:
-    #         valid = True
-    #     cursor.close()
-    #     return valid
+    def validate_login(self, nombre, dni):
+        valid = False
+        query = "SELECT COUNT(*) FROM vendedores WHERE nombre = %s AND dni = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (nombre, dni))
+        result = cursor.fetchone()
+        if result and result[0] > 0:
+            valid = True
+        cursor.close()
+        return valid
 
     def obtenerVendedores(self):
         vendedores = []
