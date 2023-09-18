@@ -4,7 +4,6 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_root)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
-# from servicios.usuario_service import UsuarioService
 from servicios.vendedores_service import VendedorService
 from utils.Utils import Utils
 import Main
@@ -29,14 +28,11 @@ class LoginWindow(QWidget):
         usuario = self.usuario_edit.text()
         contrasena = self.contrasena_edit.text()
 
-        # Crea una instancia de UsuarioService
-        # usuario_service = UsuarioService()
         vendedor_service = VendedorService()
 
-        # Verifica si el usuario y la contraseña son correctos usando la base de datos
         if vendedor_service.validate_login(usuario, contrasena):
             self.hide()
-            # Pasa las credenciales del usuario al constructor de la clase Ventas
+            # Pasa las credenciales del usuario al constructor de la clase Main
             self.main_window = Main.MainWindow(usuario, contrasena, app)
             self.main_window.show()
         else:
@@ -46,10 +42,9 @@ class LoginWindow(QWidget):
         """Cierra la aplicación."""
         self.close()
 
-# Código para ejecutar la aplicación
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("img/icons8-market-64.png"))  # Establece el icono de la aplicación
+    app.setWindowIcon(QIcon("img/icons8-market-64.png"))  
     login_window = LoginWindow()
     login_window.show()
     sys.exit(app.exec_())
