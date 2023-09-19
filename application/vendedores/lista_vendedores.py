@@ -88,7 +88,7 @@ class ListaVendedoresDialog(QDialog):
             item_correo = QTableWidgetItem(vend.correo)
             item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nac.strftime("%Y-%m-%d"))
             item_fecha_alta = QTableWidgetItem(vend.fecha_alta.strftime("%Y-%m-%d"))
-            item_admin = QTableWidgetItem(str(vend.admin))
+            item_admin = QTableWidgetItem(str(vend.admin) == "1" and "Administrador" or "Vendedor")
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox, QDateEdit
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox, QDateEdit, QComboBox
 from PyQt5.QtCore import QDate
 from datetime import datetime
 
@@ -54,6 +54,22 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)
 
+            self.rol_label = QLabel("Rol:")
+            self.rol_combo = QComboBox()
+            self.rol_combo.addItem("Selecciona el rol", None)
+            self.rol_combo.addItem("Administrador", 1)
+            self.rol_combo.addItem("Vendedor", 0)
+            vendedores = self.vendedor_service.obtenerVendedores()
+            if vendedores:
+                primer_vendedor = vendedores[0]
+                if primer_vendedor.admin == 1:
+                    self.rol_combo.setCurrentIndex(self.rol_combo.findData(1))
+                else:
+                    self.rol_combo.setCurrentIndex(self.rol_combo.findData(0))
+
+            layout.addWidget(self.rol_label)
+            layout.addWidget(self.rol_combo)
+
             self.buttons_layout = QHBoxLayout()
             self.guardar_button = QPushButton("Guardar")
             self.cancelar_button = QPushButton("Cancelar")
@@ -74,8 +90,9 @@ class EditarVendedorDialog(QDialog):
             nuevo_correo = self.correo_input.text().strip()
             nueva_fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
             nueva_fecha_nac = self.fecha_nac_input.date().toString("yyyy-MM-dd")
+            admin = self.rol_combo.currentData()
 
-            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo and nueva_fecha_alta and nueva_fecha_nac:
+            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo and nueva_fecha_alta and nueva_fecha_nac and admin is not None:
                 self.vendedor.nombre = nuevo_nombre
                 self.vendedor.apellido = nuevo_apellido
                 self.vendedor.dni = nuevoDNI
@@ -84,6 +101,7 @@ class EditarVendedorDialog(QDialog):
                 nueva_fecha_nac = datetime.strptime(nueva_fecha_nac, "%Y-%m-%d")
                 self.vendedor.fecha_nac = nueva_fecha_nac
                 nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
+                self.vendedor.admin = admin 
                 self.vendedor.fecha_alta = nueva_fecha_alta
                 self.accept() 
             else:
