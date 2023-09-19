@@ -8,7 +8,7 @@ class VendedorRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarVendedor(self, vendedor):
-            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             try:
                 with self.connection.cursor() as cursor:
                     cursor.execute(sql, (vendedor.get_dni(), vendedor.get_nombre(), vendedor.get_apellido(), vendedor.get_telefono(), vendedor.get_correo(), vendedor.get_fechaNac(), vendedor.get_fechaAlta()))
@@ -16,16 +16,16 @@ class VendedorRepository:
             except Error as e:
                 raise RuntimeError("Error al insertar el nuevo vendedor", e)
             
-    # def validate_login(self, username, password):
-    #     valid = False
-    #     query = "SELECT COUNT(*) FROM usuarios WHERE user = %s AND pass = %s"
-    #     cursor = self.connection.cursor()
-    #     cursor.execute(query, (username, password))
-    #     result = cursor.fetchone()
-    #     if result and result[0] > 0:
-    #         valid = True
-    #     cursor.close()
-    #     return valid
+    def validate_login(self, nombre, dni):
+        valid = False
+        query = "SELECT COUNT(*) FROM vendedores WHERE nombre = %s AND dni = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (nombre, dni))
+        result = cursor.fetchone()
+        if result and result[0] > 0:
+            valid = True
+        cursor.close()
+        return valid
 
     def obtenerVendedores(self):
         vendedores = []
@@ -49,7 +49,7 @@ class VendedorRepository:
             raise RuntimeError("Error al obtener los vendedores", e)
         
     def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id):
-        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fechaNac = %s, fecha_alta = %s WHERE id = %s"
+        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fecha_nac = %s, fecha_alta = %s WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id))

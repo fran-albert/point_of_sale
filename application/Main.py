@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
-from servicios.usuario_service import UsuarioService
+from servicios.vendedores_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
 from categorias.abm_categorias import ABMCategoriasWindow
 from utils.Utils import Utils
@@ -15,7 +15,7 @@ import sys
 
 class MainWindow(QMainWindow):
 
-    logged_out = pyqtSignal()  # Crea una nueva señal personalizada
+    logged_out = pyqtSignal() 
 
     def init_header(self, username):
         init_header(self, self.width(), username)
@@ -55,10 +55,10 @@ class MainWindow(QMainWindow):
     
 
     def __init__(self, current_username, current_password, app):
-        self.usuario_service = UsuarioService()
+        self.vendedores_service = VendedorService()
         super().__init__()
         self.setWindowTitle("Point Of Sale")
-        self.current_username = self.usuario_service.get_username(current_username, current_password)
+        self.current_username = self.vendedores_service.get_username(current_username, current_password)
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
         self.setFixedSize(1000, 900)
         self.categoria_window = None
@@ -79,18 +79,18 @@ class MainWindow(QMainWindow):
         )
         if respuesta == QMessageBox.Yes:
             self.hide()
-            self.login_window = LoginWindow()  # Crea una nueva instancia de LoginWindow
-            self.login_window.show()  # Muestra la ventana de inicio de sesión
-            self.close()  # Cierra la ventana de Ventas
+            self.login_window = LoginWindow()  
+            self.login_window.show()  
+            self.close()  
    
     def open_login_window(self):
-        self.close()  # Cierra la ventana actual (Ventas)
-        login_window = LoginWindow()  # Crea una nueva instancia de LoginWindow
-        login_window.show()  # Muestra la ventana de inicio de sesión
+        self.close()  
+        login_window = LoginWindow()  
+        login_window.show()  
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("img/icons8-market-64.png"))  # Establece el icono de la aplicación
+    app.setWindowIcon(QIcon("img/icons8-market-64.png"))  
     main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec_())

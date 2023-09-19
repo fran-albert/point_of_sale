@@ -34,6 +34,7 @@ class ListaVendedoresDialog(QDialog):
         self.table.setColumnWidth(0, 20)
         self.table.setColumnWidth(5, 150)
         self.table.setColumnWidth(6, 120)
+        self.table.hideColumn(0)
 
         for i, vend in enumerate(self.vendedores):
             item_id = QTableWidgetItem(str(vend.id))
@@ -124,7 +125,7 @@ class ListaVendedoresDialog(QDialog):
         fechaNac = self.table.item(index.row(), 6).text()
         fechaAlta = self.table.item(index.row(), 7).text()
 
-        vendedor = Vendedor(nombre, apellido, dni, telefono, correo, fechaNac, fechaAlta)
+        vendedor = Vendedor(dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta)
         vendedor.set_id(id)
 
         dialog = EditarVendedorDialog(vendedor, vendedor_service)
@@ -132,9 +133,9 @@ class ListaVendedoresDialog(QDialog):
 
         if result == QDialog.Accepted:
             self.vendedores_service.actualizarVendedor(
+                vendedor.dni,
                 vendedor.nombre,
                 vendedor.apellido,
-                vendedor.dni,
                 vendedor.telefono,
                 vendedor.correo,
                 vendedor.fechaNac,
