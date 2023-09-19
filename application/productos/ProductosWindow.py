@@ -61,7 +61,7 @@ class ProductosWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_lista_productos_clicked(self):
-        dialog = ListaProductosDialog(self.app)
+        dialog = ListaProductosDialog(self.app, self.current_username, self.current_password)
         result = dialog.exec()
 
     def on_cancelar_clicked(self):

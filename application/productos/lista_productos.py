@@ -8,21 +8,26 @@ from PyQt5.QtWidgets import QAbstractItemView, QHBoxLayout, QTableWidget, QHeade
 from servicios.categoria_service import CategoriaService
 from servicios.producto_service import ProductoService
 from servicios.proveedor_service import ProveedorService
+from servicios.vendedores_service import VendedorService
 from .editar_producto import EditarProductoDialog
 from entities.producto import Producto
 
 class ListaProductosDialog(QDialog):
-    def __init__(self, app, parent=None):
+    def __init__(self, app, current_username, current_password, parent=None):
         super().__init__(parent)    
 
         self.app = app
         self.producto_service = ProductoService()
         self.proveedor_service = ProveedorService()
         self.categoria_service = CategoriaService()
+        self.vendedores_service = VendedorService()
 
         self.producto  = self.producto_service.obtenerProductos()
         self.categorias = self.categoria_service.obtenerCategorias()
         self.proveedores = self.proveedor_service.obtenerProveedores()
+        self.current_username = current_username
+        self.current_password = current_password
+        self.vendedor_rol = self.vendedores_service.obtenerRol(current_username, current_password)
 
         self.categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in self.categorias}
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
@@ -55,6 +60,11 @@ class ListaProductosDialog(QDialog):
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.table.setMinimumHeight(300) 
+
+
+        if self.vendedor_rol == 0:
+            self.table.hideColumn(10)  
+            self.table.hideColumn(11)
 
         for i, prod in enumerate(self.producto):
             item_nombre = QTableWidgetItem(prod.nombre)
