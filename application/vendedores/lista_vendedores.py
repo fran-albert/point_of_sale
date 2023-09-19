@@ -6,12 +6,15 @@ from entities.vendedor import Vendedor
 
 
 class ListaVendedoresDialog(QDialog):
-    def __init__(self, app, parent=None):
+    def __init__(self, app, current_username, current_password, parent=None):
         super().__init__(parent)
 
         self.app = app
         self.vendedores_service = VendedorService()
         self.vendedores = self.vendedores_service.obtenerVendedores()
+        self.current_username = current_username
+        self.current_password = current_password
+        self.vendedor_rol = self.vendedores_service.obtenerRol(current_username, current_password)
 
         self.setWindowTitle("Lista de Vendedores")
 
@@ -35,6 +38,10 @@ class ListaVendedoresDialog(QDialog):
         self.table.setColumnWidth(5, 150)
         self.table.setColumnWidth(6, 120)
         self.table.hideColumn(0)
+
+        if self.vendedor_rol == 0:
+            self.table.hideColumn(9)  
+            self.table.hideColumn(10)
 
         for i, vend in enumerate(self.vendedores):
             item_id = QTableWidgetItem(str(vend.id))
