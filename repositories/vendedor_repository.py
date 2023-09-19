@@ -8,7 +8,7 @@ class VendedorRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarVendedor(self, vendedor):
-            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             try:
                 with self.connection.cursor() as cursor:
                     cursor.execute(sql, (vendedor.get_dni(), vendedor.get_nombre(), vendedor.get_apellido(), vendedor.get_telefono(), vendedor.get_correo(), vendedor.get_fechaNac(), vendedor.get_fechaAlta()))

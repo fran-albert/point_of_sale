@@ -34,6 +34,7 @@ class ListaVendedoresDialog(QDialog):
         self.table.setColumnWidth(0, 20)
         self.table.setColumnWidth(5, 150)
         self.table.setColumnWidth(6, 120)
+        self.table.hideColumn(0)
 
         for i, vend in enumerate(self.vendedores):
             item_id = QTableWidgetItem(str(vend.id))
