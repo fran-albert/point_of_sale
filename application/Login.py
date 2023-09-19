@@ -32,7 +32,6 @@ class LoginWindow(QWidget):
 
         if vendedor_service.validate_login(usuario, contrasena):
             self.hide()
-            # Pasa las credenciales del usuario al constructor de la clase Main
             self.main_window = Main.MainWindow(usuario, contrasena, app)
             self.main_window.show()
         else:
