@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.categoria_window.show()
 
     def show_products_window(self):
-        self.product_window = ProductosWindow(self.app)
+        self.product_window = ProductosWindow(self.app, self.current_username, self.current_password)
         self.product_window.show()
 
     def show_proveedores_window(self):
