@@ -80,6 +80,7 @@ class AgregarVendedorDialog(QDialog):
                 fecha_alta = fecha_alta
                 vendedor = Vendedor(dni, nombre, apellido, telefono, correo, fecha_nacimiento, fecha_alta)
                 self.vendedor_service.insertarVendedor(vendedor)
+                QMessageBox.information(self, "Información", "Nuevo Vendedor Añadido")
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
