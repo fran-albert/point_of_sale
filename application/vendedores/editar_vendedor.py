@@ -17,7 +17,6 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.id_vendedor_label)
             layout.addWidget(self.id_vendedor_input)
 
-
             self.nombre_label = QLabel("Nombre:")
             self.nombre_input = QLineEdit(vendedor.nombre)
             layout.addWidget(self.nombre_label)

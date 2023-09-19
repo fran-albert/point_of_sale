@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
+from PyQt5.QtWidgets import QDateEdit, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
 from PyQt5.QtCore import QDate
 from entities.vendedor import Vendedor
 
