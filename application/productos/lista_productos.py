@@ -4,15 +4,14 @@ ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
     sys.path.append(ruta_principal)
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
+from PyQt5.QtWidgets import QAbstractItemView, QHBoxLayout, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.categoria_service import CategoriaService
 from servicios.producto_service import ProductoService
 from servicios.proveedor_service import ProveedorService
-from .agregar_producto import AgregarProductoDialog
 from .editar_producto import EditarProductoDialog
 from entities.producto import Producto
 
-class ABMProductosWindow(QMainWindow):
+class ListaProductosDialog(QDialog):
     def __init__(self, app, parent=None):
         super().__init__(parent)    
 
@@ -28,8 +27,34 @@ class ABMProductosWindow(QMainWindow):
         self.categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in self.categorias}
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
 
+        self.setWindowTitle("Productos")
+
+        layout = QVBoxLayout()
+
+        title_label = QLabel("Productos")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: green; font-size: 24px")
+
+        layout.addWidget(title_label)
+
+        search_label = QLabel("Buscar productos:")
+        search_input = QLineEdit()
+        search_input.setPlaceholderText("Ingrese el nombre del producto...")
+        search_layout = QHBoxLayout()
+        search_layout.addWidget(search_label)
+        search_layout.addWidget(search_input)
+
+        layout.addLayout(search_layout)
+
         self.table = QTableWidget(len(self.producto), 12)
         self.table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio Compra", "Precio Venta", "Cant Stock", "Categoría", "Impuestos", "Descuentos", "Proveedor", "Fecha Venc", "", ""])
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setStretchLastSection(False)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.table.setMinimumHeight(300) 
 
         for i, prod in enumerate(self.producto):
             item_nombre = QTableWidgetItem(prod.nombre)
@@ -61,55 +86,14 @@ class ABMProductosWindow(QMainWindow):
             delete_button = QPushButton("Eliminar")
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 11, delete_button)
+        
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        layout.addWidget(self.table)
 
-        add_product_button = QPushButton("Agregar Producto")
-        add_product_button.clicked.connect(self.on_agregar_producto_clicked)
-
-        layout = QVBoxLayout()
-
-        title_label = QLabel("Productos")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("color: green; font-size: 24px")
-
-        rectangle_frame = QFrame()
-        rectangle_frame.setFrameShape(QFrame.StyledPanel)
-        rectangle_frame.setFrameShadow(QFrame.Sunken)
-        rectangle_frame.setLineWidth(1)
-
-        rectangle_layout = QVBoxLayout(rectangle_frame)
-        search_field = QLineEdit()
-        search_field.setPlaceholderText("Buscar productos...")
-        rectangle_layout.addWidget(search_field)
-        rectangle_layout.addWidget(add_product_button)
-
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setStretchLastSection(False)
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
-        self.table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.table.setMinimumHeight(300) 
-
-        scroll_area = QScrollArea()
-        scroll_area.setWidget(self.table)
-        scroll_area.setWidgetResizable(True)
-
-        layout.addWidget(title_label)
-        layout.addWidget(rectangle_frame)
-        layout.addWidget(scroll_area)
-        layout.addStretch(1) 
-
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-
-        self.setCentralWidget(central_widget)
-        self.setWindowTitle("Productos")
-        self.setGeometry(100, 100, 900, 400)  # x, y, ancho, alto
-        screen = QDesktopWidget().availableGeometry()
-        x = (screen.width() - self.width()) // 2
-        y = (screen.height() - self.height()) // 2
-        self.move(x, y)
-
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setLayout(layout)
+        self.resize(1000, 300)
 
     def actualizar_tabla(self):
 
@@ -153,13 +137,6 @@ class ABMProductosWindow(QMainWindow):
             delete_button = QPushButton("Eliminar")
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 11, delete_button)
-
-    def on_agregar_producto_clicked(self):
-        dialog = AgregarProductoDialog(self.producto_service, self.categoria_service, self.proveedor_service)
-        result = dialog.exec()
-
-        if result == QDialog.Accepted:
-            self.actualizar_tabla()
 
     def on_edit_button_clicked(self):
         

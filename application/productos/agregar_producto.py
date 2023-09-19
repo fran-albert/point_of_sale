@@ -96,6 +96,7 @@ class AgregarProductoDialog(QDialog):
                 precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
                 producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
                 self.producto_service.insertarProducto(producto)
+                QMessageBox.information(self, "Información", "Nuevo Producto Añadido")
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
