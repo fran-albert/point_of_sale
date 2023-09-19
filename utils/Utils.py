@@ -285,7 +285,7 @@ def init_header(parent, width, username, menu_bar_height):
 
     # Lado izquierdo
     left_layout = QVBoxLayout()
-    user_label = QLabel(f"User: {username}", header)
+    user_label = QLabel(f"Vendedor: {username}", header)
     user_label.setStyleSheet("color: black;")
     left_layout.addWidget(user_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 

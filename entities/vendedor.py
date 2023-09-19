@@ -1,12 +1,13 @@
 class Vendedor:
-    def __init__(self, dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta, id= None):
+    def __init__(self, dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta, admin, id= None):
         self.dni = dni
         self.nombre = nombre
         self.apellido = apellido
         self.telefono = telefono
         self.correo = correo
-        self.fechaNac = fechaNac
-        self.fechaAlta = fechaAlta
+        self.fecha_nac = fecha_nac
+        self.fecha_alta = fecha_alta
+        self.admin = admin
         self.id = id
 
     def get_id(self):
@@ -45,16 +46,22 @@ class Vendedor:
     def set_correo(self, correo):
         self.correo = correo
 
-    def get_fechaNac(self):
-        return self.fechaNac
+    def get_fecha_nac(self):
+        return self.fecha_nac
 
-    def set_fechaNac(self, fechaNac):
-        self.fechaNac = fechaNac
+    def set_fecha_nac(self, fecha_nac):
+        self.fecha_nac = fecha_nac
 
-    def get_fechaAlta(self):
-        return self.fechaAlta
+    def get_fecha_alta(self):
+        return self.fecha_alta
 
-    def set_fechaAlta(self, fechaAlta):
-        self.fechaAlta = fechaAlta
+    def set_fecha_alta(self, fecha_alta):
+        self.fecha_alta = fecha_alta
+
+    def get_admin(self):
+        return self.admin
+
+    def set_admin(self, admin):
+        self.admin = admin
 
                 

@@ -19,6 +19,7 @@ class VentasWindow(QMainWindow):
         self.producto_service = ProductoService()
         self.Utils = Utils()
         self.total = 0
+        self.ventas_utils_buttons = VentasUtilsButtons(self)
 
         # Configurar ventana
         self.setWindowTitle("Ventas")
@@ -42,10 +43,14 @@ class VentasWindow(QMainWindow):
             button = QPushButton(button_text)
             button.setFixedWidth(120)  # Ajustar el ancho de los botones
             buttons_layout.addWidget(button)
+            if button_text == "Cancelar":
+                button.clicked.connect(self.close)
         buttons_layout.addStretch()  # Agregar un espacio flexible para alinear a la izquierda
 
-        # Agregar el contador de ventas alineado a la derecha
-        self.venta_numero_label = QLabel("Venta N°: ")
+        self.contador_ventas = 1
+
+        #necesito un contador de ventas del día que esté alineado a la derecha
+        self.venta_numero_label = QLabel(f"Venta N°: {self.contador_ventas}")
         buttons_layout.addWidget(self.venta_numero_label)
         main_layout.addLayout(buttons_layout)
 
@@ -94,7 +99,7 @@ class VentasWindow(QMainWindow):
 
         # Mover el botón "Cobrar" debajo de Subtotal, IVA y Total
         cobrar_button = QPushButton("Cobrar")
-        cobrar_button.clicked.connect(lambda: VentasUtilsButtons.show_payment_window('test', self.total, self, self.lista_productos_vendidos(self.table)))
+        cobrar_button.clicked.connect(lambda: self.ventas_utils_buttons.show_payment_window('test', self.total, self, self.lista_productos_vendidos(self.table)))
 
         main_layout.addWidget(cobrar_button, alignment=Qt.AlignRight)
 
@@ -197,4 +202,7 @@ class VentasWindow(QMainWindow):
         # Actualizar el atributo self.total
         self.total = total
 
+    def actualizar_contador_ventas(self):
+            self.contador_ventas += 1
+            self.venta_numero_label.setText(f"Venta N°: {self.contador_ventas}")
     

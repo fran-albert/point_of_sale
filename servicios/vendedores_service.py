@@ -13,8 +13,8 @@ class VendedorService:
     def validate_login(self, nombre, dni):
         return self.vendedor_repository.validate_login(nombre, dni)
     
-    def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id):
-        return self.vendedor_repository.actualizarVendedor(nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id)
+    def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id):
+        return self.vendedor_repository.actualizarVendedor(nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id)
     
     def eliminarVendedor(self, id):
         return self.vendedor_repository.eliminarVendedor(id)
