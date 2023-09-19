@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
+from PyQt5.QtCore import QDate
 from entities.vendedor import Vendedor
 
 class AgregarVendedorDialog(QDialog):
@@ -10,7 +11,6 @@ class AgregarVendedorDialog(QDialog):
         self.setWindowTitle("Agregar Vendedor")
         layout = QVBoxLayout()
 
-        # VALIDACION DE DNI 
         self.dni_label = QLabel("Documento:")
         self.dni_input = QLineEdit()
         layout.addWidget(self.dni_label)
@@ -43,6 +43,8 @@ class AgregarVendedorDialog(QDialog):
 
         self.fecha_alta_label = QLabel("Fecha de Alta:")
         self.fecha_alta_input = QDateEdit()
+        today = QDate.currentDate()
+        self.fecha_alta_input.setDate(today)
         layout.addWidget(self.fecha_alta_label)
         layout.addWidget(self.fecha_alta_input)
 
