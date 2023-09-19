@@ -66,5 +66,17 @@ class VendedorRepository:
                     self.connection.commit()
             except Exception as e:
                 raise RuntimeError(f"Error al eliminar el vendedor con ID {id}") from e
+            
+    def obtenerRol(self, nombre, dni):
+        query = "SELECT admin FROM vendedores WHERE nombre = %s AND dni = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (nombre, dni))
+        result = cursor.fetchone()
+        cursor.close()
+        if result:
+            return result[0]
+        else:
+            return None
+
 
             

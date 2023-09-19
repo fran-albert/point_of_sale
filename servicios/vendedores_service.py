@@ -27,3 +27,6 @@ class VendedorService:
                     return usuario.nombre
         else:
             raise ValueError("Error en el inicio de sesión")
+    
+    def obtenerRol(self, nombre, dni):
+        return self.vendedor_repository.obtenerRol(nombre, dni)

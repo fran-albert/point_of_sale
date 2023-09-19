@@ -5,11 +5,13 @@ from vendedores.agregar_vendedor import AgregarVendedorDialog
 from vendedores.lista_vendedores import ListaVendedoresDialog
 
 class VendedoresWindow(QMainWindow):
-    def __init__(self, app, parent=None):
+    def __init__(self, app, current_username, current_password, parent=None):
         super().__init__(parent)
 
         self.app = app
         self.vendedor_service = VendedorService()
+        self.current_username = current_username
+        self.current_password = current_password
 
         self.setWindowTitle("Vendedores")
         self.setGeometry(100, 100, 150, 150)
@@ -28,6 +30,9 @@ class VendedoresWindow(QMainWindow):
 
         buttons_layout = QHBoxLayout()
         for button_text in ["Alta Vendedor", "Listado de Vendedores", "Cancelar"]:
+            if button_text == "Alta Vendedor" and self.vendedor_service.obtenerRol(self.current_username, self.current_password) == 0:
+                continue
+
             button = QPushButton(button_text)
             button.setFixedWidth(200)  
             button.setFixedHeight(50)  
