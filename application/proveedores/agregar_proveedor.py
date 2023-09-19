@@ -1,6 +1,7 @@
 import sys
 sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
 from PyQt5.QtWidgets import QDateEdit, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtCore import QDate
 from datetime import datetime
 from entities.proveedor import Proveedor
 
@@ -61,6 +62,8 @@ class AgregarProveedorDialog(QDialog):
 
         self.fecha_alta_label = QLabel("Fecha Alta:")
         self.fecha_alta_input = QDateEdit()
+        today = QDate.currentDate()
+        self.fecha_alta_input.setDate(today)
         layout.addWidget(self.fecha_alta_label)
         layout.addWidget(self.fecha_alta_input)
 
