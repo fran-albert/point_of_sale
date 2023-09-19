@@ -42,14 +42,14 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.telefono_label)
             layout.addWidget(self.telefono_input)
 
-            self.fechaNac_label = QLabel("Fecha Nacimiento:")
-            fechaNac = QDate.fromString(vendedor.fechaNac, "yyyy-MM-dd")
-            self.fechaNac_input = QDateEdit(fechaNac)
-            layout.addWidget(self.fechaNac_label)
-            layout.addWidget(self.fechaNac_input)
+            self.fecha_nac_label = QLabel("Fecha Nacimiento:")
+            fecha_nac = QDate.fromString(vendedor.fecha_nac, "yyyy-MM-dd")
+            self.fecha_nac_input = QDateEdit(fecha_nac)
+            layout.addWidget(self.fecha_nac_label)
+            layout.addWidget(self.fecha_nac_input)
 
             self.fecha_alta_label = QLabel("Fecha Alta:")
-            fecha_alta = QDate.fromString(vendedor.fechaAlta, "yyyy-MM-dd")
+            fecha_alta = QDate.fromString(vendedor.fecha_alta, "yyyy-MM-dd")
             self.fecha_alta_input = QDateEdit(fecha_alta)
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)
@@ -73,18 +73,18 @@ class EditarVendedorDialog(QDialog):
             nuevo_telefono = self.telefono_input.text().strip()
             nuevo_correo = self.correo_input.text().strip()
             nueva_fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
-            nueva_fechaNac = self.fechaNac_input.date().toString("yyyy-MM-dd")
+            nueva_fecha_nac = self.fecha_nac_input.date().toString("yyyy-MM-dd")
 
-            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo and nueva_fecha_alta and nueva_fechaNac:
+            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo and nueva_fecha_alta and nueva_fecha_nac:
                 self.vendedor.nombre = nuevo_nombre
                 self.vendedor.apellido = nuevo_apellido
                 self.vendedor.dni = nuevoDNI
                 self.vendedor.telefono = nuevo_telefono
                 self.vendedor.correo = nuevo_correo
-                nueva_fechaNac = datetime.strptime(nueva_fechaNac, "%Y-%m-%d")
-                self.vendedor.fechaNac = nueva_fechaNac
+                nueva_fecha_nac = datetime.strptime(nueva_fecha_nac, "%Y-%m-%d")
+                self.vendedor.fecha_nac = nueva_fecha_nac
                 nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
-                self.vendedor.fechaAlta = nueva_fecha_alta
+                self.vendedor.fecha_alta = nueva_fecha_alta
                 self.accept() 
             else:
                 QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")

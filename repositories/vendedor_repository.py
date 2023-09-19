@@ -8,10 +8,10 @@ class VendedorRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarVendedor(self, vendedor):
-            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO vendedores(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta, admin) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             try:
                 with self.connection.cursor() as cursor:
-                    cursor.execute(sql, (vendedor.get_dni(), vendedor.get_nombre(), vendedor.get_apellido(), vendedor.get_telefono(), vendedor.get_correo(), vendedor.get_fechaNac(), vendedor.get_fechaAlta()))
+                    cursor.execute(sql, (vendedor.get_dni(), vendedor.get_nombre(), vendedor.get_apellido(), vendedor.get_telefono(), vendedor.get_correo(), vendedor.get_fecha_nac(), vendedor.get_fecha_alta(), vendedor.get_admin()))
                 self.connection.commit()
             except Error as e:
                 raise RuntimeError("Error al insertar el nuevo vendedor", e)
@@ -40,19 +40,20 @@ class VendedorRepository:
                     apellido = row[3]
                     telefono = row[4]
                     correo = row[5]
-                    fechaNac = row[6]
-                    fechaAlta = row[7]
-                    nuevoVendedor = Vendedor(dni, nombre, apellido, telefono, correo, fechaNac, fechaAlta, id)
+                    fecha_nac = row[6]
+                    fecha_alta = row[7]
+                    admin = row[8]
+                    nuevoVendedor = Vendedor(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta, admin, id)
                     vendedores.append(nuevoVendedor)
             return vendedores
         except Error as e:
             raise RuntimeError("Error al obtener los vendedores", e)
         
-    def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id):
-        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fecha_nac = %s, fecha_alta = %s WHERE id = %s"
+    def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id):
+        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fecha_nac = %s, fecha_alta = %s, admin = %s WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevaFechaNac, fecha_alta, id))
+                cursor.execute(query, (nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id))
                 self.connection.commit()
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el vendedor con ID {id}") from e
