@@ -56,7 +56,7 @@ class VendedoresWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_lista_vendedores_clicked(self):
-        dialog = ListaVendedoresDialog(self.app, self.current_username, self.current_password)
+        dialog = ListaVendedoresDialog(self.app, self.dni)
         result = dialog.exec()
 
     def on_cancelar_clicked(self):

@@ -70,7 +70,7 @@ class VendedorRepository:
     def obtenerRol(self, dni):
         query = "SELECT admin FROM vendedores WHERE dni = %s"
         cursor = self.connection.cursor()
-        cursor.execute(query, (dni))
+        cursor.execute(query, (dni,))
         result = cursor.fetchone()
         cursor.close()
         if result:

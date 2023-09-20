@@ -10,7 +10,7 @@ from servicios.categoria_service import CategoriaService
 from servicios.proveedor_service import ProveedorService
 from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
-import os, time, traceback, io
+import os, time, traceback, io, fitz
 
 
 
@@ -219,7 +219,9 @@ class Utils:
 
     @staticmethod
     def obtener_rol(dni):
-        return VendedorService.obtenerRol(dni)
+        vendedor_service = VendedorService()
+        return vendedor_service.obtenerRol(dni)
+
 
 # Utils.py
 def create_main_window_menu(parent):

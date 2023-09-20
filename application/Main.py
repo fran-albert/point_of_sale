@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.ordenes_window.show()
 
     def show_vendedores_window(self):
-        self.vendedores_window = VendedoresWindow(self.app)
+        self.vendedores_window = VendedoresWindow(self.app, self.dni)
         self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
