@@ -4,12 +4,13 @@ from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from reportlab.lib import colors
+from servicios.vendedores_service import VendedorService
 from servicios.producto_service import ProductoService
 from servicios.categoria_service import CategoriaService
 from servicios.proveedor_service import ProveedorService
 from application.categorias.abm_categorias import ABMCategoriasWindow
 from reportlab.lib.styles import getSampleStyleSheet
-import fitz, os, time, traceback, io
+import os, time, traceback, io
 
 
 
@@ -216,6 +217,10 @@ class Utils:
             #traceback.print_exc()  # Imprimir el traceback de la excepción
             QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
 
+    @staticmethod
+    def obtener_rol(dni):
+        return VendedorService.obtenerRol(dni)
+
 # Utils.py
 def create_main_window_menu(parent):
     menu_bar = parent.menuBar()
@@ -324,6 +329,5 @@ def init_header(parent, width, username, menu_bar_height):
     main_layout.addLayout(right_layout)
     main_layout.setStretchFactor(right_layout, 1)
     header.setLayout(main_layout)
-
 
 

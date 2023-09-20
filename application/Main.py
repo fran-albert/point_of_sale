@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.categoria_window.show()
 
     def show_products_window(self):
-        self.product_window = ProductosWindow(self.app, self.current_username, self.current_password)
+        self.product_window = ProductosWindow(self.app, self.dni)
         self.product_window.show()
 
     def show_proveedores_window(self):
@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.ordenes_window.show()
 
     def show_vendedores_window(self):
-        self.vendedores_window = VendedoresWindow(self.app, self.current_username, self.current_password)
+        self.vendedores_window = VendedoresWindow(self.app)
         self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
@@ -54,27 +54,23 @@ class MainWindow(QMainWindow):
         self.init_right_side_buttons(self)
     
 
-    def __init__(self, current_username, current_password, app):
+    def __init__(self, dni, app):
         self.vendedores_service = VendedorService()
         super().__init__()
         self.setWindowTitle("Point Of Sale")
-        self.current_username = self.vendedores_service.get_username(current_username, current_password)
-        self.current_password = current_password
-        self.user_role = self.vendedores_service.obtenerRol(current_username, current_password)
+        #self.dni = self.vendedores_service.obtenerNombre(dni)
+        self.dni = dni
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
         self.setFixedSize(1000, 900)
         self.categoria_window = None
         self.app = app
         create_main_window_menu(self)
-        init_header(self, self.width(), self.current_username, self.menuBar().height())
+        init_header(self, self.width(), self.dni, self.menuBar().height())
         self.logged_out.connect(self.open_login_window)
         self.login_window = None
 
-    def is_admin(self):
-        return self.user_role == "1"
-
     def resizeEvent(self, event):
-        init_header(self, self.width(), self.current_username, self.menuBar().height())
+        init_header(self, self.width(), self.dni, self.menuBar().height())
         super().resizeEvent(event)
 
     def cerrar_sesion(self):

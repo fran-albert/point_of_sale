@@ -16,7 +16,7 @@ class VendedorRepository:
             except Error as e:
                 raise RuntimeError("Error al insertar el nuevo vendedor", e)
             
-    def validate_login(self, nombre, dni):
+    def validarLogin(self, nombre, dni):
         valid = False
         query = "SELECT COUNT(*) FROM vendedores WHERE nombre = %s AND dni = %s"
         cursor = self.connection.cursor()
@@ -67,10 +67,10 @@ class VendedorRepository:
             except Exception as e:
                 raise RuntimeError(f"Error al eliminar el vendedor con ID {id}") from e
             
-    def obtenerRol(self, nombre, dni):
-        query = "SELECT admin FROM vendedores WHERE nombre = %s AND dni = %s"
+    def obtenerRol(self, dni):
+        query = "SELECT admin FROM vendedores WHERE dni = %s"
         cursor = self.connection.cursor()
-        cursor.execute(query, (nombre, dni))
+        cursor.execute(query, (dni))
         result = cursor.fetchone()
         cursor.close()
         if result:

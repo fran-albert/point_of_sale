@@ -11,9 +11,10 @@ from servicios.proveedor_service import ProveedorService
 from servicios.vendedores_service import VendedorService
 from .editar_producto import EditarProductoDialog
 from entities.producto import Producto
+from utils.Utils import Utils
 
 class ListaProductosDialog(QDialog):
-    def __init__(self, app, current_username, current_password, parent=None):
+    def __init__(self, app, dni, parent=None):
         super().__init__(parent)    
 
         self.app = app
@@ -25,9 +26,7 @@ class ListaProductosDialog(QDialog):
         self.producto  = self.producto_service.obtenerProductos()
         self.categorias = self.categoria_service.obtenerCategorias()
         self.proveedores = self.proveedor_service.obtenerProveedores()
-        self.current_username = current_username
-        self.current_password = current_password
-        self.vendedor_rol = self.vendedores_service.obtenerRol(current_username, current_password)
+        self.vendedor_rol = Utils.obtener_rol(dni)
 
         self.categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in self.categorias}
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}

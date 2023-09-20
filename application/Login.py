@@ -30,9 +30,9 @@ class LoginWindow(QWidget):
 
         vendedor_service = VendedorService()
 
-        if vendedor_service.validate_login(usuario, contrasena):
+        if vendedor_service.validarLogin(usuario, contrasena):
             self.hide()
-            self.main_window = Main.MainWindow(usuario, contrasena, app)
+            self.main_window = Main.MainWindow(contrasena, app)
             self.main_window.show()
         else:
             QMessageBox.warning(self, "Error", "Usuario o contraseña incorrecto")

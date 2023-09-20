@@ -3,15 +3,15 @@ from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, 
 from servicios.vendedores_service import VendedorService
 from vendedores.agregar_vendedor import AgregarVendedorDialog
 from vendedores.lista_vendedores import ListaVendedoresDialog
+from utils.Utils import Utils
 
 class VendedoresWindow(QMainWindow):
-    def __init__(self, app, current_username, current_password, parent=None):
+    def __init__(self, app, dni, parent=None):
         super().__init__(parent)
 
         self.app = app
+        self.dni = dni
         self.vendedor_service = VendedorService()
-        self.current_username = current_username
-        self.current_password = current_password
 
         self.setWindowTitle("Vendedores")
         self.setGeometry(100, 100, 150, 150)
@@ -30,7 +30,7 @@ class VendedoresWindow(QMainWindow):
 
         buttons_layout = QHBoxLayout()
         for button_text in ["Alta Vendedor", "Listado de Vendedores", "Cancelar"]:
-            if button_text == "Alta Vendedor" and self.vendedor_service.obtenerRol(self.current_username, self.current_password) == 0:
+            if button_text == "Alta Vendedor" and Utils.obtener_rol(self.dni) == 0:
                 continue
 
             button = QPushButton(button_text)
@@ -60,5 +60,5 @@ class VendedoresWindow(QMainWindow):
         result = dialog.exec()
 
     def on_cancelar_clicked(self):
-        self.close()  
+        self.close()
 

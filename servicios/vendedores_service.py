@@ -10,8 +10,8 @@ class VendedorService:
     def obtenerVendedores(self):
         return self.vendedor_repository.obtenerVendedores()
     
-    def validate_login(self, nombre, dni):
-        return self.vendedor_repository.validate_login(nombre, dni)
+    def validarLogin(self, nombre, dni):
+        return self.vendedor_repository.validarLogin(nombre, dni)
     
     def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id):
         return self.vendedor_repository.actualizarVendedor(nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id)
@@ -19,14 +19,15 @@ class VendedorService:
     def eliminarVendedor(self, id):
         return self.vendedor_repository.eliminarVendedor(id)
     
-    def get_username(self, login_username, login_password):
-        if self.validate_login(login_username, login_password):
-            usuarios = self.vendedor_repository.obtenerVendedores()
-            for usuario in usuarios:
-                if usuario.nombre == login_username:
-                    return usuario.nombre
-        else:
+    def obtenerNombre(self, dni):
+        usuarios = self.vendedor_repository.obtenerVendedores()
+        nombre = ""
+        for usuario in usuarios:
+            if str(usuario.dni) == dni:
+                nombre = usuario.nombre
+                return nombre
+        if (nombre == ""):
             raise ValueError("Error en el inicio de sesión")
     
-    def obtenerRol(self, nombre, dni):
-        return self.vendedor_repository.obtenerRol(nombre, dni)
+    def obtenerRol(dni):
+        return vendedor_repository.obtenerRol(dni)
