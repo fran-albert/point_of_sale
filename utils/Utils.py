@@ -13,8 +13,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 import os, time, traceback, io, fitz
 
 
-
 class Utils:
+    nombre_usuario = ""
     # LOGIN WINDOW
     def create_login_ui(self):
             # Agrega un logo
@@ -221,6 +221,12 @@ class Utils:
     def obtener_rol(dni):
         vendedor_service = VendedorService()
         return vendedor_service.obtenerRol(dni)
+    
+    @staticmethod
+    def obtener_nombre_usuario(dni):
+        vendedor_service = VendedorService()
+        nombre_usuario = vendedor_service.obtenerNombre(dni)
+        return nombre_usuario
 
 
 # Utils.py
@@ -229,6 +235,9 @@ def create_main_window_menu(parent):
 
     archivo_menu = QMenu("Archivo", parent)
     menu_bar.addMenu(archivo_menu)
+
+    cerrar_sesion_action = QAction("Cerrar Sesión", parent)
+    archivo_menu.addAction(cerrar_sesion_action)
 
     menu_menu = QMenu("Menú", parent)
     menu_bar.addMenu(menu_menu)
@@ -277,10 +286,11 @@ def create_main_window_menu(parent):
     ventas_action.triggered.connect(parent.show_ventas_window)
     ordenes_action.triggered.connect(parent.show_ordenes_window)
     vendedores_action.triggered.connect(parent.show_vendedores_window)
+    cerrar_sesion_action.triggered.connect(parent.cerrar_sesion)
     
 
 # HEADER
-def init_header(parent, width, username, menu_bar_height):
+def init_header(parent, width, nombre_usuario, menu_bar_height):
     parent_width = width
     header = QFrame(parent)
     header.move(0, menu_bar_height)
@@ -292,7 +302,7 @@ def init_header(parent, width, username, menu_bar_height):
 
     # Lado izquierdo
     left_layout = QVBoxLayout()
-    user_label = QLabel(f"Vendedor: {username}", header)
+    user_label = QLabel(f"Vendedor: {nombre_usuario}", header)
     user_label.setStyleSheet("color: black;")
     left_layout.addWidget(user_label, alignment=Qt.AlignTop | Qt.AlignLeft)
 

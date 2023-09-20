@@ -10,8 +10,9 @@ import Main
 
 
 class LoginWindow(QWidget):
-    def __init__(self):
+    def __init__(self, app=None):
         super().__init__()
+        self.app = app
         self.setWindowTitle("Inicio de sesión")
         self.setFixedSize(325, 160) 
         window_icon = QIcon("img/icons8-usuario-50.png")
@@ -26,13 +27,13 @@ class LoginWindow(QWidget):
     
     def iniciar_sesion(self):
         usuario = self.usuario_edit.text()
-        contrasena = self.contrasena_edit.text()
+        contrasena = self.contrasena_edit.text() # cambiar dni por contraseña ingresada x user
 
         vendedor_service = VendedorService()
 
         if vendedor_service.validarLogin(usuario, contrasena):
             self.hide()
-            self.main_window = Main.MainWindow(contrasena, app)
+            self.main_window = Main.MainWindow(contrasena, self.app)
             self.main_window.show()
         else:
             QMessageBox.warning(self, "Error", "Usuario o contraseña incorrecto")
@@ -44,6 +45,6 @@ class LoginWindow(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("img/icons8-market-64.png"))  
-    login_window = LoginWindow()
+    login_window = LoginWindow(app)
     login_window.show()
     sys.exit(app.exec_())
