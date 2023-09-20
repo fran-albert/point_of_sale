@@ -71,12 +71,21 @@ class ListaVendedoresDialog(QDialog):
             self.table.setCellWidget(i, 10, delete_button)
 
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         layout.addWidget(self.table)
 
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
-        self.resize(1000, 500)
+
+        total_width = sum([self.table.columnWidth(i) for i in range(self.table.columnCount())])
+        extra_width = 60  
+        extra_height = 100 
+        self.resize(total_width + extra_width, self.sizeHint().height() + extra_height) 
+
+
+
+
+        
 
     def actualizar_tabla(self):
 
