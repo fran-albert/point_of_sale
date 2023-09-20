@@ -33,7 +33,7 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.dni_input)
 
             self.correo_label = QLabel("Correo:")
-            self.correo_input = QLineEdit(vendedor.correo)
+            self.correo_input = QLineEdit(vendedor.correo_electronico)
             layout.addWidget(self.correo_label)
             layout.addWidget(self.correo_input)
 
@@ -43,7 +43,7 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.telefono_input)
 
             self.fecha_nac_label = QLabel("Fecha Nacimiento:")
-            fecha_nac = QDate.fromString(vendedor.fecha_nac, "yyyy-MM-dd")
+            fecha_nac = QDate.fromString(vendedor.fecha_nacimiento, "yyyy-MM-dd")
             self.fecha_nac_input = QDateEdit(fecha_nac)
             layout.addWidget(self.fecha_nac_label)
             layout.addWidget(self.fecha_nac_input)
@@ -87,19 +87,19 @@ class EditarVendedorDialog(QDialog):
             nuevoDNI = self.dni_input.text().strip()
             nuevo_apellido = self.apellido_input.text().strip()
             nuevo_telefono = self.telefono_input.text().strip()
-            nuevo_correo = self.correo_input.text().strip()
+            nuevo_correo_electronico = self.correo_input.text().strip()
             nueva_fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
-            nueva_fecha_nac = self.fecha_nac_input.date().toString("yyyy-MM-dd")
+            nueva_fecha_nacimiento = self.fecha_nac_input.date().toString("yyyy-MM-dd")
             admin = self.rol_combo.currentData()
 
-            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo and nueva_fecha_alta and nueva_fecha_nac and admin is not None:
+            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo_electronico and nueva_fecha_alta and nueva_fecha_nacimiento and admin is not None:
                 self.vendedor.nombre = nuevo_nombre
                 self.vendedor.apellido = nuevo_apellido
                 self.vendedor.dni = nuevoDNI
                 self.vendedor.telefono = nuevo_telefono
-                self.vendedor.correo = nuevo_correo
-                nueva_fecha_nac = datetime.strptime(nueva_fecha_nac, "%Y-%m-%d")
-                self.vendedor.fecha_nac = nueva_fecha_nac
+                self.vendedor.correo_electronico = nuevo_correo_electronico
+                nueva_fecha_nacimiento = datetime.strptime(nueva_fecha_nacimiento, "%Y-%m-%d")
+                self.vendedor.fecha_nacimiento = nueva_fecha_nacimiento
                 nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
                 self.vendedor.admin = admin 
                 self.vendedor.fecha_alta = nueva_fecha_alta

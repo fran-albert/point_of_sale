@@ -47,8 +47,8 @@ class ListaVendedoresDialog(QDialog):
             item_apellido = QTableWidgetItem(vend.apellido)
             item_dni = QTableWidgetItem(str(vend.dni))
             item_telefono = QTableWidgetItem(str(vend.telefono))
-            item_correo = QTableWidgetItem(vend.correo)
-            item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nac.strftime("%Y-%m-%d"))
+            item_correo_electronico = QTableWidgetItem(vend.correo_electronico)
+            item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nacimiento.strftime("%Y-%m-%d"))
             item_fecha_alta = QTableWidgetItem(vend.fecha_alta.strftime("%Y-%m-%d"))
             item_admin = QTableWidgetItem(str(vend.admin) == "1" and "Administrador" or "Vendedor")
 
@@ -57,7 +57,7 @@ class ListaVendedoresDialog(QDialog):
             self.table.setItem(i, 2, item_apellido)
             self.table.setItem(i, 3, item_dni)
             self.table.setItem(i, 4, item_telefono)
-            self.table.setItem(i, 5, item_correo)
+            self.table.setItem(i, 5, item_correo_electronico)
             self.table.setItem(i, 6, item_fecha_nacimiento)
             self.table.setItem(i, 7, item_fecha_alta)
             self.table.setItem(i, 8, item_admin)
@@ -90,8 +90,8 @@ class ListaVendedoresDialog(QDialog):
             item_apellido = QTableWidgetItem(vend.apellido)
             item_dni = QTableWidgetItem(str(vend.dni))
             item_telefono = QTableWidgetItem(str(vend.telefono))
-            item_correo = QTableWidgetItem(vend.correo)
-            item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nac.strftime("%Y-%m-%d"))
+            item_correo_electronico = QTableWidgetItem(vend.correo_electronico)
+            item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nacimiento.strftime("%Y-%m-%d"))
             item_fecha_alta = QTableWidgetItem(vend.fecha_alta.strftime("%Y-%m-%d"))
             item_admin = QTableWidgetItem(str(vend.admin) == "1" and "Administrador" or "Vendedor")
 
@@ -100,7 +100,7 @@ class ListaVendedoresDialog(QDialog):
             self.table.setItem(i, 2, item_apellido)
             self.table.setItem(i, 3, item_dni)
             self.table.setItem(i, 4, item_telefono)
-            self.table.setItem(i, 5, item_correo)
+            self.table.setItem(i, 5, item_correo_electronico)
             self.table.setItem(i, 6, item_fecha_nacimiento)
             self.table.setItem(i, 7, item_fecha_alta)
             self.table.setItem(i, 8, item_admin)
@@ -126,12 +126,12 @@ class ListaVendedoresDialog(QDialog):
         apellido = self.table.item(index.row(), 2).text()
         dni = self.table.item(index.row(), 3).text()
         telefono = self.table.item(index.row(), 4).text()
-        correo = self.table.item(index.row(), 5).text()
-        fecha_nac = self.table.item(index.row(), 6).text()
+        correo_electronico = self.table.item(index.row(), 5).text()
+        fecha_nacimiento = self.table.item(index.row(), 6).text()
         fecha_alta = self.table.item(index.row(), 7).text()
         admin = self.table.item(index.row(), 8).text()
 
-        vendedor = Vendedor(dni, nombre, apellido, telefono, correo, fecha_nac, fecha_alta, admin)
+        vendedor = Vendedor(dni, nombre, apellido, telefono, correo_electronico, fecha_nacimiento, fecha_alta, admin)
         vendedor.set_id(id)
 
         dialog = EditarVendedorDialog(vendedor, vendedor_service)
@@ -143,8 +143,8 @@ class ListaVendedoresDialog(QDialog):
                 vendedor.nombre,
                 vendedor.apellido,
                 vendedor.telefono,
-                vendedor.correo,
-                vendedor.fecha_nac,
+                vendedor.correo_electronico,
+                vendedor.fecha_nacimiento,
                 vendedor.fecha_alta,
                 vendedor.admin,
                 vendedor.id
