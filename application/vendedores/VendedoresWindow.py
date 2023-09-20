@@ -6,11 +6,11 @@ from vendedores.lista_vendedores import ListaVendedoresDialog
 from utils.Utils import Utils
 
 class VendedoresWindow(QMainWindow):
-    def __init__(self, app, dni, parent=None):
+    def __init__(self, app, rol, parent=None):
         super().__init__(parent)
 
         self.app = app
-        self.dni = dni
+        self.rol = rol
         self.vendedor_service = VendedorService()
 
         self.setWindowTitle("Vendedores")
@@ -30,7 +30,7 @@ class VendedoresWindow(QMainWindow):
 
         buttons_layout = QHBoxLayout()
         for button_text in ["Alta Vendedor", "Listado de Vendedores", "Cancelar"]:
-            if button_text == "Alta Vendedor" and Utils.obtener_rol(self.dni) == 0:
+            if button_text == "Alta Vendedor" and self.rol == 0:
                 continue
 
             button = QPushButton(button_text)
@@ -56,7 +56,7 @@ class VendedoresWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_lista_vendedores_clicked(self):
-        dialog = ListaVendedoresDialog(self.app, self.dni)
+        dialog = ListaVendedoresDialog(self.app, self.rol)
         result = dialog.exec()
 
     def on_cancelar_clicked(self):

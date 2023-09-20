@@ -7,7 +7,7 @@ from utils.Utils import Utils
 
 
 class ListaVendedoresDialog(QDialog):
-    def __init__(self, app, dni, parent=None):
+    def __init__(self, app, rol, parent=None):
         super().__init__(parent)
 
         self.app = app
@@ -37,7 +37,7 @@ class ListaVendedoresDialog(QDialog):
         self.table.setColumnWidth(6, 120)
         self.table.hideColumn(0)
 
-        if Utils.obtener_rol(dni) == 0:
+        if rol == 0:
             self.table.hideColumn(9)  
             self.table.hideColumn(10)
 
