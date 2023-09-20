@@ -50,7 +50,7 @@ class VendedorRepository:
             raise RuntimeError("Error al obtener los vendedores", e)
         
     def actualizarVendedor(self, nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id):
-        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fecha_nac = %s, fecha_alta = %s, admin = %s WHERE id = %s"
+        query = "UPDATE vendedores SET dni = %s, nombre = %s, apellido = %s, telefono = %s, correo = %s, fecha_nacimiento = %s, fecha_alta = %s, admin = %s WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (nuevoDNI, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevafecha_nac, fecha_alta, admin, id))
