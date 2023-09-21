@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.categoria_window.show()
 
     def show_products_window(self):
-        self.product_window = ProductosWindow(self.app, self.dni)
+        self.product_window = ProductosWindow(self.app, self.rol)
         self.product_window.show()
 
     def show_proveedores_window(self):
@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.ordenes_window.show()
 
     def show_vendedores_window(self):
-        self.vendedores_window = VendedoresWindow(self.app, self.dni)
+        self.vendedores_window = VendedoresWindow(self.app, self.rol)
         self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
@@ -58,19 +58,19 @@ class MainWindow(QMainWindow):
         self.vendedores_service = VendedorService()
         super().__init__()
         self.setWindowTitle("Point Of Sale")
-        #self.dni = self.vendedores_service.obtenerNombre(dni)
-        self.dni = dni
+        self.rol = Utils.obtener_rol(dni)
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
         self.setFixedSize(1000, 900)
         self.categoria_window = None
         self.app = app
         create_main_window_menu(self)
-        init_header(self, self.width(), self.dni, self.menuBar().height())
+        self.nombre_usuario = Utils.obtener_nombre_usuario(dni)
+        init_header(self, self.width(), self.nombre_usuario, self.menuBar().height())
         self.logged_out.connect(self.open_login_window)
         self.login_window = None
 
     def resizeEvent(self, event):
-        init_header(self, self.width(), self.dni, self.menuBar().height())
+        init_header(self, self.width(), self.nombre_usuario, self.menuBar().height())
         super().resizeEvent(event)
 
     def cerrar_sesion(self):

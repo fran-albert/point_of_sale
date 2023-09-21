@@ -52,10 +52,10 @@ class VerOrdenDialog(QDialog):
         self.ordenes_checkboxes = [] 
         
         for i, orden in enumerate(self.orden_compra):
-            item_id = QTableWidgetItem(str(orden.idOrdenCompra))
-            item_idProveedor = QTableWidgetItem(self.proveedor_nombre_map.get(int(orden.idProveedor), "Desconocido"))
-            item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precioTotalOrden)))
-            item_fechaRecepcion = QTableWidgetItem(orden.fechaRecepcion.strftime("%d-%m-%Y"))
+            item_id = QTableWidgetItem(str(orden.id))
+            item_idProveedor = QTableWidgetItem(self.proveedor_nombre_map.get(int(orden.id_proveedor), "Desconocido"))
+            item_precioTotalOrden = QTableWidgetItem("{:.2f}".format(float(orden.precio_total_orden)))
+            item_fechaRecepcion = QTableWidgetItem(orden.fecha_recepcion.strftime("%d-%m-%Y"))
 
             checkbox_recibido = QCheckBox()
             checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
@@ -89,7 +89,7 @@ class VerOrdenDialog(QDialog):
     
     def guardar_cambios(self):
         for i, checkbox in enumerate(self.ordenes_checkboxes):
-            idOrdenCompra = self.orden_compra[i].idOrdenCompra
+            idOrdenCompra = self.orden_compra[i].id
             recibido = checkbox.isChecked()
             if recibido:
                 self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)

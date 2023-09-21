@@ -1,22 +1,22 @@
 class Ticket:
-    def __init__(self, usuario, total, tipo_de_pago, fecha, idTicket=None):
-        self.idTicket = idTicket
-        self.usuario = usuario
+    def __init__(self, id_vendedor, total, tipo_de_pago, fecha, id_ticket=None):
+        self.id_vendedor = id_vendedor
         self.total = total
         self.tipo_de_pago = tipo_de_pago
         self.fecha = fecha
+        self.id_ticket = id_ticket
         
-    def get_idTicket(self):
-        return self.idTicket
+    def get_id_ticket(self):
+        return self.id_ticket
 
-    def set_idTicket(self, idTicket):
-        self.idTicket = idTicket
+    def set_id_ticket(self, id_ticket):
+        self.id_ticket = id_ticket
 
-    def get_usuario(self):
-        return self.usuario
+    def get_id_vendedor(self):
+        return self.id_vendedor
 
-    def set_usuario(self, usuario):
-        self.usuario = usuario
+    def set_id_vendedor(self, id_vendedor):
+        self.id_vendedor = id_vendedor
 
     def get_total(self):
         return self.total

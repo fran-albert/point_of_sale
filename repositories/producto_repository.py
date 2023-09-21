@@ -7,10 +7,10 @@ class ProductoRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarProducto(self, producto):
-        sql = "INSERT INTO productos(Codigo, Nombre, PrecioCompra, PrecioVenta, CantStock, Categoria, Impuestos, Descuentos, Proveedor, FechaVenc) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO productos(codigo, nombre, precio_compra, precio_venta, cantidad_stock, id_categoria, id_proveedor) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql, (producto.get_codigo(), producto.get_nombre(), producto.get_precioCompra(), producto.get_precioVenta(), producto.get_cantStock(), producto.get_categoria(), producto.get_impuestos(), producto.get_descuentos(), producto.get_proveedor(), producto.get_fechaVenc()))
+                cursor.execute(sql, (producto.get_codigo(), producto.get_nombre(), producto.get_precioCompra(), producto.get_precioVenta(), producto.get_cantStock(), producto.get_categoria(), producto.get_proveedor()))
             self.connection.commit()
         except Error as e:
             raise RuntimeError("Error al insertar el nuevo producto", e)
@@ -28,12 +28,8 @@ class ProductoRepository:
                     precioVenta = row[3]
                     cant_stock = row[4]
                     categoria = row[5]
-                    impuestos = row[6]
-                    descuentos = row[7]
-                    proveedor = row[8]
-                    fecha_venc = row[9]
-
-                    nuevo_producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                    proveedor = row[6]
+                    nuevo_producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
                     productos.append(nuevo_producto)
             return productos
         except Error as e:
@@ -53,35 +49,28 @@ class ProductoRepository:
                     precioVenta = row[3]
                     cant_stock = row[4]
                     categoria = row[5]
-                    impuestos = row[6]
-                    descuentos = row[7]
-                    proveedor = row[8]
-                    fecha_venc = row[9]
-
-                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                    proveedor = row[6]
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
             return producto
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el código {codigo}", e)
         
     def obtenerProductoPorProveedor(self, proveedor_id):
         productos = []
-        query = "SELECT * FROM productos WHERE proveedor = %s"
+        query = "SELECT * FROM productos WHERE id_proveedor = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (proveedor_id,))
-                rows = cursor.fetchall()  # Cambia esto
-                for row in rows:  # Y esto
+                rows = cursor.fetchall()  
+                for row in rows: 
                     codigo = row[0]
                     nombre = row[1]
                     precioCompra = row[2]
                     precioVenta = row[3]
                     cant_stock = row[4]
                     categoria = row[5]
-                    impuestos = row[6]
-                    descuentos = row[7]
-                    proveedor = row[8]
-                    fecha_venc = row[9]
-                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                    proveedor = row[6]
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
                     productos.append(producto)
             return productos
         except Error as e:
@@ -101,28 +90,23 @@ class ProductoRepository:
                     precioVenta = row[3]
                     cant_stock = row[4]
                     categoria = row[5]
-                    impuestos = row[6]
-                    descuentos = row[7]
-                    proveedor = row[8]
-                    fecha_venc = row[9]
-
-                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                    proveedor = row[6]
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
             return producto
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el nombre {nombre}", e)
 
-    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo):
-        query = "UPDATE productos SET Codigo = %s, Nombre = %s, PrecioCompra = %s, PrecioVenta = %s, CantStock = %s, Categoria = %s, Impuestos = %s, Descuentos = %s, Proveedor = %s, FechaVenc = %s WHERE Codigo = %s"
+    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo):
+        query = "UPDATE productos SET codigo = %s, nombre = %s, precio_compra = %s, precio_venta = %s, cantidad_stock = %s, id_categoria = %s, id_proveedor = %s WHERE Codigo = %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, (nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevosImpuestos, nuevosDescuentos, nuevoProveedor, nuevaFechaVenc, codigo))
+                cursor.execute(query, (nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo))
                 self.connection.commit()
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el producto {codigo}") from e
 
-    # Metodo para actualizar el precio de venta cuando cambia el porcentaje de una categoria asociada a productos
     def actualizarPrecioVenta(self, porcentaje, idCategoria):
-        query = "UPDATE productos SET PrecioVenta = PrecioCompra * (1 + %s/100) WHERE Categoria = %s"
+        query = "UPDATE productos SET precio_venta = precio_compra * (1 + %s/100) WHERE id_categoria = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (porcentaje, idCategoria))
@@ -131,7 +115,7 @@ class ProductoRepository:
             raise RuntimeError(f"Error al actualizar el precio de venta de los productos asociados a la categoria.") from e
 
     def actualizarStock(self, codigo, cantidadVendida):
-        query = "UPDATE productos SET CantStock = CantStock - %s WHERE Codigo = %s"
+        query = "UPDATE productos SET cantidad_stock = cantidad_stock - %s WHERE codigo = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (cantidadVendida, codigo))
@@ -140,7 +124,7 @@ class ProductoRepository:
             raise RuntimeError(f"Error al actualizar el stock del producto {codigo}") from e
 
     def eliminarProducto(self, codigo):
-        query = "DELETE FROM productos WHERE Codigo = %s"
+        query = "DELETE FROM productos WHERE codigo = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (codigo,))
@@ -149,7 +133,7 @@ class ProductoRepository:
             raise RuntimeError(f"Error al eliminar el producto {codigo}") from e
         
     def ExisteProductosConCategoria(self, codigo):
-        query = "SELECT COUNT(*) FROM productos WHERE categoria = %s"
+        query = "SELECT COUNT(*) FROM productos WHERE id_categoria = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (codigo,))

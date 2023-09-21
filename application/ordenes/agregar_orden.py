@@ -1,6 +1,6 @@
 import sys
 sys.path.append('C:\\Users\\Francisco\\Documents\\point_of_sale')
-from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QDesktopWidget, QCompleter, QMessageBox, QAbstractItemView, QSizePolicy, QSpinBox, QHeaderView, QVBoxLayout, QLabel, QComboBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt, QStringListModel
 from servicios.productos_pedidos_service import ProductoPedidoService
 from entities.orden_compra import OrdenCompra
@@ -132,18 +132,19 @@ class AgregarOrdenDialog(QDialog):
         for producto in productos_pedidos:
                 precio_compra = float(producto.get_precio_compra())
                 precio_compra = "{:.2f}".format(precio_compra)
-                precio_total = float(producto.get_precio_compra()) * float(producto.get_cant_pedida())
+                precio_total = float(producto.get_precio_compra()) * float(producto.get_cantidad_pedida())
                 precio_total = "{:.2f}".format(precio_total)  # Ahora precio_total debería ser un número flotante
                 producto_pedido = ProductosPedidos(
                     None,  # idProdPedido se establecerá automáticamente en la base de datos
                     orden_generada,  # idTicket se establecerá después de insertar el ticket
-                    producto.get_prod_pedido(),  
+                    producto.get_producto_pedido(),  
                     producto.get_codigo(),  
-                    producto.get_cant_pedida(),  
+                    producto.get_cantidad_pedida(),  
                     precio_compra,  
                     precio_total
                 )
                 productos_pedidos_service.insertarProdPedido(producto_pedido)
+                QMessageBox.information(self, "Información", "Nuevo Orden de Compra creado")
 
     # Actualizar la lista de productos cuando cambia el proveedor seleccionado
     def update_product_list(self):

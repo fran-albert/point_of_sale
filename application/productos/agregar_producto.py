@@ -13,8 +13,6 @@ class AgregarProductoDialog(QDialog):
         self.setWindowTitle("Agregar Producto")
         layout = QVBoxLayout()
 
-        nombre = Utils.nombre_usuario
-
         self.codigo_label = QLabel("Código:")
         self.codigo_input = QLineEdit()
         layout.addWidget(self.codigo_label)

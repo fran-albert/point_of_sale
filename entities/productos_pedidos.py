@@ -1,30 +1,30 @@
 class ProductosPedidos:
-    def __init__(self, idProdPedido, idOrdenCompra, prod_pedido, codigo, cant_pedida, precio_compra, precio_total):
-        self.idProdPedido = idProdPedido
-        self.idOrdenCompra = idOrdenCompra
-        self.prod_pedido = prod_pedido
+    def __init__(self, id, id_orden_compra, producto_pedido, codigo, cantidad_pedida, precio_compra, precio_total):
+        self.id = id
+        self.id_orden_compra = id_orden_compra
+        self.producto_pedido = producto_pedido
         self.codigo = codigo
-        self.cant_pedida = cant_pedida
+        self.cantidad_pedida = cantidad_pedida
         self.precio_compra = precio_compra
         self.precio_total = precio_total
 
-    def get_idProdPedido(self):
-        return self.idProdPedido
+    def get_id(self):
+        return self.id
 
-    def set_idProdPedido(self, idProdPedido):
-        self.idProdPedido = idProdPedido
+    def set_id(self, id):
+        self.id = id
 
-    def get_idOrdenCompra(self):
-        return self.idOrdenCompra
+    def get_id_orden_compra(self):
+        return self.id_orden_compra
 
-    def set_idOrdenCompra(self, idOrdenCompra):
-        self.idOrdenCompra = idOrdenCompra
+    def set_id_orden_compra(self, id_orden_compra):
+        self.id_orden_compra = id_orden_compra
 
-    def get_prod_pedido(self):
-        return self.prod_pedido
+    def get_producto_pedido(self):
+        return self.producto_pedido
 
-    def set_prod_pedido(self, prod_pedido):
-        self.prod_pedido = prod_pedido
+    def set_producto_pedido(self, producto_pedido):
+        self.producto_pedido = producto_pedido
 
     def get_codigo(self):
         return self.codigo
@@ -32,11 +32,11 @@ class ProductosPedidos:
     def set_codigo(self, codigo):
         self.codigo = codigo
 
-    def get_cant_pedida(self):
-        return self.cant_pedida
+    def get_cantidad_pedida(self):
+        return self.cantidad_pedida
 
-    def set_cant_pedida(self, cant_pedida):
-        self.cant_pedida = cant_pedida
+    def set_cantidad_pedida(self, cantidad_pedida):
+        self.cantidad_pedida = cantidad_pedida
 
     def get_precio_compra(self):
         return self.precio_compra
