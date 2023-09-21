@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Point Of Sale")
         self.rol = Utils.obtener_rol(dni)
         self.setWindowIcon(QIcon("img/icons8-market-64.png"))
-        self.setFixedSize(1000, 900)
+        self.setFixedSize(800, 500)
         self.categoria_window = None
         self.app = app
         create_main_window_menu(self)

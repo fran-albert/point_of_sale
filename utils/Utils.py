@@ -233,12 +233,6 @@ class Utils:
 def create_main_window_menu(parent):
     menu_bar = parent.menuBar()
 
-    archivo_menu = QMenu("Archivo", parent)
-    menu_bar.addMenu(archivo_menu)
-
-    cerrar_sesion_action = QAction("Cerrar Sesión", parent)
-    archivo_menu.addAction(cerrar_sesion_action)
-
     menu_menu = QMenu("Menú", parent)
     menu_bar.addMenu(menu_menu)
 
@@ -266,17 +260,17 @@ def create_main_window_menu(parent):
     reportes_menu = QMenu("Reportes", parent)
     menu_bar.addMenu(reportes_menu)
 
+    reporte_stock_minimo_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Stock Mínimo", parent)
+    reportes_menu.addAction(reporte_stock_minimo_action)
+
     reporte_stock_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Stock", parent)
     reportes_menu.addAction(reporte_stock_action)
 
     reporte_ventas_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Ventas", parent)
     reportes_menu.addAction(reporte_ventas_action)
 
-    configuracion_menu = QMenu("Configuración", parent)
-    menu_bar.addMenu(configuracion_menu)
-
-    acerca_menu = QMenu("Acerca", parent)
-    menu_bar.addMenu(acerca_menu)
+    cerrar_sesion_action = QAction("Cerrar Sesión", parent)
+    menu_bar.addAction(cerrar_sesion_action)
 
     reporte_stock_action.triggered.connect(parent.generate_stock_report_wrapper)
     reporte_ventas_action.triggered.connect(parent.generate_sales_report_wrapper)
@@ -287,7 +281,6 @@ def create_main_window_menu(parent):
     ordenes_action.triggered.connect(parent.show_ordenes_window)
     vendedores_action.triggered.connect(parent.show_vendedores_window)
     cerrar_sesion_action.triggered.connect(parent.cerrar_sesion)
-    
 
 # HEADER
 def init_header(parent, width, nombre_usuario, menu_bar_height):
