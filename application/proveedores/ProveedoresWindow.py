@@ -1,24 +1,24 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
-from servicios.vendedores_service import VendedorService
-from vendedores.agregar_vendedor import AgregarVendedorDialog
-from vendedores.lista_vendedores import ListaVendedoresDialog
+from servicios.proveedor_service import ProveedorService
+from .agregar_proveedor import AgregarProveedorDialog
+from .lista_proveedores import ListaProveedoresDialog
 
-class VendedoresWindow(QMainWindow):
+class ProveedoresWindow(QMainWindow):
     def __init__(self, app, rol, parent=None):
         super().__init__(parent)
 
         self.app = app
         self.rol = rol
-        self.vendedor_service = VendedorService()
+        self.proveedor_service = ProveedorService()
 
-        self.setWindowTitle("Vendedores")
+        self.setWindowTitle("Proveedores")
         self.setGeometry(100, 100, 150, 150)
 
         main_widget = QWidget()
         main_layout = QVBoxLayout()
 
-        title_label = QLabel("Vendedores")
+        title_label = QLabel("Proveedores")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("color: #025464; font-size: 24px; font-weight: bold")
         font = title_label.font()
@@ -28,8 +28,8 @@ class VendedoresWindow(QMainWindow):
         main_layout.addWidget(title_label)
 
         buttons_layout = QHBoxLayout()
-        for button_text in ["Alta Vendedor", "Listado de Vendedores", "Cancelar"]:
-            if button_text == "Alta Vendedor" and self.rol == 0:
+        for button_text in ["Alta Proveedor", "Listado de Proveedores", "Cancelar"]:
+            if button_text == "Alta Proveedor" and self.rol == 0:
                 continue
 
             button = QPushButton(button_text)
@@ -38,10 +38,10 @@ class VendedoresWindow(QMainWindow):
             button.setStyleSheet("font-size: 14px")  
             buttons_layout.addWidget(button)
 
-            if button_text == "Alta Vendedor":
-                button.clicked.connect(self.on_agregar_vendedor_clicked)
-            if button_text == "Listado de Vendedores":
-                button.clicked.connect(self.on_ver_lista_vendedores_clicked) 
+            if button_text == "Alta Proveedor":
+                button.clicked.connect(self.on_agregar_proveedor_clicked)
+            if button_text == "Listado de Proveedores":
+                button.clicked.connect(self.on_ver_lista_proveedores_clicked) 
             if button_text == "Cancelar":
                 button.clicked.connect(self.on_cancelar_clicked)
 
@@ -50,12 +50,12 @@ class VendedoresWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-    def on_agregar_vendedor_clicked(self):
-        dialog = AgregarVendedorDialog(self.vendedor_service)
+    def on_agregar_proveedor_clicked(self):
+        dialog = AgregarProveedorDialog(self.proveedor_service)
         result = dialog.exec()
 
-    def on_ver_lista_vendedores_clicked(self):
-        dialog = ListaVendedoresDialog(self.app, self.rol)
+    def on_ver_lista_proveedores_clicked(self):
+        dialog = ListaProveedoresDialog(self.app, self.rol)
         result = dialog.exec()
 
     def on_cancelar_clicked(self):

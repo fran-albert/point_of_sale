@@ -12,11 +12,10 @@ class EditarProveedorDialog(QDialog):
             layout = QVBoxLayout()
 
             self.id_proveedor_label = QLabel("ID Proveedor:")
-            self.id_proveedor_input = QLineEdit(str(proveedor.id))  # Asegúrate de convertir el ID a string
-            self.id_proveedor_input.setReadOnly(True)  # Hacer el campo de solo lectura
+            self.id_proveedor_input = QLineEdit(str(proveedor.id)) 
+            self.id_proveedor_input.setReadOnly(True)  
             layout.addWidget(self.id_proveedor_label)
             layout.addWidget(self.id_proveedor_input)
-
 
             self.nombre_label = QLabel("Nombre:")
             self.nombre_input = QLineEdit(proveedor.nombre)
@@ -105,6 +104,6 @@ class EditarProveedorDialog(QDialog):
                 self.proveedor.cuenta_bancaria = nueva_cuenta_bancaria
                 nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
                 self.proveedor.fecha_alta = nueva_fecha_alta
-                self.accept()  # Cerrar el diálogo
+                self.accept()  
             else:
                 QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")

@@ -3,7 +3,6 @@ from PyQt5.QtCore import Qt
 from servicios.vendedores_service import VendedorService
 from vendedores.editar_vendedor import EditarVendedorDialog
 from entities.vendedor import Vendedor
-from utils.Utils import Utils
 
 
 class ListaVendedoresDialog(QDialog):

@@ -10,7 +10,7 @@ from productos.ProductosWindow import ProductosWindow
 from ventas.VentasWindow import VentasWindow
 from ordenes.OrdenesWindow import OrdenesWindow
 from vendedores.VendedoresWindow import VendedoresWindow
-from proveedores.abm_proveedores import ABMProveedoresWindow
+from proveedores.ProveedoresWindow import ProveedoresWindow
 import sys
 
 class MainWindow(QMainWindow):
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         self.product_window.show()
 
     def show_proveedores_window(self):
-        self.proveedores_window = ABMProveedoresWindow(self.app)
+        self.proveedores_window = ProveedoresWindow(self.app, self.rol)
         self.proveedores_window.show()
 
     def show_ventas_window(self):

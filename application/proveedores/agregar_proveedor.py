@@ -96,6 +96,7 @@ class AgregarProveedorDialog(QDialog):
                 fecha_alta = datetime.strptime(fecha_alta, "%Y-%m-%d")
                 proveedor = Proveedor(nombre, direccion, codigo_postal, ciudad, provincia, telefono, email, comentario, cuenta_bancaria, fecha_alta)
                 self.proveedor_service.insertarProveedor(proveedor)
+                QMessageBox.information(self, "Información", "Nuevo Proveedor Añadido")
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese una fecha válida en formato YYYY-MM-DD.")

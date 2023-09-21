@@ -1,22 +1,47 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QScrollArea, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
+from PyQt5.QtWidgets import QHBoxLayout, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.proveedor_service import ProveedorService
 from entities.proveedor import Proveedor
 from .agregar_proveedor import AgregarProveedorDialog
 from .editar_proveedor import EditarProveedorDialog
 
-class ABMProveedoresWindow(QMainWindow):
-    def __init__(self, app, parent=None):
+class ListaProveedoresDialog(QDialog):
+    def __init__(self, app, rol, parent=None):
         super().__init__(parent)    
 
         self.app = app
         self.proveedor_service = ProveedorService()
         self.proveedores = self.proveedor_service.obtenerProveedores()
 
+        self.setWindowTitle("Proveedores")
+
+        layout = QVBoxLayout()
+
+        title_label = QLabel("Proveedores")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: green; font-size: 24px")
+
+        layout.addWidget(title_label)
+
+        search_label = QLabel("Buscar proveedores:")
+        search_input = QLineEdit()
+        search_input.setPlaceholderText("Ingrese el nombre del proveedor...")
+        search_layout = QHBoxLayout()
+        search_layout.addWidget(search_label)
+        search_layout.addWidget(search_input)
+
+        layout.addLayout(search_layout)
+
         self.table = QTableWidget(len(self.proveedores), 13)
         self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Dirección", "Código Postal", "Ciudad", "Provincia", "Teléfono", "Correo Electrónico", "Comentario", "Cuenta Bancaria", "Fecha de Alta", "", ""])
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setStretchLastSection(False)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.table.setMinimumHeight(300) 
 
-        # Rellena la tabla con los proveedores actualizados
         for i, prov in enumerate(self.proveedores):
             item_id = QTableWidgetItem(str(prov.id))
             item_nombre = QTableWidgetItem(prov.nombre)
@@ -42,88 +67,13 @@ class ABMProveedoresWindow(QMainWindow):
             self.table.setItem(i, 9, item_cuenta_bancaria)
             self.table.setItem(i, 10, item_fecha_alta)
 
-            # Botón Editar
             edit_button = QPushButton("Editar")
             edit_button.clicked.connect(self.on_edit_button_clicked)
             self.table.setCellWidget(i, 11, edit_button)
 
-            # Botón Eliminar
             delete_button = QPushButton("Eliminar")
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 12, delete_button)
-
-        # Crear un botón Agregar Proveedor
-        add_proveedor_button = QPushButton("Agregar Proveedor")
-        add_proveedor_button.clicked.connect(self.on_agregar_proveedor_clicked)
-
-        # Crear un layout vertical
-        layout = QVBoxLayout()
-
-        # Crear un QLabel para el título
-        title_label = QLabel("Proveedores")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("color: green; font-size: 24px")
-
-        #Crear un QFrame para el rectángulo
-        rectangle_frame = QFrame()
-        rectangle_frame.setFrameShape(QFrame.StyledPanel)
-        rectangle_frame.setFrameShadow(QFrame.Sunken)
-        rectangle_frame.setLineWidth(1)
-
-        # Crear un QVBoxLayout para el rectángulo y agregar el campo de búsqueda y el botón
-        rectangle_layout = QVBoxLayout(rectangle_frame)
-        search_field = QLineEdit()
-        search_field.setPlaceholderText("Buscar proveedores...")
-        rectangle_layout.addWidget(search_field)
-        rectangle_layout.addWidget(add_proveedor_button)
-
-        # Ajustar el tamaño de las columnas automáticamente para ajustarse al contenido
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-
-        # Evitar que las columnas se puedan estirar
-        self.table.horizontalHeader().setStretchLastSection(False)
-
-        # Evitar que las filas se puedan estirar
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
-
-        # Establecer la selección a nivel de fila y deshabilitar la edición de celdas
-        self.table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
-
-        # Crear una QScrollArea y establecer la tabla como su widget interno
-        scroll_area = QScrollArea()
-        scroll_area.setWidget(self.table)
-        scroll_area.setWidgetResizable(True)
-
-        # Modificar la política de tamaño de la tabla
-        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.table.setMinimumHeight(300)  # Cambia este valor según tus necesidades
-
-        # Añadir el título, el rectángulo y el scroll_area al layout
-        layout.addWidget(title_label)
-        layout.addWidget(rectangle_frame)
-        layout.addWidget(scroll_area)
-        layout.addStretch(1)  # Añade un espacio flexible para pegar la tabla a la parte inferior de la pantalla
-
-        # Crear un widget central y establecer el layout
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-
-        # Establecer el widget central en la ventana
-        self.setCentralWidget(central_widget)
-
-        # Establece el título de la ventana
-        self.setWindowTitle("Proveedores")
-
-        self.setGeometry(100, 100, 900, 400)  # x, y, ancho, alto
-        # Obtener la geometría de la pantalla y calcular la posición central
-        screen = QDesktopWidget().availableGeometry()
-        x = (screen.width() - self.width()) // 2
-        y = (screen.height() - self.height()) // 2
-
-        # Establecer la posición de la ventana en el centro de la pantalla
-        self.move(x, y)
-
 
     def actualizar_tabla(self):
         
@@ -157,12 +107,10 @@ class ABMProveedoresWindow(QMainWindow):
             self.table.setItem(i, 9, item_cuenta_bancaria)
             self.table.setItem(i, 10, item_fecha_alta)
 
-            # Botón Editar
             edit_button = QPushButton("Editar")
             edit_button.clicked.connect(self.on_edit_button_clicked)
             self.table.setCellWidget(i, 11, edit_button)
 
-            # Botón Eliminar
             delete_button = QPushButton("Eliminar")
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 12, delete_button)
@@ -200,7 +148,6 @@ class ABMProveedoresWindow(QMainWindow):
         result = dialog.exec()
 
         if result == QDialog.Accepted:
-            # Actualiza el producto en la base de datos
             self.proveedor_service.actualizarProveedor(
                 proveedor.nombre,
                 proveedor.direccion,
@@ -214,7 +161,6 @@ class ABMProveedoresWindow(QMainWindow):
                 proveedor.fecha_alta,
                 proveedor.id
             )
-            # Actualiza la tabla para mostrar los cambios
             self.actualizar_tabla()
 
     def on_delete_button_clicked(self):
