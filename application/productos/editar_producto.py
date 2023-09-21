@@ -1,17 +1,18 @@
-from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
-from PyQt5.QtCore import  QDate
+from PyQt5.QtWidgets import QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
 from entities.producto import Producto
 
 class EditarProductoDialog(QDialog):
-    def __init__(self, producto, producto_service, categoria_service, categorias, parent=None):
+    def __init__(self, producto, producto_service, categoria_service, proveedor_service, categorias, proveedores, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Editar Producto")
 
         self.producto_service = producto_service
         self.categoria_service = categoria_service
+        self.proveedor_service = proveedor_service
 
         self.producto = producto
         self.categorias = categorias
+        self.proveedores = proveedores
         layout = QVBoxLayout()
 
         self.codigo_label = QLabel("Código:")
@@ -43,25 +44,14 @@ class EditarProductoDialog(QDialog):
         layout.addWidget(self.categoria_label)
         layout.addWidget(self.categoria_combo)
 
-        self.impuestos_label = QLabel("Impuestos:")
-        self.impuestos_input = QLineEdit(str(producto.impuestos))
-        layout.addWidget(self.impuestos_label)
-        layout.addWidget(self.impuestos_input)
-
-        self.descuentos_label = QLabel("Descuentos:")
-        self.descuentos_input = QLineEdit(str(producto.descuentos))
-        layout.addWidget(self.descuentos_label)
-        layout.addWidget(self.descuentos_input)
-
         self.proveedor_label = QLabel("Proveedor:")
-        self.proveedor_input = QLineEdit(str(producto.proveedor))
+        self.proveedor_selector = QComboBox()
+        for proveedor in self.proveedores:
+            self.proveedor_selector.addItem(proveedor.nombre, proveedor.id)
+        indice_proveedor = self.proveedor_selector.findData(producto.proveedor)  
+        self.proveedor_selector.setCurrentIndex(indice_proveedor) 
         layout.addWidget(self.proveedor_label)
-        layout.addWidget(self.proveedor_input)
-
-        self.fechaVenc_label = QLabel("Fecha Vencimiento:")
-        self.fechaVenc_input = QDateEdit(QDate.fromString(producto.fechaVenc, "yyyy-MM-dd"))
-        layout.addWidget(self.fechaVenc_label)
-        layout.addWidget(self.fechaVenc_input)
+        layout.addWidget(self.proveedor_selector)
 
         self.buttons_layout = QHBoxLayout()
         self.guardar_button = QPushButton("Guardar")
@@ -81,17 +71,16 @@ class EditarProductoDialog(QDialog):
         nuevo_precioCompra = self.precioCompra_input.text().strip()
         nuevo_stock = self.stock_input.text().strip()
         nueva_categoria = self.categoria_combo.currentData()
-        nuevos_impuestos = self.impuestos_input.text().strip()
+        nuevo_proveedor = self.proveedor_selector.currentData()
 
-        if nuevo_precioCompra and nuevo_stock and nuevos_impuestos:
+        if nuevo_precioCompra and nuevo_stock:
             try:
                 nuevo_precioCompra = float(nuevo_precioCompra)
                 nuevo_stock = int(nuevo_stock)
-                nuevos_impuestos = float(nuevos_impuestos)
                 self.producto.precioCompra = nuevo_precioCompra
                 self.producto.cantStock = nuevo_stock
                 self.producto.categoria = nueva_categoria
-                self.producto.impuestos = nuevos_impuestos
+                self.producto.proveedor = nuevo_proveedor
                 porcentaje = self.categoria_service.obtenerPorcentaje(nueva_categoria)
                 self.producto.precioVenta = Producto.calculoPrecioVenta(nuevo_precioCompra, porcentaje)
                 self.accept()

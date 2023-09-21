@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QDateEdit, QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
+from PyQt5.QtWidgets import QComboBox, QPushButton, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QDialog, QMessageBox
 from entities.producto import Producto
+from utils.Utils import Utils
 
 class AgregarProductoDialog(QDialog):
     def __init__(self, producto_service, categoria_service, proveedor_service, parent=None):
@@ -11,6 +12,8 @@ class AgregarProductoDialog(QDialog):
 
         self.setWindowTitle("Agregar Producto")
         layout = QVBoxLayout()
+
+        nombre = Utils.nombre_usuario
 
         self.codigo_label = QLabel("Código:")
         self.codigo_input = QLineEdit()
@@ -40,16 +43,6 @@ class AgregarProductoDialog(QDialog):
         layout.addWidget(self.categoria_label)
         layout.addWidget(self.categoria_selector)
 
-        self.impuestos_label = QLabel("Impuestos:")
-        self.impuestos_input = QLineEdit()
-        layout.addWidget(self.impuestos_label)
-        layout.addWidget(self.impuestos_input)
-
-        self.descuentos_label = QLabel("Descuentos:")
-        self.descuentos_input = QLineEdit()
-        layout.addWidget(self.descuentos_label)
-        layout.addWidget(self.descuentos_input)
-
         self.proveedor_label = QLabel("Proveedor:")
         self.proveedor_selector = QComboBox()
         proveedores = self.proveedor_service.obtenerProveedores()
@@ -57,11 +50,6 @@ class AgregarProductoDialog(QDialog):
             self.proveedor_selector.addItem(proveedor.nombre, proveedor.id)
         layout.addWidget(self.proveedor_label)
         layout.addWidget(self.proveedor_selector)
-
-        self.fecha_venc_label = QLabel("Fecha de Vencimiento:")
-        self.fecha_venc_input = QDateEdit()
-        layout.addWidget(self.fecha_venc_label)
-        layout.addWidget(self.fecha_venc_input)
 
         self.buttons_layout = QHBoxLayout()
         self.agregar_button = QPushButton("Agregar")
@@ -81,20 +69,15 @@ class AgregarProductoDialog(QDialog):
         precioCompra = self.precio_input.text().strip()
         cant_stock = self.cant_stock_input.text().strip()
         categoria = self.categoria_selector.currentData()
-        impuestos = self.impuestos_input.text().strip()
-        descuentos = self.descuentos_input.text().strip()
         proveedor = self.proveedor_selector.currentData()
-        fecha_venc = self.fecha_venc_input.date().toString("yyyy-MM-dd")
 
-        if codigo and nombre and precioCompra and cant_stock and categoria and impuestos and descuentos and proveedor and fecha_venc:
+        if codigo and nombre and precioCompra and cant_stock and categoria and proveedor:
             try:
                 precioCompra = float(precioCompra)
                 cant_stock = int(cant_stock)
-                impuestos = float(impuestos)
-                descuentos = float(descuentos)
                 porcentaje = self.categoria_service.obtenerPorcentaje(categoria)
                 precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
-                producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc)
+                producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
                 self.producto_service.insertarProducto(producto)
                 QMessageBox.information(self, "Información", "Nuevo Producto Añadido")
                 self.accept()

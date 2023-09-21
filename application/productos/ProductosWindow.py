@@ -1,19 +1,17 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel
 from servicios.producto_service import ProductoService
 from servicios.categoria_service import CategoriaService
 from servicios.proveedor_service import ProveedorService
 from .agregar_producto import AgregarProductoDialog
-from servicios.vendedores_service import VendedorService
 from .lista_productos import ListaProductosDialog
-from utils.Utils import Utils
 
 class ProductosWindow(QMainWindow):
-    def __init__(self, app, dni, parent=None):
+    def __init__(self, app, rol, parent=None):
         super().__init__(parent)
 
         self.app = app
-        self.dni = dni
+        self.rol = rol
         self.producto_service = ProductoService()
         self.categoria_service = CategoriaService()
         self.proveedor_service = ProveedorService()
@@ -36,7 +34,7 @@ class ProductosWindow(QMainWindow):
         buttons_layout = QHBoxLayout()
         for button_text in ["Alta Producto", "Listado de Productos", "Cancelar"]:
 
-            if button_text == "Alta Producto" and Utils.obtener_rol(self.dni) == 0:
+            if button_text == "Alta Producto" and self.rol == 0:
                 continue
             button = QPushButton(button_text)
             button.setFixedWidth(200)  
@@ -61,7 +59,7 @@ class ProductosWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_lista_productos_clicked(self):
-        dialog = ListaProductosDialog(self.app, self.dni)
+        dialog = ListaProductosDialog(self.app, self.rol)
         result = dialog.exec()
 
     def on_cancelar_clicked(self):

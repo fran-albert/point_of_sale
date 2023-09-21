@@ -1,17 +1,13 @@
 class Producto:
 
-    def __init__(self, codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, impuestos, descuentos, proveedor, fecha_venc):
+    def __init__(self, codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor):
         self.codigo = codigo
         self.nombre = nombre
         self.precioCompra = precioCompra
         self.precioVenta = precioVenta
         self.cantStock = cant_stock
         self.categoria = categoria
-        self.impuestos = impuestos
-        self.descuentos = descuentos
         self.proveedor = proveedor
-        self.fechaVenc = fecha_venc
-
 
     @staticmethod
     def calculoPrecioVenta(precioCompra, porcentaje):
@@ -36,18 +32,8 @@ class Producto:
     def set_categoria(self, categoria):
         self.categoria = categoria
 
-    def set_impuestos(self, impuestos):
-        self.impuestos = impuestos
-
-    def set_descuentos(self, descuentos):
-        self.descuentos = descuentos
-
     def set_proveedor(self, proveedor):
         self.proveedor = proveedor
-
-    def set_fechaVenc(self, fechaVenc):
-        self.fechaVenc = fechaVenc
-
 
     def get_codigo(self):
         return self.codigo 
@@ -66,18 +52,10 @@ class Producto:
     
     def get_categoria(self):
         return self.categoria 
-    
-    def get_impuestos(self):
-        return self.impuestos
-
-    def get_descuentos(self):
-        return self.impuestos
 
     def get_proveedor(self):
         return self.proveedor
-    
-    def get_fechaVenc(self):
-        return self.fechaVenc
+
 
 
 
