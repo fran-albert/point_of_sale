@@ -53,7 +53,7 @@ class CategoriasWindow(QMainWindow):
         self.setCentralWidget(main_widget)
 
     def on_agregar_categoria_clicked(self):
-        dialog = AgregarCategoriaDialog(self.producto_service, self.categoria_service)
+        dialog = AgregarCategoriaDialog(self.categoria_service)
         result = dialog.exec()
 
     def on_ver_lista_categorias_clicked(self):

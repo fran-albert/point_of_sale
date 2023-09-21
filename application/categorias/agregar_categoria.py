@@ -42,6 +42,7 @@ class AgregarCategoriaDialog(QDialog):
                     porcentaje = float(porcentaje)
                     categoria = Categoria(1, descripcion, porcentaje)
                     self.categoria_service.insertarCategoria(categoria)
+                    QMessageBox.information(self, "Información", "Nueva Categoría Añadido")
                     self.accept()
                 except ValueError:
                     QMessageBox.warning(self, "Error", "Por favor, ingrese un porcentaje válido.")
