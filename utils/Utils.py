@@ -8,7 +8,7 @@ from servicios.vendedores_service import VendedorService
 from servicios.producto_service import ProductoService
 from servicios.categoria_service import CategoriaService
 from servicios.proveedor_service import ProveedorService
-from application.categorias.abm_categorias import ABMCategoriasWindow
+from application.categorias.lista_categorias import ListaCategoriasDialog
 from reportlab.lib.styles import getSampleStyleSheet
 import os, time, traceback, io, fitz
 

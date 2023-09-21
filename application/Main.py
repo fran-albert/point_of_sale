@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from Login import LoginWindow
 from servicios.vendedores_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
-from categorias.abm_categorias import ABMCategoriasWindow
+from categorias.CategoriasWindow import CategoriasWindow
 from utils.Utils import Utils
 from productos.ProductosWindow import ProductosWindow
 from ventas.VentasWindow import VentasWindow
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         init_header(self, self.width(), username)
 
     def show_categories_window(self):
-        self.categoria_window = ABMCategoriasWindow(self.app)
+        self.categoria_window = CategoriasWindow(self.app, self.rol)
         self.categoria_window.show()
 
     def show_products_window(self):
