@@ -46,6 +46,9 @@ class ListaCategoriasDialog(QDialog):
         self.table.hideColumn(0)
         self.table.setColumnWidth(1, 150)
 
+        if rol == 0:
+            self.table.hideColumn(3)  
+
         for i, categoria in enumerate(self.categorias):
             item_id = QTableWidgetItem(str(categoria.id))
             item_descripcion = QTableWidgetItem(categoria.descripcion)
