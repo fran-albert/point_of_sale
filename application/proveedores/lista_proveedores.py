@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
+from PyQt5.QtWidgets import QHBoxLayout, QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
 from servicios.proveedor_service import ProveedorService
 from entities.proveedor import Proveedor
 from .agregar_proveedor import AgregarProveedorDialog
@@ -75,6 +75,14 @@ class ListaProveedoresDialog(QDialog):
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 12, delete_button)
 
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        layout.addWidget(self.table)
+
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setLayout(layout)
+        self.resize(1000, 300)
+
     def actualizar_tabla(self):
         
         self.proveedores = self.proveedor_service.obtenerProveedores()
@@ -114,13 +122,6 @@ class ListaProveedoresDialog(QDialog):
             delete_button = QPushButton("Eliminar")
             delete_button.clicked.connect(self.on_delete_button_clicked)
             self.table.setCellWidget(i, 12, delete_button)
-
-    def on_agregar_proveedor_clicked(self):
-        dialog = AgregarProveedorDialog(self.proveedor_service)
-        result = dialog.exec()
-
-        if result == QDialog.Accepted:
-            self.actualizar_tabla()
 
     def on_edit_button_clicked(self):
 
