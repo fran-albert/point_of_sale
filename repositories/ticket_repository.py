@@ -7,7 +7,7 @@ class TicketRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarTicket(self, ticket):
-        sql = "INSERT INTO ticket(id_vendedor, total, tipo_de_pago, fecha) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO tickets(id_vendedor, total, tipo_de_pago, fecha) VALUES (%s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (ticket.get_id_vendedor(),ticket.get_total(),ticket.get_tipo_de_pago(),ticket.get_fecha()))

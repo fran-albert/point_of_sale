@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
-from servicios.vendedores_service import VendedorService
+from servicios.vendedor_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
 from categorias.CategoriasWindow import CategoriasWindow
 from utils.Utils import Utils
@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         self.categoria_window = CategoriasWindow(self.app, self.rol)
         self.categoria_window.show()
 
+    # Muestra Pantalla de Productos
     def show_products_window(self):
         self.product_window = ProductosWindow(self.app, self.rol)
         self.product_window.show()
@@ -52,8 +53,8 @@ class MainWindow(QMainWindow):
 
     def init_right_side_buttons(self):
         self.init_right_side_buttons(self)
-    
 
+    # Inicializa pantalla de Main
     def __init__(self, dni, app):
         self.vendedores_service = VendedorService()
         super().__init__()

@@ -7,7 +7,7 @@ class OrdenCompraRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarOrden(self, ordenCompra):
-        sql = "INSERT INTO orden_compra(id_proveedor, precio_total_orden, fecha_recepcion, recibido) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO ordenes_compra(id_proveedor, precio_total_orden, fecha_recepcion, recibido) VALUES (%s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (ordenCompra.get_id_proveedor(), ordenCompra.get_precio_total_orden(), ordenCompra.get_fecha_recepcion(), ordenCompra.get_recibido()))
@@ -19,7 +19,7 @@ class OrdenCompraRepository:
     
     def obtenerOrden(self, idOrdenCompra):
         orden = None
-        query = "SELECT * FROM orden_compra WHERE id = %s"
+        query = "SELECT * FROM ordenes_compra WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (idOrdenCompra,))
@@ -37,7 +37,7 @@ class OrdenCompraRepository:
         
     def obtenerOrdenes(self):
         ordenesCompra = []
-        query = "SELECT * FROM orden_compra"
+        query = "SELECT * FROM ordenes_compra"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query)
@@ -54,7 +54,7 @@ class OrdenCompraRepository:
             raise RuntimeError("Error al obtener las órdenes de compra", e)
 
     def actualizarOrden(self, idOrdenCompra, recibido):
-        query = "UPDATE orden_compra SET recibido = %s WHERE id = %s"
+        query = "UPDATE ordenes_compra SET recibido = %s WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (recibido, idOrdenCompra))

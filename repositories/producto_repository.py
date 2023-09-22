@@ -54,7 +54,25 @@ class ProductoRepository:
             return producto
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el código {codigo}", e)
-        
+
+    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo):
+        query = "UPDATE productos SET codigo = %s, nombre = %s, precio_compra = %s, precio_venta = %s, cantidad_stock = %s, id_categoria = %s, id_proveedor = %s WHERE Codigo = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo))
+                self.connection.commit()
+        except Exception as e:
+            raise RuntimeError(f"Error al actualizar el producto {codigo}") from e
+ 
+
+    def eliminarProducto(self, codigo):
+        query = "DELETE FROM productos WHERE codigo = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (codigo,))
+                self.connection.commit()
+        except Exception as e:
+            raise RuntimeError(f"Error al eliminar el producto {codigo}") from e
     def obtenerProductoPorProveedor(self, proveedor_id):
         productos = []
         query = "SELECT * FROM productos WHERE id_proveedor = %s"
@@ -96,15 +114,7 @@ class ProductoRepository:
         except Error as e:
             raise RuntimeError(f"Error al obtener el producto con el nombre {nombre}", e)
 
-    def actualizarProducto(self, nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo):
-        query = "UPDATE productos SET codigo = %s, nombre = %s, precio_compra = %s, precio_venta = %s, cantidad_stock = %s, id_categoria = %s, id_proveedor = %s WHERE Codigo = %s"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, (nuevoCodigo, nuevoNombre, nuevoPrecioCompra, nuevoPrecioVenta, nuevaCantStock, nuevaCategoria, nuevoProveedor, codigo))
-                self.connection.commit()
-        except Exception as e:
-            raise RuntimeError(f"Error al actualizar el producto {codigo}") from e
-
+   
     def actualizarPrecioVenta(self, porcentaje, idCategoria):
         query = "UPDATE productos SET precio_venta = precio_compra * (1 + %s/100) WHERE id_categoria = %s"
         try:
@@ -123,14 +133,6 @@ class ProductoRepository:
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el stock del producto {codigo}") from e
 
-    def eliminarProducto(self, codigo):
-        query = "DELETE FROM productos WHERE codigo = %s"
-        try:
-            with self.connection.cursor() as cursor:
-                cursor.execute(query, (codigo,))
-                self.connection.commit()
-        except Exception as e:
-            raise RuntimeError(f"Error al eliminar el producto {codigo}") from e
         
     def ExisteProductosConCategoria(self, codigo):
         query = "SELECT COUNT(*) FROM productos WHERE id_categoria = %s"

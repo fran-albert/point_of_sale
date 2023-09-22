@@ -26,6 +26,12 @@ class AgregarVendedorDialog(QDialog):
         layout.addWidget(self.apellido_label)
         layout.addWidget(self.apellido_input)
 
+        self.contrasena_label = QLabel("Contraseña:")
+        self.contrasena_input = QLineEdit()
+        self.contrasena_input.setEchoMode(QLineEdit.Password) 
+        layout.addWidget(self.contrasena_label)
+        layout.addWidget(self.contrasena_input)
+
         self.telefono_label = QLabel("Teléfono:")
         self.telefono_input = QLineEdit()
         layout.addWidget(self.telefono_label)
@@ -72,23 +78,25 @@ class AgregarVendedorDialog(QDialog):
         dni = self.dni_input.text().strip()
         nombre = self.nombre_input.text().strip()
         apellido = self.apellido_input.text().strip()
+        contraseña = self.contrasena_input.text().strip()
         telefono = self.telefono_input.text().strip()
         correo = self.correo_input.text().strip()
         fecha_nacimiento = self.fecha_nacimiento_input.date().toString("yyyy-MM-dd")
         fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
         admin = self.rol_combo.currentData()
 
-        if dni and nombre and apellido and telefono and correo and fecha_nacimiento and fecha_alta and admin is not None:
+        if dni and nombre and apellido and contraseña and telefono and correo and fecha_nacimiento and fecha_alta and admin is not None:
             try:
                 dni = dni
                 nombre = nombre
                 apellido = apellido
+                contraseña = contraseña
                 telefono = telefono
                 correo = correo
                 fecha_nacimiento = fecha_nacimiento
                 fecha_alta = fecha_alta
                 admin = admin
-                vendedor = Vendedor(dni, nombre, apellido, telefono, correo, fecha_nacimiento, fecha_alta, admin)
+                vendedor = Vendedor(dni, nombre, apellido, contraseña, telefono, correo, fecha_nacimiento, fecha_alta, admin)
                 self.vendedor_service.insertarVendedor(vendedor)
                 QMessageBox.information(self, "Información", "Nuevo Vendedor Añadido")
                 self.accept()

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QAbstractItemView, QSizePolicy, QHeaderView, QVBoxLayout, QLabel, QMessageBox, QTableWidget, QHBoxLayout, QLineEdit, QPushButton, QCalendarWidget, QFrame, QGridLayout, QTableWidgetItem
 from PyQt5.QtCore import Qt
-from servicios.vendedores_service import VendedorService
+from servicios.vendedor_service import VendedorService
 from vendedores.editar_vendedor import EditarVendedorDialog
 from entities.vendedor import Vendedor
 
@@ -44,6 +44,7 @@ class ListaVendedoresDialog(QDialog):
             item_id = QTableWidgetItem(str(vend.id))
             item_nombre = QTableWidgetItem(vend.nombre)
             item_apellido = QTableWidgetItem(vend.apellido)
+            item_contraseña = QTableWidgetItem(vend.contraseña)
             item_dni = QTableWidgetItem(str(vend.dni))
             item_telefono = QTableWidgetItem(str(vend.telefono))
             item_correo_electronico = QTableWidgetItem(vend.correo_electronico)
@@ -80,11 +81,6 @@ class ListaVendedoresDialog(QDialog):
         extra_width = 60  
         extra_height = 100 
         self.resize(total_width + extra_width, self.sizeHint().height() + extra_height) 
-
-
-
-
-        
 
     def actualizar_tabla(self):
 
@@ -132,6 +128,7 @@ class ListaVendedoresDialog(QDialog):
         id = int(self.table.item(index.row(), 0).text())
         nombre = self.table.item(index.row(), 1).text()
         apellido = self.table.item(index.row(), 2).text()
+        contraseña = self.table.item(index.row(), 3).text()
         dni = self.table.item(index.row(), 3).text()
         telefono = self.table.item(index.row(), 4).text()
         correo_electronico = self.table.item(index.row(), 5).text()
@@ -139,7 +136,7 @@ class ListaVendedoresDialog(QDialog):
         fecha_alta = self.table.item(index.row(), 7).text()
         admin = self.table.item(index.row(), 8).text()
 
-        vendedor = Vendedor(dni, nombre, apellido, telefono, correo_electronico, fecha_nacimiento, fecha_alta, admin)
+        vendedor = Vendedor(dni, nombre, apellido, contraseña, telefono, correo_electronico, fecha_nacimiento, fecha_alta, admin)
         vendedor.set_id(id)
 
         dialog = EditarVendedorDialog(vendedor, vendedor_service)

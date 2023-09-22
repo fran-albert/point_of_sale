@@ -73,7 +73,7 @@ class EditarProductoDialog(QDialog):
         nueva_categoria = self.categoria_combo.currentData()
         nuevo_proveedor = self.proveedor_selector.currentData()
 
-        if nuevo_precioCompra and nuevo_stock:
+        if nuevo_precioCompra and nuevo_stock and nueva_categoria and nuevo_proveedor and self.producto.codigo and self.producto.nombre:
             try:
                 nuevo_precioCompra = float(nuevo_precioCompra)
                 nuevo_stock = int(nuevo_stock)

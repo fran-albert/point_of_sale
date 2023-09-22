@@ -27,6 +27,12 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.apellido_label)
             layout.addWidget(self.apellido_input)
 
+            self.contrasena_label = QLabel("Contraseña:")
+            self.contrasena_input = QLineEdit()
+            self.contrasena_input.setEchoMode(QLineEdit.Password) 
+            layout.addWidget(self.contrasena_label)
+            layout.addWidget(self.contrasena_input)
+
             self.dni_label = QLabel("DNI:")
             self.dni_input = QLineEdit(str(vendedor.dni))
             layout.addWidget(self.dni_label)
@@ -86,15 +92,17 @@ class EditarVendedorDialog(QDialog):
             nuevo_nombre = self.nombre_input.text().strip()
             nuevoDNI = self.dni_input.text().strip()
             nuevo_apellido = self.apellido_input.text().strip()
+            nueva_contraseña = self.contrasena_input.text().strip()
             nuevo_telefono = self.telefono_input.text().strip()
             nuevo_correo_electronico = self.correo_input.text().strip()
             nueva_fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
             nueva_fecha_nacimiento = self.fecha_nac_input.date().toString("yyyy-MM-dd")
             admin = self.rol_combo.currentData()
 
-            if nuevo_nombre and nuevoDNI and nuevo_apellido  and nuevo_telefono and nuevo_correo_electronico and nueva_fecha_alta and nueva_fecha_nacimiento and admin is not None:
+            if nuevo_nombre and nuevoDNI and nuevo_apellido and nueva_contraseña and nuevo_telefono and nuevo_correo_electronico and nueva_fecha_alta and nueva_fecha_nacimiento and admin is not None:
                 self.vendedor.nombre = nuevo_nombre
                 self.vendedor.apellido = nuevo_apellido
+                self.vendedor.contraseña = nueva_contraseña
                 self.vendedor.dni = nuevoDNI
                 self.vendedor.telefono = nuevo_telefono
                 self.vendedor.correo_electronico = nuevo_correo_electronico
@@ -103,6 +111,7 @@ class EditarVendedorDialog(QDialog):
                 nueva_fecha_alta = datetime.strptime(nueva_fecha_alta, "%Y-%m-%d")
                 self.vendedor.admin = admin 
                 self.vendedor.fecha_alta = nueva_fecha_alta
+                QMessageBox.information(self, "Información", "Datos del vendedor editados")
                 self.accept() 
             else:
                 QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")

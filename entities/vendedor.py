@@ -1,8 +1,9 @@
 class Vendedor:
-    def __init__(self, dni, nombre, apellido, telefono, correo_electronico, fecha_nacimiento, fecha_alta, admin, id= None):
+    def __init__(self, dni, nombre, apellido, contraseña, telefono, correo_electronico, fecha_nacimiento, fecha_alta, admin, id= None):
         self.dni = dni
         self.nombre = nombre
         self.apellido = apellido
+        self.contraseña = contraseña
         self.telefono = telefono
         self.correo_electronico = correo_electronico
         self.fecha_nacimiento = fecha_nacimiento
@@ -33,6 +34,12 @@ class Vendedor:
 
     def set_apellido(self, apellido):
         self.apellido = apellido
+
+    def get_contraseña(self):
+        return self.contraseña
+    
+    def set_contraseña(self, contraseña):
+        self.contraseña = contraseña
 
     def get_telefono(self):
         return self.telefono

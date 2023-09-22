@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
-from servicios.vendedores_service import VendedorService
+from servicios.vendedor_service import VendedorService
 from vendedores.agregar_vendedor import AgregarVendedorDialog
 from vendedores.lista_vendedores import ListaVendedoresDialog
 
