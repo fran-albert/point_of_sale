@@ -33,7 +33,7 @@ class ListaProveedoresDialog(QDialog):
         layout.addLayout(search_layout)
 
         self.table = QTableWidget(len(self.proveedores), 13)
-        self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Dirección", "Código Postal", "Ciudad", "Provincia", "Teléfono", "Correo Electrónico", "Comentario", "Cuenta Bancaria", "Fecha de Alta", "", ""])
+        self.table.setHorizontalHeaderLabels(["", "Nombre", "Dirección", "Código Postal", "Ciudad", "Provincia", "Teléfono", "Correo Electrónico", "Comentario", "Cuenta Bancaria", "Fecha de Alta", "", ""])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setStretchLastSection(False)
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
@@ -81,6 +81,7 @@ class ListaProveedoresDialog(QDialog):
 
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
+        self.table.hideColumn(0)
         self.resize(1000, 300)
 
     def actualizar_tabla(self):
