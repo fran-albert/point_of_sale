@@ -23,15 +23,6 @@ class ListaProveedoresDialog(QDialog):
 
         layout.addWidget(title_label)
 
-        search_label = QLabel("Buscar proveedores:")
-        search_input = QLineEdit()
-        search_input.setPlaceholderText("Ingrese el nombre del proveedor...")
-        search_layout = QHBoxLayout()
-        search_layout.addWidget(search_label)
-        search_layout.addWidget(search_input)
-
-        layout.addLayout(search_layout)
-
         self.table = QTableWidget(len(self.proveedores), 13)
         self.table.setHorizontalHeaderLabels(["", "Nombre", "Dirección", "Código Postal", "Ciudad", "Provincia", "Teléfono", "Correo Electrónico", "Comentario", "Cuenta Bancaria", "Fecha de Alta", "", ""])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)

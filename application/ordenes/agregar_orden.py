@@ -15,24 +15,19 @@ class AgregarOrdenDialog(QDialog):
         self.producto_service = producto_service
         self.orden_compra_service = orden_compra_service
 
-        # Layout principal
         layout = QVBoxLayout()
 
-        # Crear un QLabel para el título
         title_label = QLabel("Nueva Orden de Compra")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("color: green; font-size: 24px; font-weight: bold")
 
-        # Crear un QFrame para el rectángulo
         rectangle_frame = QFrame()
         rectangle_frame.setFrameShape(QFrame.StyledPanel)
         rectangle_frame.setFrameShadow(QFrame.Sunken)
         rectangle_frame.setLineWidth(1)
 
-        # Layout para el rectángulo
         rectangle_layout = QGridLayout(rectangle_frame)
 
-        # Proveedor: QComboBox
         proveedor_label = QLabel("Proveedor:")
         self.proveedor_combo = QComboBox()
         self.proveedor_combo.addItem("Selecciona el Proveedor", None)
@@ -42,7 +37,6 @@ class AgregarOrdenDialog(QDialog):
         rectangle_layout.addWidget(proveedor_label, 0, 0)
         rectangle_layout.addWidget(self.proveedor_combo, 0, 1)
 
-        # Input para buscar productos
         buscar_productos_label = QLabel("Buscar Productos:")
         self.buscar_productos_input = QLineEdit()
         self.completer = QCompleter()
@@ -51,20 +45,16 @@ class AgregarOrdenDialog(QDialog):
         rectangle_layout.addWidget(buscar_productos_label, 1, 0)
         rectangle_layout.addWidget(self.buscar_productos_input, 1, 1)
 
-        # Agregar el rectángulo al layout principal
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
-        # Tabla
         self.tabla = QTableWidget()
         self.tabla.setColumnCount(4)
         self.tabla.setHorizontalHeaderLabels(["Código",  "Producto", "Cantidad", "Precio Compra"])
         self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # Cambiar la política de tamaño de las cabeceras horizontales
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         layout.addWidget(self.tabla)
 
-        # Precio Total: QLineEdit
         precio_total_layout = QHBoxLayout()
         precio_total_label = QLabel("Total:")
         self.precio_total_text = QLabel()
@@ -74,7 +64,6 @@ class AgregarOrdenDialog(QDialog):
         precio_total_layout.addWidget(self.precio_total_text)
         layout.addLayout(precio_total_layout)
 
-        # Fecha Recepción: QPushButton y QCalendarWidget
         fecha_recepcion_layout = QHBoxLayout()
         fecha_recepcion_label = QLabel("Fecha Recepción:")
         fecha_recepcion_button = QPushButton("Seleccionar Fecha")
@@ -85,21 +74,17 @@ class AgregarOrdenDialog(QDialog):
         layout.addLayout(fecha_recepcion_layout)
         layout.addWidget(fecha_recepcion_calendar)
 
-        # Botón Confirmar Orden
         confirmar_orden_button = QPushButton("Confirmar Orden")
         confirmar_orden_button.clicked.connect(lambda: self.nueva_orden(self.proveedor_combo.currentData(),float(self.precio_total_text.text()), fecha_recepcion_calendar.selectedDate().toString("yyyy-MM-dd"), self.lista_productos_pedidos(self.tabla)))
         layout.addWidget(confirmar_orden_button)
 
-        # Cambiar la política de tamaño de la ventana
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
         self.resize(730, 300)
         self.centerOnScreen()
 
-        # Conectar los productos a la tabla
         self.completer.activated.connect(self.agregar_producto_a_tabla)
 
-        # Conectar la señal currentIndexChanged del QComboBox al slot update_product_list
         self.proveedor_combo.currentIndexChanged.connect(self.update_product_list)
 
         # Conectar el botón para mostrar/ocultar el calendario

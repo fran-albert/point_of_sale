@@ -20,10 +20,10 @@ class TicketRepository:
                 
     def obtenerTickets(self, fechaDesde, fechaHasta):
         tickets = []
-        query = "SELECT * FROM tickets WHERE fecha => %s AND fecha <= %s"
+        query = "SELECT * FROM tickets WHERE fecha >= %s AND fecha <= %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query, fechaDesde, fechaHasta)
+                cursor.execute(query, (fechaDesde, fechaHasta))
                 for row in cursor.fetchall():
                     id_ticket = row[0]
                     id_vendedor = row[1]

@@ -31,15 +31,6 @@ class ListaCategoriasDialog(QDialog):
 
         layout.addWidget(title_label)
 
-        search_label = QLabel("Buscar categorías:")
-        search_input = QLineEdit()
-        search_input.setPlaceholderText("Ingrese el nombre de la categoría...")
-        search_layout = QHBoxLayout()
-        search_layout.addWidget(search_label)
-        search_layout.addWidget(search_input)
-
-        layout.addLayout(search_layout)
-
         self.table = QTableWidget(len(self.categorias), 4)
         self.table.setHorizontalHeaderLabels(["ID", "Categoría", "Porcentaje", "", ""])
         self.table.setMinimumHeight(300)  

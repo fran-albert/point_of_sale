@@ -6,6 +6,7 @@ from servicios.vendedor_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
 from categorias.CategoriasWindow import CategoriasWindow
 from utils.Utils import Utils
+from datetime import datetime, timedelta
 from productos.ProductosWindow import ProductosWindow
 from ventas.VentasWindow import VentasWindow
 from ordenes.OrdenesWindow import OrdenesWindow
@@ -24,7 +25,6 @@ class MainWindow(QMainWindow):
         self.categoria_window = CategoriasWindow(self.app, self.rol)
         self.categoria_window.show()
 
-    # Muestra Pantalla de Productos
     def show_products_window(self):
         self.product_window = ProductosWindow(self.app, self.rol)
         self.product_window.show()
@@ -46,15 +46,21 @@ class MainWindow(QMainWindow):
         self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
-        Utils.generate_sales_report(self)
+        fechaDesde = datetime.now().replace(day=1)
+        last_day = (fechaDesde + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        fechaHasta = last_day
+
+        Utils.generate_sales_report(self, fechaDesde, fechaHasta)
 
     def generate_stock_report_wrapper(self):
         Utils.generate_stock_report(self)
 
+    def generate_minimum_stock_report_wrapper(self):
+        Utils.generate_minimum_stock_report(self)
+
     def init_right_side_buttons(self):
         self.init_right_side_buttons(self)
 
-    # Inicializa pantalla de Main
     def __init__(self, dni, app):
         self.vendedores_service = VendedorService()
         super().__init__()

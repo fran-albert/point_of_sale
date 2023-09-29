@@ -2,15 +2,18 @@ from PyQt5.QtWidgets import QMenuBar, QMenu, QAction, QGraphicsView, QGraphicsSc
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QImage
 from PyQt5.QtCore import Qt, QDateTime, QSize
 from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle, Spacer
 from reportlab.lib import colors
 from servicios.vendedor_service import VendedorService
 from servicios.producto_service import ProductoService
 from servicios.categoria_service import CategoriaService
+from servicios.producto_vendido_service import ProductoVendidoService
 from servicios.proveedor_service import ProveedorService
+from servicios.ticket_service import TicketService
 from application.categorias.lista_categorias import ListaCategoriasDialog
 from reportlab.lib.styles import getSampleStyleSheet
 import os, time, traceback, io, fitz
+import datetime
 
 
 class Utils:
@@ -68,23 +71,21 @@ class Utils:
     # PDF GENERATES (SALES - STOCK)
     def show_pdf_preview(main_window, pdf_buffer, table_data, headers):
         try:
-            pdf_buffer.seek(0)  # Asegurarse de que el puntero esté al inicio del archivo
+            pdf_buffer.seek(0) 
 
-            # Convertir el PDF a una imagen utilizando PyMuPDF
             doc = fitz.open("pdf", pdf_buffer.getvalue())
-            page = doc.load_page(0)  # Carga la primera página
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Renderiza la página a un pixmap con un factor de zoom de 2
-            img = QImage(pix.samples, pix.width, pix.height, QImage.Format_RGB888)  # Crea una QImage a partir de los datos de imagen del pixmap
-            image = QPixmap.fromImage(img)  # Convierte la QImage a QPixmap
+            page = doc.load_page(0)  
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  
+            img = QImage(pix.samples, pix.width, pix.height, QImage.Format_RGB888)  
+            image = QPixmap.fromImage(img)  
 
-            # Crear un QGraphicsView y QGraphicsScene para mostrar la imagen
             scene = QGraphicsScene()
             scene.addPixmap(image)
             view = QGraphicsView(scene)
 
             preview_dialog = QDialog(main_window)
             preview_dialog.setWindowTitle("Vista Previa")
-            preview_dialog.setFixedSize(800, 400)
+            preview_dialog.setFixedSize(1000, 700)
 
             save_pdf_button = QPushButton("Guardar PDF")
 
@@ -106,7 +107,7 @@ class Utils:
             preview_dialog.setLayout(layout)
 
             result = preview_dialog.exec()
-            view.setScene(None)  # Elimina la referencia a la escena antes de cerrar el diálogo
+            view.setScene(None) 
             return True if result == QDialog.Accepted else False
         except Exception as e:
             print("Error al mostrar la vista previa del PDF:")
@@ -120,29 +121,46 @@ class Utils:
         doc = SimpleDocTemplate(pdf_buffer, pagesize=landscape(letter))
         elements = []
 
-        # Título del reporte
-        title = title
-        elements.append(Paragraph(title, getSampleStyleSheet()['Heading1']))
+        styles = getSampleStyleSheet()
+        elements.append(Paragraph(title, styles['Heading1']))
 
-        # Tabla de datos
+        current_date = datetime.datetime.now().strftime('%d/%m/%Y')
+        elements.append(Paragraph(f"Fecha: {current_date}", styles['Normal']))
+
         if data:
             table = Table(data)
 
             # Estilos de la tabla
             table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 14),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                # Encabezado
+                ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  
+                ('FONTSIZE', (0, 0), (-1, 0), 14),  
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  
+                ('TOPPADDING', (0, 0), (-1, 0), 12),  
+
+                # Cuerpo de la tabla
+                ('BACKGROUND', (0, 1), (-1, -1), colors.beige), 
+                ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),  
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),  
+                ('FONTSIZE', (0, 1), (-1, -1), 12),  
+                ('PADDING', (0, 1), (-1, -1), 8),  
+
+                # Bordes
+                ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkgrey), 
+                ('LINEABOVE', (0, 1), (-1, -1), 1, colors.lightgrey),  
             ]))
 
+            elements.append(Spacer(1, 24))
             elements.append(table)
 
-        # Generar el PDF
+
+        footer = f"Generado por Point Of Sale - {current_date}"
+        elements.append(Spacer(1, 24))
+        elements.append(Paragraph(footer, styles['Normal']))
+
         doc.build(elements)
 
         pdf_buffer.seek(0)
@@ -160,11 +178,8 @@ class Utils:
 
             producto_service = ProductoService()
 
-            # Obtener datos del stock desde la base de datos
             stock_data = producto_service.obtenerProductos()
 
-
-            # Preparar datos para la tabla en el reporte
             data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor']]
             for producto in stock_data:
                 nombre_del_proveedor = proveedor_nombre_map.get(int(producto.proveedor), "Proveedor Desconocido")
@@ -172,7 +187,6 @@ class Utils:
 
             pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)
 
-                    # Preparar datos para mostrar en el visor de PDF
             stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor"]
             stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor] for producto in stock_data]
             
@@ -181,29 +195,58 @@ class Utils:
             print("Error al generar el reporte de stock:")
             QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
 
-    def generate_sales_report(main_window):
-
+    def generate_sales_report(main_window, fechaDesde, fechaHasta):
         try:
-            # Datos de ejemplo para la tabla
-            data = [['Producto', 'Cantidad', 'Precio'],
-                    ['Producto 1', '10', '100'],
-                    ['Producto 2', '5', '150'],
-                    ['Producto 3', '8', '200']]
+            ticket_service = TicketService()
+            tickets = ticket_service.obtenerTickets(fechaDesde, fechaHasta)
+            
+            producto_vendido_service = ProductoVendidoService()
+
+            data = [['ID Ticket', 'Producto', 'Cantidad', 'Precio Unitario', 'Precio Total Ticket']]
+            
+            for ticket in tickets:
+                productos_vendidos = producto_vendido_service.obtenerProductosVendidos(ticket.id_ticket)
+                
+                for producto_vendido in productos_vendidos:
+                    data.append([ticket.id_ticket, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, producto_vendido.precio_venta_total])
 
             pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 
-            stock_headers = ["ID", "Producto", "Cantidad"]
-            stock_data = [
-                [1, "Producto 1", 10],
-                [2, "Producto 2", 5],
-                [3, "Producto 3", 20]
-            ]
+            stock_headers = ['ID Ticket', 'Producto', 'Cantidad', 'Precio Unitario', 'Precio Total Ticket']
+            stock_data = data[1:] 
 
             Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
         except Exception as e:
             print("Error al generar el reporte de ventas:")
-            #traceback.print_exc()  # Imprimir el traceback de la excepción
             QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
+
+    def generate_minimum_stock_report(main_window):
+        try:
+            categoria_service = CategoriaService()
+            categorias = categoria_service.obtenerCategorias()
+            categoria_descripcion_map = {categoria.id: categoria.descripcion for categoria in categorias}
+
+            proveedor_service = ProveedorService()
+            proveedores = proveedor_service.obtenerProveedores()
+            proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in proveedores}
+
+            producto_service = ProductoService()
+            stock_data = producto_service.obtenerProductosStockMinimo()
+
+            data = [['Código', 'Producto', 'Cantidad', 'Precio Compra', 'Precio Venta', 'Categoria', 'Proveedor']]
+            for producto in stock_data:
+                nombre_del_proveedor = proveedor_nombre_map.get(int(producto.proveedor), "Proveedor Desconocido")
+                data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, "{:.2f}".format(float(producto.precioVenta)), categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor])
+
+            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)
+
+            stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor"]
+            stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor] for producto in stock_data]
+            
+            Utils.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
+        except Exception as e:
+            print("Error al generar el reporte de stock:")
+            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
 
     @staticmethod
     def obtener_rol(dni):
@@ -262,6 +305,7 @@ def create_main_window_menu(parent):
 
     reporte_stock_action.triggered.connect(parent.generate_stock_report_wrapper)
     reporte_ventas_action.triggered.connect(parent.generate_sales_report_wrapper)
+    reporte_stock_minimo_action.triggered.connect(parent.generate_minimum_stock_report_wrapper)
     categorias_action.triggered.connect(parent.show_categories_window)
     productos_action.triggered.connect(parent.show_products_window)
     proveedores_action.triggered.connect(parent.show_proveedores_window)

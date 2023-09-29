@@ -7,17 +7,17 @@ class ProductoVendidoRepository:
         self.connection = MySQLConnection.get_connection()
 
     def insertarProdVendido(self, prod_vendido):
-        sql = "INSERT INTO productos_vendidos(idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO productos_vendidos(id_ticket, producto_vendido, codigo, cantidad_vendida, precio_venta, precio_venta_total) VALUES (%s, %s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql, (prod_vendido.get_idTicket(), prod_vendido.get_prod_vendido(), prod_vendido.get_codigo(), prod_vendido.get_cant_vendida(), prod_vendido.get_precio_venta(), prod_vendido.get_precio_venta_total()))
+                cursor.execute(sql, (prod_vendido.get_id_ticket(), prod_vendido.get_producto_vendido(), prod_vendido.get_codigo(), prod_vendido.get_cantidad_vendida(), prod_vendido.get_precio_venta(), prod_vendido.get_precio_venta_total()))
             self.connection.commit()
         except Error as e:
             raise RuntimeError("Error al insertar el producto vendido", e)
 
     def obtenerProductosVendidos(self, idTicket):
         prodVendidos = []
-        query = "SELECT * FROM productos_vendidos WHERE idTicket = %s"
+        query = "SELECT * FROM productos_vendidos WHERE id_ticket = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (idTicket,))

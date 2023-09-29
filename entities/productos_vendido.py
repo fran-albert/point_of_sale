@@ -1,10 +1,10 @@
 class ProductosVendido:
-    def __init__(self, idProdVendido, idTicket, prod_vendido, codigo, cant_vendida, precio_venta, precio_venta_total):
+    def __init__(self, idProdVendido, id_ticket, producto_vendido, codigo, cantidad_vendida, precio_venta, precio_venta_total):
         self.idProdVendido = idProdVendido
-        self.idTicket = idTicket
-        self.prod_vendido = prod_vendido
+        self.id_ticket = id_ticket
+        self.producto_vendido = producto_vendido
         self.codigo = codigo
-        self.cant_vendida = cant_vendida
+        self.cantidad_vendida = cantidad_vendida
         self.precio_venta = precio_venta
         self.precio_venta_total = precio_venta_total
 
@@ -14,17 +14,17 @@ class ProductosVendido:
     def set_idProdVendido(self, idProdVendido):
         self.idProdVendido = idProdVendido
 
-    def get_idTicket(self):
-        return self.idTicket
+    def get_id_ticket(self):
+        return self.id_ticket
 
-    def set_idTicket(self, idTicket):
-        self.idTicket = idTicket
+    def set_id_ticket(self, id_ticket):
+        self.id_ticket = id_ticket
 
-    def get_prod_vendido(self):
-        return self.prod_vendido
+    def get_producto_vendido(self):
+        return self.producto_vendido
 
-    def set_prod_vendido(self, prod_vendido):
-        self.prod_vendido = prod_vendido
+    def set_producto_vendido(self, producto_vendido):
+        self.producto_vendido = producto_vendido
 
     def get_codigo(self):
         return self.codigo
@@ -32,11 +32,11 @@ class ProductosVendido:
     def set_codigo(self, codigo):
         self.codigo = codigo
 
-    def get_cant_vendida(self):
-        return self.cant_vendida
+    def get_cantidad_vendida(self):
+        return self.cantidad_vendida
 
-    def set_cant_vendida(self, cant_vendida):
-        self.cant_vendida = cant_vendida
+    def set_cantidad_vendida(self, cantidad_vendida):
+        self.cantidad_vendida = cantidad_vendida
 
     def get_precio_venta(self):
         return self.precio_venta

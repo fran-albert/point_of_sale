@@ -64,6 +64,25 @@ class ProductoRepository:
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el producto {codigo}") from e
  
+    def obtenerProductosStockMinimo(self):
+        productos = []
+        query = "SELECT * FROM productos WHERE cantidad_stock < 10"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query)
+                for row in cursor.fetchall():
+                    codigo = row[0]
+                    nombre = row[1]
+                    precioCompra = row[2]
+                    precioVenta = row[3]
+                    cant_stock = row[4]
+                    categoria = row[5]
+                    proveedor = row[6]
+                    nuevo_producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
+                    productos.append(nuevo_producto)
+            return productos
+        except Error as e:
+            raise RuntimeError("Error al obtener los productos con stock mínimo", e)
 
     def eliminarProducto(self, codigo):
         query = "DELETE FROM productos WHERE codigo = %s"

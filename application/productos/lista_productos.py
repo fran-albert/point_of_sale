@@ -37,15 +37,6 @@ class ListaProductosDialog(QDialog):
 
         layout.addWidget(title_label)
 
-        search_label = QLabel("Buscar productos:")
-        search_input = QLineEdit()
-        search_input.setPlaceholderText("Ingrese el nombre del producto...")
-        search_layout = QHBoxLayout()
-        search_layout.addWidget(search_label)
-        search_layout.addWidget(search_input)
-
-        layout.addLayout(search_layout)
-
         self.table = QTableWidget(len(self.producto), 9)
         self.table.setHorizontalHeaderLabels(["Nombre", "Código", "Precio Compra", "Precio Venta", "Cant Stock", "Categoría", "Proveedor", "", ""])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)

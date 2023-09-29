@@ -25,6 +25,9 @@ class ProductoService:
     def obtenerProductoPorNombre(self, nombre):
         return self.producto_repository.obtenerProductoPorNombre(nombre)
     
+    def obtenerProductosStockMinimo(self):
+        return self.producto_repository.obtenerProductosStockMinimo()
+    
     def actualizarStock(self, codigo, cantidadVendida):
         return self.producto_repository.actualizarStock(codigo, cantidadVendida)
     

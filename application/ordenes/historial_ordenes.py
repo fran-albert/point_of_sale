@@ -26,21 +26,6 @@ class VerOrdenDialog(QDialog):
         rectangle_frame.setFrameShadow(QFrame.Sunken)
         rectangle_frame.setLineWidth(1)
 
-        rectangle_layout = QGridLayout(rectangle_frame)
-
-        desde_fecha_label = QLabel("Fecha desde:")
-        self.desde_fecha_input = QDateEdit()
-        self.desde_fecha_input.setCalendarPopup(True)
-
-        hasta_fecha_label = QLabel("Fecha hasta:")
-        self.hasta_fecha_input = QDateEdit()
-        self.hasta_fecha_input.setCalendarPopup(True)
-
-        rectangle_layout.addWidget(desde_fecha_label, 0, 0)
-        rectangle_layout.addWidget(self.desde_fecha_input, 0, 1)
-        rectangle_layout.addWidget(hasta_fecha_label, 1, 0)
-        rectangle_layout.addWidget(self.hasta_fecha_input, 1, 1)
-
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
@@ -74,6 +59,7 @@ class VerOrdenDialog(QDialog):
 
         self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self.tabla.hideColumn(0)
         layout.addWidget(self.tabla)
 
         guardar_btn = QPushButton("Guardar cambios")
@@ -81,7 +67,6 @@ class VerOrdenDialog(QDialog):
         guardar_btn.setFixedHeight(25)  
         layout.addWidget(guardar_btn, alignment=Qt.AlignCenter)
         guardar_btn.clicked.connect(self.guardar_cambios)
-        
 
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setLayout(layout)
