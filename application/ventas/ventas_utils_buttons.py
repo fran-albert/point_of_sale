@@ -8,7 +8,8 @@ from servicios.ticket_service import TicketService
 from servicios.producto_service import ProductoService
 from entities.ticket import Ticket
 from entities.productos_vendido import ProductosVendido
-
+import tkinter as tk
+from tkinter import messagebox
 
 class VentasUtilsButtons:
  
@@ -23,21 +24,18 @@ class VentasUtilsButtons:
 
         payment_window = QDialog(parent)
         payment_window.setWindowTitle("Pago")
-        payment_window.setFixedSize(400, 280)  # Cambiar el tamaño de la ventana
-        payment_window.setStyleSheet("background-color: #FFFFFF;")  # Cambiar el color de fondo
+        payment_window.setFixedSize(400, 280)  
+        payment_window.setStyleSheet("background-color: #FFFFFF;")  
 
-        # Crear el QLabel para mostrar el mensaje "TOTAL:"
         total_label = QLabel(f"TOTAL: {total:.2f}")
         total_label.setAlignment(Qt.AlignCenter)
 
-        # Establecer el estilo de total_label con fuente en negrita y tamaño de fuente 3 px más grande
         total_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
                 font-size: 16px larger;
             }
         """)
-        # Layout superior
         top_layout = QVBoxLayout()
         top_layout.addWidget(total_label)
 
@@ -47,7 +45,6 @@ class VentasUtilsButtons:
         divider.setFrameShadow(QFrame.Sunken)
         divider.setStyleSheet("color: #BDBDBD;")
 
-        # Crear el widget de pestañas y agregar pestañas
         tab_widget = QTabWidget()
 
         efectivo_tab = QWidget()
@@ -55,7 +52,6 @@ class VentasUtilsButtons:
         transferencia_tab = QWidget()
 
         def create_tab_content():
-            # Crear el botón "Cobrar YA" y aplicar estilo personalizado
             cobrar_button = QPushButton("Cobrar YA")
             cobrar_button.setStyleSheet("""
                 QPushButton {
@@ -74,17 +70,14 @@ class VentasUtilsButtons:
                 }
             """)
 
-            # Crear un checkbox para "Guardar Ticket"
             save_ticket_checkbox = QCheckBox("Guardar Ticket")
 
-            # Crear un QHBoxLayout para centrar el botón y el checkbox horizontalmente
             buttons_layout = QHBoxLayout()
             buttons_layout.addStretch()
             buttons_layout.addWidget(cobrar_button)
             buttons_layout.addWidget(save_ticket_checkbox)
             buttons_layout.addStretch()
 
-            # Crear un QVBoxLayout para la pestaña
             tab_layout = QVBoxLayout()
             tab_layout.addStretch()
             tab_layout.addLayout(buttons_layout)
@@ -117,41 +110,50 @@ class VentasUtilsButtons:
             ticket = Ticket(usuario, total, tipo_de_pago, fecha)
             idTicket_generado = ticket_service.insertarTicket(ticket)
             producto_service = ProductoService()
-            # Aquí puedes insertar cada producto comprado en la base de datos
+
             for producto in productos_vendidos:
                 previo_venta = float(producto.get_precio_venta())
                 previo_venta = "{:.2f}".format(previo_venta)
-                precio_venta_total = float(producto.get_precio_venta()) * float(producto.get_cant_vendida())
-                precio_venta_total = "{:.2f}".format(precio_venta_total)  # Ahora precio_venta_total debería ser un número flotante
+                precio_venta_total = float(producto.get_precio_venta()) * float(producto.get_cantidad_vendida())
+                precio_venta_total = "{:.2f}".format(precio_venta_total) 
                 producto_vendido = ProductosVendido(
-                    None,  # idProdVendido se establecerá automáticamente en la base de datos
-                    idTicket_generado,  # idTicket se establecerá después de insertar el ticket
-                    producto.get_prod_vendido(),  
+                    None,  
+                    idTicket_generado,  
+                    producto.get_producto_vendido(),  
                     producto.get_codigo(),  
-                    producto.get_cant_vendida(),  
+                    producto.get_cantidad_vendida(),  
                     previo_venta,  
                     precio_venta_total
                 )
                 producto_vendido_service.insertarProdVendido(producto_vendido)
-                producto_service.actualizarStock(producto_vendido.get_codigo(), producto_vendido.get_cant_vendida())
+                producto_service.actualizarStock(producto_vendido.get_codigo(), producto_vendido.get_cantidad_vendida())
 
             cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket)
         
-        # Función para manejar el clic en el botón "Cobrar YA"
         def cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket): 
             total = round(total, 2)
             fecha = datetime.now()
             ticket = Ticket(usuario, total, tipo_de_pago, fecha)
             idTicket_generado = ticket_service.insertarTicket(ticket)
 
-            # Obtén la lista de productos vendidos
             productos_vendidos = producto_vendido_service.obtenerProductosVendidos(idTicket_generado)
             
             self.ventas_window.actualizar_contador_ventas()
 
             if guardar_ticket:
                 with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
-                    f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\nTipo de Pago: {tipo_de_pago}\nFecha: {fecha}\n")
+                    f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\n")
+                    if tipo_de_pago == 0:
+                        metodo_pago = 'Efectivo'
+                    elif tipo_de_pago == 1:
+                        metodo_pago = 'Tarjeta'
+                    elif tipo_de_pago == 2:
+                        metodo_pago = 'Transferencia'
+                    else:
+                        metodo_pago = str(tipo_de_pago)  
+                    f.write(f"Tipo de Pago: {metodo_pago}\n")
+                    f.write(f"Fecha: {fecha}\n")
+                    
                     # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
                     for producto in productos_vendidos:
                         f.write(f"Producto Vendido: {producto.get_nombre()}\n")
@@ -159,8 +161,10 @@ class VentasUtilsButtons:
                         f.write(f"Cantidad Vendida: {producto.get_cantStock()}\n")
                         f.write(f"Precio de Venta: {producto.get_precioVenta()}\n")
                         f.write(f"Precio Total de Venta: {producto.get_precioVenta() * producto.get_cantStock()}\n\n")
-            
-            print("Venta realizada")
+            root = tk.Tk()
+            root.withdraw()  # Para ocultar la ventana principal
+            messagebox.showinfo("Información", "Venta realizada")
+
 
         # Crear un QHBoxLayout para centrar el botón horizontalmente
         buttons_layout = QHBoxLayout()

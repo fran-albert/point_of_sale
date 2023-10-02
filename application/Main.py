@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.proveedores_window.show()
 
     def show_ventas_window(self):
-        self.ventas_window = VentasWindow(self.app)
+        self.ventas_window = VentasWindow(self.nombre_usuario, self.app)
         self.ventas_window.show()
 
     def show_ordenes_window(self):

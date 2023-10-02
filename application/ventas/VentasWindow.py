@@ -12,7 +12,7 @@ from utils.Utils import Utils
 from ventas.ventas_utils_buttons import VentasUtilsButtons
 
 class VentasWindow(QMainWindow):
-    def __init__(self, app, parent=None):
+    def __init__(self, usuario, app, parent=None):
         super().__init__(parent)
 
         self.app = app
@@ -21,35 +21,31 @@ class VentasWindow(QMainWindow):
         self.total = 0
         self.ventas_utils_buttons = VentasUtilsButtons(self)
 
-        # Configurar ventana
         self.setWindowTitle("Ventas")
         self.setGeometry(100, 100, 600, 300)
 
-        # Crear elementos gráficos
         main_widget = QWidget()
         main_layout = QVBoxLayout()
 
         title_label = QLabel("Ventas")
         title_label.setAlignment(Qt.AlignCenter)
         font = title_label.font()
-        font.setPointSize(24)  # Cambiar el tamaño de la fuente
-        font.setBold(True)     # Establecer el estilo en negrita
+        font.setPointSize(24)  
+        font.setBold(True)    
         title_label.setFont(font)
         main_layout.addWidget(title_label)
 
-        # Agregar los botones debajo del título "Ventas"
         buttons_layout = QHBoxLayout()
-        for button_text in ["Vendedor", "Clientes", "Mov. de Caja", "Corte Caja", "Cancelar"]:
+        for button_text in ["Mov. de Caja", "Corte Caja", "Cancelar"]:
             button = QPushButton(button_text)
-            button.setFixedWidth(120)  # Ajustar el ancho de los botones
+            button.setFixedWidth(120)
             buttons_layout.addWidget(button)
             if button_text == "Cancelar":
                 button.clicked.connect(self.close)
-        buttons_layout.addStretch()  # Agregar un espacio flexible para alinear a la izquierda
+        buttons_layout.addStretch()  
 
         self.contador_ventas = 1
 
-        #necesito un contador de ventas del día que esté alineado a la derecha
         self.venta_numero_label = QLabel(f"Venta N°: {self.contador_ventas}")
         buttons_layout.addWidget(self.venta_numero_label)
         main_layout.addLayout(buttons_layout)
@@ -69,22 +65,19 @@ class VentasWindow(QMainWindow):
         self.table = QTableWidget()
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(["Código", "Descripción", "Cantidad", "Precio Unitario", "Precio Total"])
-        # Ajustar el ancho de cada columna
-        self.table.setColumnWidth(0, 100)  # Código
-        self.table.setColumnWidth(1, 400)  # Descripción
-        self.table.setColumnWidth(2, 80)   # Cantidad
-        self.table.setColumnWidth(3, 100)  # Precio
-        self.table.setColumnWidth(4, 100)  # Precio Total
+        self.table.setColumnWidth(0, 100) 
+        self.table.setColumnWidth(1, 400)  
+        self.table.setColumnWidth(2, 80)   
+        self.table.setColumnWidth(3, 100)  
+        self.table.setColumnWidth(4, 100) 
         main_layout.addWidget(self.table)
 
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-        # Configurar el tamaño y posición de la tabla
         self.table.setMinimumWidth(800)
         self.table.setMaximumHeight(300)
 
-        # Agregar Subtotal, IVA y Total debajo de la tabla
         totals_layout = QVBoxLayout()
 
         self.subtotal_label = QLabel("Subtotal: ")
@@ -97,13 +90,11 @@ class VentasWindow(QMainWindow):
 
         main_layout.addLayout(totals_layout)
 
-        # Mover el botón "Cobrar" debajo de Subtotal, IVA y Total
         cobrar_button = QPushButton("Cobrar")
-        cobrar_button.clicked.connect(lambda: self.ventas_utils_buttons.show_payment_window('test', self.total, self, self.lista_productos_vendidos(self.table)))
+        cobrar_button.clicked.connect(lambda: self.ventas_utils_buttons.show_payment_window(usuario, self.total, self, self.lista_productos_vendidos(self.table)))
 
         main_layout.addWidget(cobrar_button, alignment=Qt.AlignRight)
 
-        # Conectar la señal editingFinished del QLineEdit codigo_input a la función buscar_producto
         self.codigo_input.textChanged.connect(self.on_codigo_input_text_changed)
     def lista_productos_vendidos(self, table) :
         productos_vendidos = []
@@ -126,11 +117,10 @@ class VentasWindow(QMainWindow):
         VentasUtilsButtons.show_payment_window(self)
 
     def on_codigo_input_text_changed(self, text):
-        # No ejecutar la función si el cambio de texto fue causado por limpiar los campos
         if self.sender() and self.sender().objectName() == "codigo_input_clear":
             return
 
-        if text:  # Verificar que el texto no esté vacío
+        if text:  
             producto = self.producto_service.obtenerProducto(text)
 
             if producto is not None:
@@ -138,10 +128,10 @@ class VentasWindow(QMainWindow):
                     QMessageBox.warning(self, "Error", "El producto ya está ingresado.")
                 else:
                     self.agregar_producto_a_tabla(producto)
-                    self.codigo_input.setObjectName("codigo_input_clear")  # Asignar nombre de objeto
+                    self.codigo_input.setObjectName("codigo_input_clear")  
                     self.codigo_input.clear()
                     self.nombre_input.clear()
-                    self.codigo_input.setObjectName("")  # Remover el nombre de objeto
+                    self.codigo_input.setObjectName("") 
 
     def producto_ya_existe(self, producto):
         for row in range(self.table.rowCount()):
@@ -172,7 +162,7 @@ class VentasWindow(QMainWindow):
         precio_total = producto.precioVenta
         self.table.setItem(row_count, 4, self.create_read_only_table_widget_item(str(precio_total)))
 
-        self.update_totals()  # Mover la llamada a update_totals() al final de agregar_producto_a_tabla()
+        self.update_totals()  
 
     def create_read_only_table_widget_item(self, text):
         item = QTableWidgetItem(text)
@@ -182,9 +172,9 @@ class VentasWindow(QMainWindow):
     def update_precio_total(self, cantidad, row):
         precio_unitario = float(self.table.item(row, 3).text())
         precio_total = precio_unitario * cantidad
-        precio_total_str = "{:.2f}".format(precio_total)  # Formatear el número con dos decimales
+        precio_total_str = "{:.2f}".format(precio_total)  
         self.table.setItem(row, 4, self.create_read_only_table_widget_item(precio_total_str))
-        self.update_totals()  # Actualizar Subtotal, IVA y Total
+        self.update_totals()  
 
     def update_totals(self):
         subtotal = 0.0
@@ -199,7 +189,6 @@ class VentasWindow(QMainWindow):
         self.iva_label.setText("I.V.A: {:.2f}".format(iva))
         self.total_label.setText("Total: {:.2f}".format(total))
 
-        # Actualizar el atributo self.total
         self.total = total
 
     def actualizar_contador_ventas(self):
