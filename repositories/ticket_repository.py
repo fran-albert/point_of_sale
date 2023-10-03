@@ -20,7 +20,7 @@ class TicketRepository:
                 
     def obtenerTickets(self, fechaDesde, fechaHasta):
         tickets = []
-        query = "SELECT * FROM tickets WHERE fecha >= %s AND fecha <= %s"
+        query = "SELECT * FROM tickets WHERE fecha >= %s AND fecha < DATE_ADD(%s, INTERVAL 1 DAY)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (fechaDesde, fechaHasta))

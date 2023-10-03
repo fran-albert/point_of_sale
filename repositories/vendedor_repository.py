@@ -79,5 +79,26 @@ class VendedorRepository:
         else:
             return None
 
+    def obtenerId(self, dni):
+        query = "SELECT id FROM vendedores WHERE dni = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (dni,))
+        result = cursor.fetchone()
+        cursor.close()
+        if result:
+            return result[0]
+        else:
+            return None
+
+    def obtenerNombrePorId(self, id_vendedor):
+        query = "SELECT nombre FROM vendedores WHERE id = %s"
+        cursor = self.connection.cursor()
+        cursor.execute(query, (id_vendedor,))
+        result = cursor.fetchone()
+        cursor.close()
+        if result:
+            return result[0]
+        else:
+            return None
 
             

@@ -18,6 +18,7 @@ import datetime
 
 class Utils:
     nombre_usuario = ""
+    id_usuario = None
     # Pantalla de componentes Login
     def create_login_ui(self):
 
@@ -195,24 +196,32 @@ class Utils:
             print("Error al generar el reporte de stock:")
             QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de stock: {e}")
 
-    def generate_sales_report(main_window, fechaDesde, fechaHasta):
+    def generate_sales_report(main_window, fechaDesde, fechaHasta, nombre_vendedor):
         try:
             ticket_service = TicketService()
             tickets = ticket_service.obtenerTickets(fechaDesde, fechaHasta)
-            
             producto_vendido_service = ProductoVendidoService()
+            vendedor_service = VendedorService()
 
-            data = [['ID Ticket', 'Producto', 'Cantidad', 'Precio Unitario', 'Precio Total Ticket']]
+            data = [['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']]
             
             for ticket in tickets:
                 productos_vendidos = producto_vendido_service.obtenerProductosVendidos(ticket.id_ticket)
-                
+                nombre_vendedor = vendedor_service.obtenerNombrePorId(ticket.id_vendedor)
                 for producto_vendido in productos_vendidos:
-                    data.append([ticket.id_ticket, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, producto_vendido.precio_venta_total])
+                    if ticket.tipo_de_pago == 0:
+                        metodo_pago = 'Efectivo'
+                    elif ticket.tipo_de_pago == 1:
+                        metodo_pago = 'Tarjeta'
+                    elif ticket.tipo_de_pago == 2:
+                        metodo_pago = 'Transferencia'
+                    else:
+                        metodo_pago = str(ticket.tipo_de_pago)
+                    data.append([ticket.id_ticket, ticket.fecha, producto_vendido.codigo, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, nombre_vendedor, metodo_pago, ticket.total])
 
             pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 
-            stock_headers = ['ID Ticket', 'Producto', 'Cantidad', 'Precio Unitario', 'Precio Total Ticket']
+            stock_headers = ['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']
             stock_data = data[1:] 
 
             Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
@@ -257,7 +266,10 @@ class Utils:
     def obtener_nombre_usuario(dni):
         vendedor_service = VendedorService()
         nombre_usuario = vendedor_service.obtenerNombre(dni)
+        Utils.id_usuario = vendedor_service.obtenerId(dni)
         return nombre_usuario
+    
+
 
 
 # Utils.py

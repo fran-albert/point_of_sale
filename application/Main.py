@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QVBoxLayout, QLabel, QDateEdit, QPushButton
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 from Login import LoginWindow
@@ -6,7 +6,8 @@ from servicios.vendedor_service import VendedorService
 from utils.Utils import init_header,  create_main_window_menu
 from categorias.CategoriasWindow import CategoriasWindow
 from utils.Utils import Utils
-from datetime import datetime, timedelta
+from PyQt5.QtCore import QDate
+from datetime import datetime
 from productos.ProductosWindow import ProductosWindow
 from ventas.VentasWindow import VentasWindow
 from ordenes.OrdenesWindow import OrdenesWindow
@@ -46,11 +47,37 @@ class MainWindow(QMainWindow):
         self.vendedores_window.show()
 
     def generate_sales_report_wrapper(self):
-        fechaDesde = datetime.now().replace(day=1)
-        last_day = (fechaDesde + timedelta(days=32)).replace(day=1) - timedelta(days=1)
-        fechaHasta = last_day
+        dialog = QDialog(self)
+        layout = QVBoxLayout()
 
-        Utils.generate_sales_report(self, fechaDesde, fechaHasta)
+        today = datetime.today().date()
+
+        labelDesde = QLabel("Fecha Desde:", dialog)
+        dateEditDesde = QDateEdit(dialog)
+        dateEditDesde.setCalendarPopup(True)
+        dateEditDesde.setDate(QDate(today.year, today.month, today.day))
+
+        labelHasta = QLabel("Fecha Hasta:", dialog)
+        dateEditHasta = QDateEdit(dialog)
+        dateEditHasta.setCalendarPopup(True)
+        dateEditHasta.setDate(QDate(today.year, today.month, today.day))
+
+        btnOk = QPushButton("Generar Reporte", dialog)
+        btnOk.clicked.connect(dialog.accept)
+
+        layout.addWidget(labelDesde)
+        layout.addWidget(dateEditDesde)
+        layout.addWidget(labelHasta)
+        layout.addWidget(dateEditHasta)
+        layout.addWidget(btnOk)
+
+        dialog.setLayout(layout)
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            fechaDesde = dateEditDesde.date().toPyDate()
+            fechaHasta = dateEditHasta.date().toPyDate()
+
+            Utils.generate_sales_report(self, fechaDesde, fechaHasta, self.nombre_usuario)
 
     def generate_stock_report_wrapper(self):
         Utils.generate_stock_report(self)

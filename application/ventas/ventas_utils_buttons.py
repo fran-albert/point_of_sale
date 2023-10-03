@@ -104,13 +104,15 @@ class VentasUtilsButtons:
         tab_widget.addTab(tarjeta_tab, "Débito/Crédito")
         tab_widget.addTab(transferencia_tab, "Transferencia")
 
-        def realizar_venta_y_cobrar(usuario, tipo_de_pago, total, guardar_ticket, productos_vendidos):
+        def realizar_venta_y_cobrar(usuario, tipo_de_pago, total, guardar_ticket, productos_vendidos): 
+            id_usuario = Utils.id_usuario
             total = round(total, 2)
-            fecha = datetime.now()
-            ticket = Ticket(usuario, total, tipo_de_pago, fecha)
+            fecha = datetime.now().date()
+            ticket = Ticket(id_usuario, total, tipo_de_pago, fecha)
             idTicket_generado = ticket_service.insertarTicket(ticket)
-            producto_service = ProductoService()
 
+            producto_service = ProductoService()
+            
             for producto in productos_vendidos:
                 previo_venta = float(producto.get_precio_venta())
                 previo_venta = "{:.2f}".format(previo_venta)
@@ -127,22 +129,11 @@ class VentasUtilsButtons:
                 )
                 producto_vendido_service.insertarProdVendido(producto_vendido)
                 producto_service.actualizarStock(producto_vendido.get_codigo(), producto_vendido.get_cantidad_vendida())
-
-            cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket)
-        
-        def cobrar_ya(usuario, tipo_de_pago, total, guardar_ticket): 
-            total = round(total, 2)
-            fecha = datetime.now()
-            ticket = Ticket(usuario, total, tipo_de_pago, fecha)
-            idTicket_generado = ticket_service.insertarTicket(ticket)
-
             productos_vendidos = producto_vendido_service.obtenerProductosVendidos(idTicket_generado)
             
-            self.ventas_window.actualizar_contador_ventas()
-
             if guardar_ticket:
                 with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
-                    f.write(f"Usuario: {usuario}\nTotal: {total}\nId: {idTicket_generado}\n")
+                    f.write(f"Usuario: {usuario}\nTotal: {total}\n")
                     if tipo_de_pago == 0:
                         metodo_pago = 'Efectivo'
                     elif tipo_de_pago == 1:
@@ -154,15 +145,14 @@ class VentasUtilsButtons:
                     f.write(f"Tipo de Pago: {metodo_pago}\n")
                     f.write(f"Fecha: {fecha}\n")
                     
-                    # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
+                    # # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
                     for producto in productos_vendidos:
-                        f.write(f"Producto Vendido: {producto.get_nombre()}\n")
-                        f.write(f"Codigo: {producto.get_codigo()}\n")
-                        f.write(f"Cantidad Vendida: {producto.get_cantStock()}\n")
-                        f.write(f"Precio de Venta: {producto.get_precioVenta()}\n")
-                        f.write(f"Precio Total de Venta: {producto.get_precioVenta() * producto.get_cantStock()}\n\n")
+                        f.write(f"Producto: {producto.get_producto_vendido()}\n")
+                        f.write(f"Cantidad: {producto.get_cantidad_vendida()}\n")
+                        f.write(f"Precio Unitario: {producto.get_precio_venta()}\n")
+                        f.write(f"Precio Total {producto.get_precio_venta() * producto.get_cantidad_vendida()}\n\n")
             root = tk.Tk()
-            root.withdraw()  # Para ocultar la ventana principal
+            root.withdraw() 
             messagebox.showinfo("Información", "Venta realizada")
 
 

@@ -31,3 +31,9 @@ class VendedorService:
     
     def obtenerRol(self, dni):
         return self.vendedor_repository.obtenerRol(dni)
+    
+    def obtenerId(self, dni):
+        return self.vendedor_repository.obtenerId(dni)
+
+    def obtenerNombrePorId(self, id_vendedor):
+        return self.vendedor_repository.obtenerNombrePorId(id_vendedor)
