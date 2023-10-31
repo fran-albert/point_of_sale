@@ -168,9 +168,9 @@ class VentasUtilsButtons:
         efectivo_tab.setLayout(efectivo_layout)
 
         # Agregamos iconos a los selectores de pestañas
-        tab_widget.tabBar().setTabIcon(0, QIcon("img/icons8-efectivo-96.png"))
-        tab_widget.tabBar().setTabIcon(1, QIcon("img/icons8-visa-96.png"))
-        tab_widget.tabBar().setTabIcon(2, QIcon("img/icons8-edificio-del-banco-96.png"))
+        tab_widget.tabBar().setTabIcon(0, QIcon("utils/img/icons8-efectivo-96.png"))
+        tab_widget.tabBar().setTabIcon(1, QIcon("utils/img/icons8-visa-96.png"))
+        tab_widget.tabBar().setTabIcon(2, QIcon("utils/img/icons8-edificio-del-banco-96.png"))
 
         # Layout principal
         main_layout = QVBoxLayout()

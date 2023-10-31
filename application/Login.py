@@ -15,7 +15,7 @@ class LoginWindow(QWidget):
         self.app = app
         self.setWindowTitle("Inicio de sesión")
         self.setFixedSize(325, 160) 
-        window_icon = QIcon("img/icons8-usuario-50.png")
+        window_icon = QIcon("utils/img/icons8-usuario-50.png")
         self.setWindowIcon(window_icon)
         self.init_ui()
 
@@ -44,7 +44,7 @@ class LoginWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("img/icons8-market-64.png"))  
+    app.setWindowIcon(QIcon("utils/img/icons8-market-64.png"))  
     login_window = LoginWindow(app)
     login_window.show()
     sys.exit(app.exec_())

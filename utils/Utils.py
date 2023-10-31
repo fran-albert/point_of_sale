@@ -22,7 +22,7 @@ class Utils:
     # Pantalla de componentes Login
     def create_login_ui(self):
 
-            logo = QPixmap("img/logo2.0.jpg").scaled(300, 250, Qt.KeepAspectRatio)
+            logo = QPixmap("utils/img/logo2.0.jpg").scaled(300, 250, Qt.KeepAspectRatio)
             logo_mask = logo.createMaskFromColor(Qt.white)
             logo.setMask(logo_mask)
             logo_label = QLabel(self)
@@ -279,37 +279,37 @@ def create_main_window_menu(parent):
     menu_menu = QMenu("Menú", parent)
     menu_bar.addMenu(menu_menu)
 
-    vendedores_action = QAction(QIcon("img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Vendedores", parent)
+    vendedores_action = QAction(QIcon("utils/img/icons8-grupo-de-usuarios-hombre-y-mujer-48.png"),"Vendedores", parent)
     menu_menu.addAction(vendedores_action)
 
-    categorias_action = QAction(QIcon("img/icons8-almacén-48.png"),"Categorias", parent)
+    categorias_action = QAction(QIcon("utils/img/icons8-almacén-48.png"),"Categorias", parent)
     menu_menu.addAction(categorias_action)
 
-    productos_action = QAction(QIcon("img/icons8-almacén-48.png"),"Productos", parent)
+    productos_action = QAction(QIcon("utils/img/icons8-almacén-48.png"),"Productos", parent)
     menu_menu.addAction(productos_action)
 
-    proveedores_action = QAction(QIcon("img/icons8-proveedor-48.png"),"Proveedores", parent)
+    proveedores_action = QAction(QIcon("utils/img/icons8-proveedor-48.png"),"Proveedores", parent)
     menu_menu.addAction(proveedores_action)
 
-    ordenes_action = QAction(QIcon("img/icons8-recibo-48.png"),"Órdenes de Compra", parent)
+    ordenes_action = QAction(QIcon("utils/img/icons8-recibo-48.png"),"Órdenes de Compra", parent)
     menu_menu.addAction(ordenes_action)
 
     movimientos_menu = QMenu("Movimientos", parent)
     menu_bar.addMenu(movimientos_menu)
 
-    ventas_action = QAction(QIcon("img/icons8-caja-registradora-48.png"), "Ventas", parent)
+    ventas_action = QAction(QIcon("utils/img/icons8-caja-registradora-48.png"), "Ventas", parent)
     movimientos_menu.addAction(ventas_action)
 
     reportes_menu = QMenu("Reportes", parent)
     menu_bar.addMenu(reportes_menu)
 
-    reporte_stock_minimo_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Stock Mínimo", parent)
+    reporte_stock_minimo_action = QAction(QIcon("utils/img/icons8-pdf-48.png"), "Reporte de Stock Mínimo", parent)
     reportes_menu.addAction(reporte_stock_minimo_action)
 
-    reporte_stock_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Stock", parent)
+    reporte_stock_action = QAction(QIcon("utils/img/icons8-pdf-48.png"), "Reporte de Stock", parent)
     reportes_menu.addAction(reporte_stock_action)
 
-    reporte_ventas_action = QAction(QIcon("img/icons8-pdf-48.png"), "Reporte de Ventas", parent)
+    reporte_ventas_action = QAction(QIcon("utils/img/icons8-pdf-48.png"), "Reporte de Ventas", parent)
     reportes_menu.addAction(reporte_ventas_action)
 
     cerrar_sesion_action = QAction("Cerrar Sesión", parent)
@@ -344,7 +344,7 @@ def init_header(parent, width, nombre_usuario, menu_bar_height):
 
     center_layout = QVBoxLayout()
     logo_label = QLabel(header)
-    pixmap = QPixmap("img/logosinfondo.png").scaled(300, 250, Qt.KeepAspectRatio)
+    pixmap = QPixmap("utils/img/logosinfondo.png").scaled(300, 250, Qt.KeepAspectRatio)
     logo_label.setPixmap(pixmap)
     logo_label.setAlignment(Qt.AlignCenter)
     center_layout.addWidget(logo_label)
