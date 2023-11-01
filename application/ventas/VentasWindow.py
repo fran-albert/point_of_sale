@@ -1,12 +1,12 @@
 import sys
 from pathlib import Path
+from application.ventas.CierreCajonDinero import CierreCajonDinero
 from entities.productos_vendido import ProductosVendido
-# Agrega la carpeta principal al sys.path
 ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
     sys.path.append(ruta_principal)
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QHBoxLayout, QSpinBox, QTableWidget, QHeaderView, QSizePolicy, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QSpinBox, QTableWidget, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMessageBox
 from servicios.producto_service import ProductoService
 from utils.Utils import Utils
 from ventas.ventas_utils_buttons import VentasUtilsButtons
@@ -36,18 +36,16 @@ class VentasWindow(QMainWindow):
         main_layout.addWidget(title_label)
 
         buttons_layout = QHBoxLayout()
-        for button_text in ["Mov. de Caja", "Corte Caja", "Cancelar"]:
+        for button_text in ["Mov. de Caja", "Cierre Cajón Dinero", "Cancelar"]:
             button = QPushButton(button_text)
             button.setFixedWidth(120)
             buttons_layout.addWidget(button)
+            if button_text == "Cierre Cajón Dinero":
+                button.clicked.connect(self.mostrar_ventana_cierre_cajon_dinero) 
             if button_text == "Cancelar":
                 button.clicked.connect(self.close)
         buttons_layout.addStretch()  
 
-        self.contador_ventas = 1
-
-        self.venta_numero_label = QLabel(f"Venta N°: {self.contador_ventas}")
-        buttons_layout.addWidget(self.venta_numero_label)
         main_layout.addLayout(buttons_layout)
 
         input_layout = QHBoxLayout()
@@ -191,7 +189,6 @@ class VentasWindow(QMainWindow):
 
         self.total = total
 
-    def actualizar_contador_ventas(self):
-            self.contador_ventas += 1
-            self.venta_numero_label.setText(f"Venta N°: {self.contador_ventas}")
-    
+    def mostrar_ventana_cierre_cajon_dinero(self):
+        cierre_cajon_dinero = CierreCajonDinero(self)
+        cierre_cajon_dinero.exec_()

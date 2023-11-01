@@ -1,3 +1,4 @@
+from datetime import date
 from mysqlx import Error
 from entities.ticket import Ticket
 from access.mysql_connection import MySQLConnection
@@ -35,3 +36,22 @@ class TicketRepository:
             return tickets
         except Error as e:
             raise RuntimeError("Error al obtener los tickets", e)
+        
+    def obtenerTicketsDelDia(self):
+        tickets = []
+        today = date.today()
+        query = "SELECT * FROM tickets WHERE DATE(fecha) = %s AND tipo_de_pago = 0"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (today,))
+                for row in cursor.fetchall():
+                    id_ticket = row[0]
+                    id_vendedor = row[1]
+                    total = row[2]
+                    tipo_de_pago = row[3]
+                    fecha = row[4]
+                    nuevoTicket = Ticket(id_vendedor, total, tipo_de_pago, fecha, id_ticket)
+                    tickets.append(nuevoTicket)
+            return tickets
+        except Error as e:
+            raise RuntimeError("Error al obtener los tickets del día", e)

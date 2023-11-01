@@ -10,4 +10,5 @@ class TicketService:
     def obtenerTickets(self, fechaDesde, fechaHasta):
         return self.ticket_repository.obtenerTickets(fechaDesde, fechaHasta)
     
-    
+    def obtenerTicketsDelDia(self):
+        return self.ticket_repository.obtenerTicketsDelDia()
