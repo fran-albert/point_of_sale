@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from application.ventas.CierreCajonDinero import CierreCajonDinero
+from application.ventas.CierreCajonDineroDialog import CierreCajonDineroDialog
 from entities.productos_vendido import ProductosVendido
 ruta_principal = str(Path(__file__).parent.parent.resolve())
 if ruta_principal not in sys.path:
@@ -36,7 +36,7 @@ class VentasWindow(QMainWindow):
         main_layout.addWidget(title_label)
 
         buttons_layout = QHBoxLayout()
-        for button_text in ["Mov. de Caja", "Cierre Cajón Dinero", "Cancelar"]:
+        for button_text in ["Cierre Cajón Dinero", "Cancelar"]:
             button = QPushButton(button_text)
             button.setFixedWidth(120)
             buttons_layout.addWidget(button)
@@ -53,10 +53,6 @@ class VentasWindow(QMainWindow):
         self.codigo_input = QLineEdit()
         self.codigo_input.setPlaceholderText("Código del producto")
         input_layout.addWidget(self.codigo_input)
-
-        self.nombre_input = QLineEdit()
-        self.nombre_input.setPlaceholderText("Nombre del producto")
-        input_layout.addWidget(self.nombre_input)
 
         main_layout.addLayout(input_layout)
 
@@ -128,7 +124,6 @@ class VentasWindow(QMainWindow):
                     self.agregar_producto_a_tabla(producto)
                     self.codigo_input.setObjectName("codigo_input_clear")  
                     self.codigo_input.clear()
-                    self.nombre_input.clear()
                     self.codigo_input.setObjectName("") 
 
     def producto_ya_existe(self, producto):
@@ -190,5 +185,5 @@ class VentasWindow(QMainWindow):
         self.total = total
 
     def mostrar_ventana_cierre_cajon_dinero(self):
-        cierre_cajon_dinero = CierreCajonDinero(self)
+        cierre_cajon_dinero = CierreCajonDineroDialog(self)
         cierre_cajon_dinero.exec_()

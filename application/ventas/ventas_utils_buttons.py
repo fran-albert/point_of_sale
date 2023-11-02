@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QWidget,QCheckBox, QDialog, QSpacerItem, QSizePolicy, QPushButton, QVBoxLayout, QHBoxLayout, QFrame,  QTabWidget
+from PyQt5.QtWidgets import QLabel, QWidget,QCheckBox, QDialog, QSpacerItem, QSizePolicy, QPushButton, QVBoxLayout, QHBoxLayout, QFrame, QTabWidget, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from utils.Utils import Utils
@@ -52,7 +52,7 @@ class VentasUtilsButtons:
         transferencia_tab = QWidget()
 
         def create_tab_content():
-            cobrar_button = QPushButton("Cobrar YA")
+            cobrar_button = QPushButton("Confirmar Cobro")
             cobrar_button.setStyleSheet("""
                 QPushButton {
                     font-weight: bold;
@@ -141,7 +141,7 @@ class VentasUtilsButtons:
                     elif tipo_de_pago == 2:
                         metodo_pago = 'Transferencia'
                     else:
-                        metodo_pago = str(tipo_de_pago)  
+                        metodo_pago = str(tipo_de_pago)
                     f.write(f"Tipo de Pago: {metodo_pago}\n")
                     f.write(f"Fecha: {fecha}\n")
                     
@@ -152,8 +152,12 @@ class VentasUtilsButtons:
                         f.write(f"Precio Unitario: {producto.get_precio_venta()}\n")
                         f.write(f"Precio Total {producto.get_precio_venta() * producto.get_cantidad_vendida()}\n\n")
             root = tk.Tk()
-            root.withdraw() 
-            messagebox.showinfo("Información", "Venta realizada")
+            root.withdraw()
+            respuesta = QMessageBox.question(None, "Confirmación de cobro", f"¿Abona monto total?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if respuesta == QMessageBox.Yes:
+                messagebox.showinfo("Información", "Venta realizada")
+            else:
+                QMessageBox.warning(None, "Advertencia", "Elija otra forma de pago", QMessageBox.Ok)
 
 
         # Crear un QHBoxLayout para centrar el botón horizontalmente
