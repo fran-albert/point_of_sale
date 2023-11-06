@@ -17,6 +17,7 @@ class EditarProductoDialog(QDialog):
 
         self.codigo_label = QLabel("Código:")
         self.codigo_input = QLineEdit(str(producto.codigo))
+        self.codigo_input.setReadOnly(True)
         layout.addWidget(self.codigo_label)
         layout.addWidget(self.codigo_input)
 
@@ -83,6 +84,7 @@ class EditarProductoDialog(QDialog):
                 self.producto.proveedor = nuevo_proveedor
                 porcentaje = self.categoria_service.obtenerPorcentaje(nueva_categoria)
                 self.producto.precioVenta = Producto.calculoPrecioVenta(nuevo_precioCompra, porcentaje)
+                QMessageBox.information(self, "Información", "Producto Modificado correctamente")
                 self.accept()
             except ValueError:
                 QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")

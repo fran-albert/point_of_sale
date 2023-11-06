@@ -171,4 +171,5 @@ class ListaProductosDialog(QDialog):
         respuesta = QMessageBox.question(None, "Confirmación de eliminación", f"¿Está seguro de que desea eliminar el producto con código {producto_codigo}?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if respuesta == QMessageBox.Yes:
             self.producto_service.eliminarProducto(producto_codigo)
+            QMessageBox.information(self, "Información", "Producto eliminado correctamente")
             self.table.removeRow(index.row())

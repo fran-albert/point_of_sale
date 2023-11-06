@@ -68,18 +68,22 @@ class AgregarProductoDialog(QDialog):
         cant_stock = self.cant_stock_input.text().strip()
         categoria = self.categoria_selector.currentData()
         proveedor = self.proveedor_selector.currentData()
-
-        if codigo and nombre and precioCompra and cant_stock and categoria and proveedor:
-            try:
-                precioCompra = float(precioCompra)
-                cant_stock = int(cant_stock)
-                porcentaje = self.categoria_service.obtenerPorcentaje(categoria)
-                precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
-                producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
-                self.producto_service.insertarProducto(producto)
-                QMessageBox.information(self, "Información", "Nuevo Producto Añadido")
-                self.accept()
-            except ValueError:
-                QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
+        
+        existeCodigo = self.producto_service.obtenerProducto(codigo)
+        if existeCodigo is not None:
+            QMessageBox.warning(self, "Error", "El codigo de barra ya existe.")
         else:
-            QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
+            if codigo and nombre and precioCompra and cant_stock and categoria and proveedor:
+                try:
+                    precioCompra = float(precioCompra)
+                    cant_stock = int(cant_stock)
+                    porcentaje = self.categoria_service.obtenerPorcentaje(categoria)
+                    precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
+                    producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)
+                    self.producto_service.insertarProducto(producto)
+                    QMessageBox.information(self, "Información", "Nuevo Producto Añadido")
+                    self.accept()
+                except ValueError:
+                    QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
+            else:
+                QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
