@@ -200,34 +200,39 @@ class Utils:
         try:
             ticket_service = TicketService()
             tickets = ticket_service.obtenerTickets(fechaDesde, fechaHasta)
-            producto_vendido_service = ProductoVendidoService()
-            vendedor_service = VendedorService()
+            if len(tickets) > 0:
+                producto_vendido_service = ProductoVendidoService()
+                vendedor_service = VendedorService()
 
-            data = [['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']]
-            
-            for ticket in tickets:
-                productos_vendidos = producto_vendido_service.obtenerProductosVendidos(ticket.id_ticket)
-                nombre_vendedor = vendedor_service.obtenerNombrePorId(ticket.id_vendedor)
-                for producto_vendido in productos_vendidos:
-                    if ticket.tipo_de_pago == 0:
-                        metodo_pago = 'Efectivo'
-                    elif ticket.tipo_de_pago == 1:
-                        metodo_pago = 'Tarjeta'
-                    elif ticket.tipo_de_pago == 2:
-                        metodo_pago = 'Transferencia'
-                    else:
-                        metodo_pago = str(ticket.tipo_de_pago)
-                    data.append([ticket.id_ticket, ticket.fecha, producto_vendido.codigo, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, nombre_vendedor, metodo_pago, ticket.total])
+                data = [['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']]
+                
+                for ticket in tickets:
+                    productos_vendidos = producto_vendido_service.obtenerProductosVendidos(ticket.id_ticket)
+                    nombre_vendedor = vendedor_service.obtenerNombrePorId(ticket.id_vendedor)
+                    for producto_vendido in productos_vendidos:
+                        if ticket.tipo_de_pago == 0:
+                            metodo_pago = 'Efectivo'
+                        elif ticket.tipo_de_pago == 1:
+                            metodo_pago = 'Tarjeta'
+                        elif ticket.tipo_de_pago == 2:
+                            metodo_pago = 'Transferencia'
+                        else:
+                            metodo_pago = str(ticket.tipo_de_pago)
+                        data.append([ticket.id_ticket, ticket.fecha, producto_vendido.codigo, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, nombre_vendedor, metodo_pago, ticket.total])
 
-            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
+                pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 
-            stock_headers = ['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']
-            stock_data = data[1:] 
+                stock_headers = ['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']
+                stock_data = data[1:] 
 
-            Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+                Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)
+            else:
+                    QMessageBox.critical(main_window, "Error", f"En el período {fechaDesde} - {fechaHasta} no hubo ventas.")
         except Exception as e:
-            print("Error al generar el reporte de ventas:")
-            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
+                print("Error al generar el reporte de ventas:")
+                QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
+
+            
 
     def generate_minimum_stock_report(main_window):
         try:

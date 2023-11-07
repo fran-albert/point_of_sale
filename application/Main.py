@@ -76,8 +76,10 @@ class MainWindow(QMainWindow):
         if result == QDialog.Accepted:
             fechaDesde = dateEditDesde.date().toPyDate()
             fechaHasta = dateEditHasta.date().toPyDate()
-
-            Utils.generate_sales_report(self, fechaDesde, fechaHasta, self.nombre_usuario)
+            if fechaDesde > fechaHasta:
+                QMessageBox.critical(self, "Error", f"Fechas inválidas.")
+            else:
+                Utils.generate_sales_report(self, fechaDesde, fechaHasta, self.nombre_usuario)
 
     def generate_stock_report_wrapper(self):
         Utils.generate_stock_report(self)
