@@ -86,7 +86,7 @@ class Utils:
 
             preview_dialog = QDialog(main_window)
             preview_dialog.setWindowTitle("Vista Previa")
-            preview_dialog.setFixedSize(1000, 700)
+            preview_dialog.setFixedSize(1650, 700)
 
             save_pdf_button = QPushButton("Guardar PDF")
 
