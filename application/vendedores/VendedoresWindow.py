@@ -13,7 +13,7 @@ class VendedoresWindow(QMainWindow):
         self.vendedor_service = VendedorService()
 
         self.setWindowTitle("Vendedores")
-        self.setGeometry(100, 100, 150, 150)
+        self.setGeometry(400, 500, 150, 150)
 
         main_widget = QWidget()
         main_layout = QVBoxLayout()
