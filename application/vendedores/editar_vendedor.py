@@ -31,7 +31,7 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.apellido_input)
 
             self.contrasena_label = QLabel("Contraseña:")
-            self.contrasena_input = QLineEdit(vendedor.dni)
+            self.contrasena_input = QLineEdit(vendedor.contraseña)
             self.contrasena_input.setEchoMode(QLineEdit.Password) 
             layout.addWidget(self.contrasena_label)
             layout.addWidget(self.contrasena_input)

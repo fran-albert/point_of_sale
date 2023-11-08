@@ -29,14 +29,15 @@ class ListaVendedoresDialog(QDialog):
         layout.addWidget(title_label)
         layout.addWidget(rectangle_frame)
 
-        self.table = QTableWidget(len(self.vendedores), 11)
-        self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Apellido", "DNI", "Teléfono", "Correo Electrónico", "Fecha Nacimiento", "Fecha Alta", "Rol", "", ""])
+        self.table = QTableWidget(len(self.vendedores), 12)
+        self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Apellido", "DNI", "Teléfono", "Correo Electrónico", "Fecha Nacimiento", "Fecha Alta", "Rol", "", "", "Contraseña"])
         self.table.setColumnWidth(0, 20)
         self.table.setColumnWidth(5, 150)
         self.table.setColumnWidth(6, 120)
         self.table.hideColumn(0)
         self.table.hideColumn(7)  
         self.table.hideColumn(8)
+        self.table.hideColumn(11)
 
         if rol == 0:
             self.table.hideColumn(9)  
@@ -63,6 +64,7 @@ class ListaVendedoresDialog(QDialog):
             self.table.setItem(i, 6, item_fecha_nacimiento)
             self.table.setItem(i, 7, item_fecha_alta)
             self.table.setItem(i, 8, item_admin)
+            self.table.setItem(i, 11, item_contraseña)
 
             edit_button = QPushButton("Editar")
             edit_button.clicked.connect(self.on_edit_button_clicked)
@@ -100,6 +102,7 @@ class ListaVendedoresDialog(QDialog):
             item_fecha_nacimiento = QTableWidgetItem(vend.fecha_nacimiento.strftime("%Y-%m-%d"))
             item_fecha_alta = QTableWidgetItem(vend.fecha_alta.strftime("%Y-%m-%d"))
             item_admin = QTableWidgetItem(str(vend.admin) == "1" and "Administrador" or "Vendedor")
+            item_contraseña = QTableWidgetItem(str(vend.contraseña))
 
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
@@ -110,6 +113,7 @@ class ListaVendedoresDialog(QDialog):
             self.table.setItem(i, 6, item_fecha_nacimiento)
             self.table.setItem(i, 7, item_fecha_alta)
             self.table.setItem(i, 8, item_admin)
+            self.table.setItem(i, 11, item_contraseña)
 
             edit_button = QPushButton("Editar")
             edit_button.clicked.connect(self.on_edit_button_clicked)
@@ -130,7 +134,7 @@ class ListaVendedoresDialog(QDialog):
         id = int(self.table.item(index.row(), 0).text())
         nombre = self.table.item(index.row(), 1).text()
         apellido = self.table.item(index.row(), 2).text()
-        contraseña = self.table.item(index.row(), 3).text()
+        contraseña = self.table.item(index.row(), 11).text()
         dni = self.table.item(index.row(), 3).text()
         telefono = self.table.item(index.row(), 4).text()
         correo_electronico = self.table.item(index.row(), 5).text()
@@ -149,7 +153,7 @@ class ListaVendedoresDialog(QDialog):
                 vendedor.dni,
                 vendedor.nombre,
                 vendedor.apellido,
-                vendedor.dni,
+                vendedor.contraseña,
                 vendedor.telefono,
                 vendedor.correo_electronico,
                 vendedor.fecha_nacimiento,

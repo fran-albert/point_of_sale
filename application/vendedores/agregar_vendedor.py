@@ -91,22 +91,27 @@ class AgregarVendedorDialog(QDialog):
         fecha_alta = self.fecha_alta_input.date().toString("yyyy-MM-dd")
         admin = self.rol_combo.currentData()
 
-        if dni and nombre and apellido and contraseña and telefono and correo and fecha_nacimiento:
-            try:
-                dni = dni
-                nombre = nombre
-                apellido = apellido
-                contraseña = contraseña
-                telefono = telefono
-                correo = correo
-                fecha_nacimiento = fecha_nacimiento
-                fecha_alta = fecha_alta
-                admin = 1
-                vendedor = Vendedor(dni, nombre, apellido, contraseña, telefono, correo, fecha_nacimiento, fecha_alta, admin)
-                self.vendedor_service.insertarVendedor(vendedor)
-                QMessageBox.information(self, "Información", "Nuevo Vendedor Añadido")
-                self.accept()
-            except ValueError:
-                QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
+        existeDni = self.vendedor_service.obtenerId(dni)
+
+        if existeDni is None:
+            if dni and nombre and apellido and contraseña and telefono and correo and fecha_nacimiento:
+                try:
+                    dni = dni
+                    nombre = nombre
+                    apellido = apellido
+                    contraseña = contraseña
+                    telefono = telefono
+                    correo = correo
+                    fecha_nacimiento = fecha_nacimiento
+                    fecha_alta = fecha_alta
+                    admin = 1
+                    vendedor = Vendedor(dni, nombre, apellido, contraseña, telefono, correo, fecha_nacimiento, fecha_alta, admin)
+                    self.vendedor_service.insertarVendedor(vendedor)
+                    QMessageBox.information(self, "Información", "Nuevo Vendedor Añadido")
+                    self.accept()
+                except ValueError:
+                    QMessageBox.warning(self, "Error", "Por favor, ingrese valores válidos.")
+            else:
+                QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
         else:
-            QMessageBox.warning(self, "Error", "Por favor, complete todos los campos.")
+            QMessageBox.warning(self, "Error", "El DNI ya se encuentra ingresado.")
