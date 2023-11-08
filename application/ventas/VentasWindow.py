@@ -22,7 +22,7 @@ class VentasWindow(QMainWindow):
         self.ventas_utils_buttons = VentasUtilsButtons(self)
 
         self.setWindowTitle("Ventas")
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(400, 500, 150, 150)
 
         main_widget = QWidget()
         main_layout = QVBoxLayout()
@@ -75,11 +75,10 @@ class VentasWindow(QMainWindow):
         totals_layout = QVBoxLayout()
 
         self.subtotal_label = QLabel("Subtotal: ")
-        self.iva_label = QLabel("I.V.A: ")
+        
         self.total_label = QLabel("Total: ")
 
         totals_layout.addWidget(self.subtotal_label, alignment=Qt.AlignRight)
-        totals_layout.addWidget(self.iva_label, alignment=Qt.AlignRight)
         totals_layout.addWidget(self.total_label, alignment=Qt.AlignRight)
 
         main_layout.addLayout(totals_layout)
@@ -125,6 +124,8 @@ class VentasWindow(QMainWindow):
                     self.codigo_input.setObjectName("codigo_input_clear")  
                     self.codigo_input.clear()
                     self.codigo_input.setObjectName("") 
+            else:
+                QMessageBox.warning(self, "Error", "El producto no existe.")
 
     def producto_ya_existe(self, producto):
         for row in range(self.table.rowCount()):
@@ -175,11 +176,10 @@ class VentasWindow(QMainWindow):
             precio_total = float(self.table.item(row, 4).text())
             subtotal += precio_total
 
-        iva = subtotal * 0.21
-        total = subtotal + iva
+        
+        total = subtotal
 
         self.subtotal_label.setText("Subtotal: {:.2f}".format(subtotal))
-        self.iva_label.setText("I.V.A: {:.2f}".format(iva))
         self.total_label.setText("Total: {:.2f}".format(total))
 
         self.total = total

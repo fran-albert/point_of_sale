@@ -222,7 +222,7 @@ class Utils:
 
                 pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 
-                stock_headers = ['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']
+                stock_headers = ['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Ticket']
                 stock_data = data[1:] 
 
                 Utils.show_pdf_preview(main_window, pdf_buffer, stock_data, stock_headers)

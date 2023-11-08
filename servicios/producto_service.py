@@ -31,6 +31,9 @@ class ProductoService:
     def actualizarStock(self, codigo, cantidadVendida):
         return self.producto_repository.actualizarStock(codigo, cantidadVendida)
     
+    def actualizarStockOrdenCompra(self, codigo, cantidadPedida):
+        return self.producto_repository.actualizarStockOrdenCompra(codigo, cantidadPedida)
+    
     def actualizarPrecioVenta(self, porcentaje, idCategoria):
         return self.producto_repository.actualizarPrecioVenta(porcentaje, idCategoria)
     

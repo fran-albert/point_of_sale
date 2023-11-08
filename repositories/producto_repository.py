@@ -151,6 +151,16 @@ class ProductoRepository:
                 self.connection.commit()
         except Exception as e:
             raise RuntimeError(f"Error al actualizar el stock del producto {codigo}") from e
+        
+
+    def actualizarStockOrdenCompra(self, codigo, cantidadPedida):
+        query = "UPDATE productos SET cantidad_stock = cantidad_stock + %s WHERE codigo = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (cantidadPedida, codigo))
+                self.connection.commit()
+        except Exception as e:
+            raise RuntimeError(f"Error al actualizar el stock del producto {codigo}") from e
 
         
     def ExisteProductosConCategoria(self, codigo):

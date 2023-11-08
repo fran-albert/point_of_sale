@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QDialog, QDateEdit, QAbstractItemView, QSizePolicy, 
 from PyQt5.QtCore import Qt
 from servicios.orden_compra_service import OrdenCompraService
 from servicios.proveedor_service import ProveedorService
+from servicios.producto_service import ProductoService
+from servicios.productos_pedidos_service import ProductoPedidoService
 
 class VerOrdenDialog(QDialog):
     def __init__(self, parent=None):
@@ -9,6 +11,8 @@ class VerOrdenDialog(QDialog):
 
         self.orden_compra_service = OrdenCompraService()
         self.proveedor_service = ProveedorService()
+        self.producto_service = ProductoService()
+        self.productos_pedidos = ProductoPedidoService()
 
         self.proveedores = self.proveedor_service.obtenerProveedores()
         self.orden_compra = self.orden_compra_service.obtenerOrdenes()
@@ -77,5 +81,8 @@ class VerOrdenDialog(QDialog):
             idOrdenCompra = self.orden_compra[i].id
             recibido = checkbox.isChecked()
             if recibido:
+                prod_pedidos = self.productos_pedidos.obtenerProductosPedidos(idOrdenCompra)
+                for prod_pedido in prod_pedidos:
+                    self.producto_service.actualizarStockOrdenCompra(prod_pedido.codigo, prod_pedido.cantidad_pedida)
                 self.orden_compra_service.actualizarOrden(idOrdenCompra, recibido)
                 checkbox.setEnabled(False)

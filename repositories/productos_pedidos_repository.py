@@ -17,7 +17,7 @@ class ProductoPedidoRepository:
 
     def obtenerProductosPedidos(self, idOrdenCompra):
         prodPedidos = []
-        query = "SELECT * FROM productos_pedidos WHERE idOrdenCompra = %s"
+        query = "SELECT * FROM productos_pedidos WHERE id_orden_compra = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, (idOrdenCompra,))
