@@ -16,6 +16,9 @@ class EditarVendedorDialog(QDialog):
             self.id_vendedor_input.setReadOnly(True) 
             layout.addWidget(self.id_vendedor_label)
             layout.addWidget(self.id_vendedor_input)
+            self.id_vendedor_label.setHidden(True)
+            self.id_vendedor_input.setHidden(True)
+
 
             self.nombre_label = QLabel("Nombre:")
             self.nombre_input = QLineEdit(vendedor.nombre)
@@ -28,7 +31,7 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.apellido_input)
 
             self.contrasena_label = QLabel("Contraseña:")
-            self.contrasena_input = QLineEdit()
+            self.contrasena_input = QLineEdit(vendedor.dni)
             self.contrasena_input.setEchoMode(QLineEdit.Password) 
             layout.addWidget(self.contrasena_label)
             layout.addWidget(self.contrasena_input)
@@ -60,6 +63,9 @@ class EditarVendedorDialog(QDialog):
             layout.addWidget(self.fecha_alta_label)
             layout.addWidget(self.fecha_alta_input)
 
+            self.fecha_alta_label.setHidden(True)
+            self.fecha_alta_input.setHidden(True)
+
             self.rol_label = QLabel("Rol:")
             self.rol_combo = QComboBox()
             self.rol_combo.addItem("Selecciona el rol", None)
@@ -75,6 +81,9 @@ class EditarVendedorDialog(QDialog):
 
             layout.addWidget(self.rol_label)
             layout.addWidget(self.rol_combo)
+
+            self.rol_label.setHidden(True)
+            self.rol_combo.setHidden(True)
 
             self.buttons_layout = QHBoxLayout()
             self.guardar_button = QPushButton("Guardar")

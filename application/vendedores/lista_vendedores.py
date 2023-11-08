@@ -35,6 +35,8 @@ class ListaVendedoresDialog(QDialog):
         self.table.setColumnWidth(5, 150)
         self.table.setColumnWidth(6, 120)
         self.table.hideColumn(0)
+        self.table.hideColumn(7)  
+        self.table.hideColumn(8)
 
         if rol == 0:
             self.table.hideColumn(9)  
@@ -147,6 +149,7 @@ class ListaVendedoresDialog(QDialog):
                 vendedor.dni,
                 vendedor.nombre,
                 vendedor.apellido,
+                vendedor.dni,
                 vendedor.telefono,
                 vendedor.correo_electronico,
                 vendedor.fecha_nacimiento,
