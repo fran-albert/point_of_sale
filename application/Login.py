@@ -8,15 +8,14 @@ from servicios.vendedor_service import VendedorService
 from utils.Utils import Utils
 import Main
 
-
 class LoginWindow(QWidget):
     def __init__(self, app=None):
         super().__init__()
         self.app = app
         self.setWindowTitle("Inicio de sesión")
         self.setFixedSize(325, 160) 
-        window_icon = QIcon("utils/img/icons8-usuario-50.png")
-        self.setWindowIcon(window_icon)
+        icon_path = os.path.join(project_root, 'utils', 'img', 'icons8-usuario-50.png')
+        self.setWindowIcon(QIcon(icon_path))        
         self.init_ui()
 
     def init_ui(self):
@@ -44,7 +43,8 @@ class LoginWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("utils/img/icons8-market-64.png"))  
+    icon_path = os.path.join(project_root, 'utils', 'img', 'icons8-market-64.png')
+    app.setWindowIcon(QIcon(icon_path)) 
     login_window = LoginWindow(app)
     login_window.show()
     sys.exit(app.exec_())

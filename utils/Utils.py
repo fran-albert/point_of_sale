@@ -19,10 +19,17 @@ import datetime
 class Utils:
     nombre_usuario = ""
     id_usuario = None
+
+    @staticmethod
+    def get_full_path(relative_path):
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        return os.path.join(project_root, relative_path)
+
     # Pantalla de componentes Login
     def create_login_ui(self):
 
-            logo = QPixmap("utils/img/logo2.0.jpg").scaled(300, 250, Qt.KeepAspectRatio)
+            logo_path = Utils.get_full_path("utils/img/logo2.0.jpg")
+            logo = QPixmap(logo_path).scaled(300, 250, Qt.KeepAspectRatio)            
             logo_mask = logo.createMaskFromColor(Qt.white)
             logo.setMask(logo_mask)
             logo_label = QLabel(self)
