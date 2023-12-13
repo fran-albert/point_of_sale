@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Point Of Sale")
         self.rol = Utils.obtener_rol(dni)
-        self.setWindowIcon(QIcon("utils/img/icons8-market-64.png"))
+        self.setWindowIcon(QIcon(Utils.get_full_path("utils/img/icons8-market-64.png")))  
         self.setFixedSize(800, 500)
         self.categoria_window = None
         self.app = app
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("utils/img/icons8-market-64.png"))  
+    app.setWindowIcon(QIcon(Utils.get_full_path("utils/img/icons8-market-64.png")))  
     main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec_())
