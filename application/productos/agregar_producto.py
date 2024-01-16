@@ -71,12 +71,21 @@ class AgregarProductoDialog(QDialog):
         
         existeCodigo = self.producto_service.obtenerProducto(codigo)
         if existeCodigo is not None:
-            QMessageBox.warning(self, "Error", "El codigo de barra ya existe.")
+            QMessageBox.warning(self, "Error", "El código de barra ya existe.")
         else:
             if codigo and nombre and precioCompra and cant_stock and categoria and proveedor:
                 try:
                     precioCompra = float(precioCompra)
                     cant_stock = int(cant_stock)
+
+                    if cant_stock <= 0:
+                        QMessageBox.warning(self, "Error", "Cantidad: Debe ser mayor a 0")
+                        return
+                    
+                    if precioCompra <= 0:
+                        QMessageBox.warning(self, "Error", "Precio: Debe ser mayor a 0")
+                        return
+
                     porcentaje = self.categoria_service.obtenerPorcentaje(categoria)
                     precioVenta = Producto.calculoPrecioVenta(precioCompra, porcentaje)
                     producto = Producto(codigo, nombre, precioCompra, precioVenta, cant_stock, categoria, proveedor)

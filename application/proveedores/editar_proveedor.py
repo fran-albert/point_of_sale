@@ -28,7 +28,7 @@ class EditarProveedorDialog(QDialog):
             layout.addWidget(self.direccion_input)
 
             self.codigo_postal_label = QLabel("Código Postal:")
-            self.codigo_postal_input = QLineEdit(proveedor.cod_postal)
+            self.codigo_postal_input = QLineEdit(proveedor.codigo_postal)
             layout.addWidget(self.codigo_postal_label)
             layout.addWidget(self.codigo_postal_input)
 
@@ -95,7 +95,7 @@ class EditarProveedorDialog(QDialog):
             if nuevo_nombre and nuevo_codigo_postal and nueva_direccion and nueva_ciudad and nueva_provincia and nuevo_telefono and nuevo_correo_electronico and nuevo_comentario and nueva_cuenta_bancaria and nueva_fecha_alta:
                 self.proveedor.nombre = nuevo_nombre
                 self.proveedor.direccion = nueva_direccion
-                self.proveedor.cod_postal = nuevo_codigo_postal
+                self.proveedor.codigo_postal = nuevo_codigo_postal
                 self.proveedor.ciudad = nueva_ciudad
                 self.proveedor.provincia = nueva_provincia
                 self.proveedor.telefono = nuevo_telefono

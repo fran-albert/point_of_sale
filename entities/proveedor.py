@@ -1,8 +1,8 @@
 class Proveedor:
-    def __init__(self, nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta, id=None):
+    def __init__(self, nombre, direccion, codigo_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta, id=None):
         self.nombre = nombre
         self.direccion = direccion
-        self.cod_postal = cod_postal
+        self.codigo_postal = codigo_postal
         self.ciudad = ciudad
         self.provincia = provincia
         self.telefono = telefono
@@ -21,8 +21,8 @@ class Proveedor:
     def set_direccion(self, direccion):
         self.direccion = direccion
 
-    def set_cod_postal(self, cod_postal):
-        self.cod_postal = cod_postal
+    def set_codigo_postal(self, codigo_postal):
+        self.codigo_postal = codigo_postal
 
     def set_ciudad(self, ciudad):
         self.ciudad = ciudad
@@ -54,8 +54,8 @@ class Proveedor:
     def get_direccion(self):
         return self.direccion
 
-    def get_cod_postal(self):
-        return self.cod_postal
+    def get_codigo_postal(self):
+        return self.codigo_postal
 
     def get_ciudad(self):
         return self.ciudad

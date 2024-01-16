@@ -37,7 +37,7 @@ class ListaProveedoresDialog(QDialog):
             item_id = QTableWidgetItem(str(prov.id))
             item_nombre = QTableWidgetItem(prov.nombre)
             item_direccion = QTableWidgetItem(prov.direccion)
-            item_cod_postal = QTableWidgetItem(str(prov.cod_postal))
+            item_codigo_postal = QTableWidgetItem(str(prov.codigo_postal))
             item_ciudad = QTableWidgetItem(str(prov.ciudad))
             item_provincia = QTableWidgetItem(str(prov.provincia))
             item_telefono = QTableWidgetItem(str(prov.telefono))
@@ -49,7 +49,7 @@ class ListaProveedoresDialog(QDialog):
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
             self.table.setItem(i, 2, item_direccion)
-            self.table.setItem(i, 3, item_cod_postal)
+            self.table.setItem(i, 3, item_codigo_postal)
             self.table.setItem(i, 4, item_ciudad)
             self.table.setItem(i, 5, item_provincia)
             self.table.setItem(i, 6, item_telefono)
@@ -86,7 +86,7 @@ class ListaProveedoresDialog(QDialog):
             item_id = QTableWidgetItem(str(prov.id))
             item_nombre = QTableWidgetItem(prov.nombre)
             item_direccion = QTableWidgetItem(prov.direccion)
-            item_cod_postal = QTableWidgetItem(str(prov.cod_postal))
+            item_codigo_postal = QTableWidgetItem(str(prov.codigo_postal))
             item_ciudad = QTableWidgetItem(str(prov.ciudad))
             item_provincia = QTableWidgetItem(str(prov.provincia))
             item_telefono = QTableWidgetItem(str(prov.telefono))
@@ -98,7 +98,7 @@ class ListaProveedoresDialog(QDialog):
             self.table.setItem(i, 0, item_id)
             self.table.setItem(i, 1, item_nombre)
             self.table.setItem(i, 2, item_direccion)
-            self.table.setItem(i, 3, item_cod_postal)
+            self.table.setItem(i, 3, item_codigo_postal)
             self.table.setItem(i, 4, item_ciudad)
             self.table.setItem(i, 5, item_provincia)
             self.table.setItem(i, 6, item_telefono)
@@ -126,7 +126,7 @@ class ListaProveedoresDialog(QDialog):
         id = int(self.table.item(index.row(), 0).text())
         nombre = self.table.item(index.row(), 1).text()
         direccion = self.table.item(index.row(), 2).text()
-        cod_postal = self.table.item(index.row(), 3).text()
+        codigo_postal = self.table.item(index.row(), 3).text()
         ciudad = self.table.item(index.row(), 4).text()
         provincia = self.table.item(index.row(), 5).text()
         telefono = self.table.item(index.row(), 6).text()
@@ -135,7 +135,7 @@ class ListaProveedoresDialog(QDialog):
         cuenta_bancaria = self.table.item(index.row(), 9).text()
         fecha_alta = self.table.item(index.row(), 10).text()     
 
-        proveedor = Proveedor(nombre, direccion, cod_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
+        proveedor = Proveedor(nombre, direccion, codigo_postal, ciudad, provincia, telefono, correo_electronico, comentario, cuenta_bancaria, fecha_alta)
         proveedor.set_id(id)
         dialog = EditarProveedorDialog(proveedor, proveedor_service)
         result = dialog.exec()
@@ -144,7 +144,7 @@ class ListaProveedoresDialog(QDialog):
             self.proveedor_service.actualizarProveedor(
                 proveedor.nombre,
                 proveedor.direccion,
-                proveedor.cod_postal,
+                proveedor.codigo_postal,
                 proveedor.ciudad,
                 proveedor.provincia,
                 proveedor.telefono,
