@@ -78,6 +78,15 @@ class EditarProductoDialog(QDialog):
             try:
                 nuevo_precioCompra = float(nuevo_precioCompra)
                 nuevo_stock = int(nuevo_stock)
+
+                if nuevo_stock <= 0:
+                    QMessageBox.warning(self, "Error", "Cantidad: Debe ser mayor a 0")
+                    return
+                        
+                if nuevo_precioCompra <= 0:
+                    QMessageBox.warning(self, "Error", "Precio: Debe ser mayor a 0")
+                    return
+
                 self.producto.precioCompra = nuevo_precioCompra
                 self.producto.cantStock = nuevo_stock
                 self.producto.categoria = nueva_categoria
