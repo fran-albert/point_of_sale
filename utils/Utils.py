@@ -259,7 +259,7 @@ class Utils:
                 nombre_del_proveedor = proveedor_nombre_map.get(int(producto.proveedor), "Proveedor Desconocido")
                 data.append([producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, "{:.2f}".format(float(producto.precioVenta)), categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor])
 
-            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock", data)
+            pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Stock Mínimo", data)
 
             stock_headers = ["ID", "Producto", "Cantidad", "Precio Compra", "Precio Venta", "Categoria", "Proveedor"]
             stock_data_for_preview = [[producto.codigo, producto.nombre, producto.cantStock, producto.precioCompra, producto.precioVenta, categoria_descripcion_map.get(producto.categoria, "Desconocida"), nombre_del_proveedor] for producto in stock_data]
