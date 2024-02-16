@@ -12,7 +12,7 @@ class MySQLConnection:
                 host="localhost",
                 user="root",
                 password="",
-                database="post"
+                database="point_of_sale"
             )
             return connection
         except Error as e:

@@ -6,10 +6,8 @@ from servicios.producto_service import ProductoService
 from servicios.productos_pedidos_service import ProductoPedidoService
 
 class VerOrdenDialog(QDialog):
-    def __init__(self, fecha_desde, fecha_hasta, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.fecha_desde = fecha_desde
-        self.fecha_hasta = fecha_hasta
 
         self.orden_compra_service = OrdenCompraService()
         self.proveedor_service = ProveedorService()
@@ -17,7 +15,7 @@ class VerOrdenDialog(QDialog):
         self.productos_pedidos = ProductoPedidoService()
 
         self.proveedores = self.proveedor_service.obtenerProveedores()
-        self.orden_compra = self.orden_compra_service.obtenerOrdenes(self.fecha_desde, self.fecha_hasta)
+        self.orden_compra = self.orden_compra_service.obtenerOrdenes()
 
         self.setWindowTitle("Historial de Órdenes de Compra")
 
@@ -36,13 +34,8 @@ class VerOrdenDialog(QDialog):
         layout.addWidget(rectangle_frame)
 
         self.tabla = QTableWidget(len(self.orden_compra), 5)
-        self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio Compra", "Fecha Recepción", "Recibido"])
+        self.tabla.setHorizontalHeaderLabels(["Id", "Proveedor", "Precio", "Fecha Recepción", "Recibido"])
         self.tabla.setColumnWidth(0, 20)
-
-        fecha_desde_label = QLabel(f"Fecha Desde: {self.fecha_desde}")
-        fecha_hasta_label = QLabel(f"Fecha Hasta: {self.fecha_hasta}")
-        layout.addWidget(fecha_desde_label)
-        layout.addWidget(fecha_hasta_label)
 
         self.proveedor_nombre_map = {proveedor.id: proveedor.nombre for proveedor in self.proveedores}
         self.ordenes_checkboxes = [] 
@@ -54,7 +47,7 @@ class VerOrdenDialog(QDialog):
             item_fechaRecepcion = QTableWidgetItem(orden.fecha_recepcion.strftime("%d-%m-%Y"))
 
             checkbox_recibido = QCheckBox()
-            checkbox_recibido.setChecked(orden.recibido)  
+            checkbox_recibido.setChecked(orden.recibido)  # Set checkbox to the value of 'orden.recibido'
             checkbox_recibido.setStyleSheet("margin-left:50%; margin-right:50%;")
             
             if orden.recibido:
@@ -70,11 +63,12 @@ class VerOrdenDialog(QDialog):
 
         self.tabla.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self.tabla.hideColumn(0)
         layout.addWidget(self.tabla)
 
         guardar_btn = QPushButton("Guardar cambios")
         guardar_btn.setFixedWidth(100)
-        guardar_btn.setFixedHeight(25)
+        guardar_btn.setFixedHeight(25)  
         layout.addWidget(guardar_btn, alignment=Qt.AlignCenter)
         guardar_btn.clicked.connect(self.guardar_cambios)
 
