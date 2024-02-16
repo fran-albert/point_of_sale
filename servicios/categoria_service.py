@@ -9,7 +9,10 @@ class CategoriaService:
     
     def obtenerCategorias(self):
         return self.categoria_repository.obtenerCategorias()
-    
+
+    def ObtenerCategoria(self, id):
+        return self.categoria_repository.obtenerCategoria(id)
+
     def obtenerPorcentaje(self, descripcion):
         return self.categoria_repository.obtenerPorcentaje(descripcion)
 

@@ -205,18 +205,25 @@ class Utils:
 
     def generate_sales_report(main_window, fechaDesde, fechaHasta, nombre_vendedor):
         try:
+            categoria = None
+            total = 0
             ticket_service = TicketService()
             tickets = ticket_service.obtenerTickets(fechaDesde, fechaHasta)
             if len(tickets) > 0:
                 producto_vendido_service = ProductoVendidoService()
                 vendedor_service = VendedorService()
+                producto_service = ProductoService()
+                categoria_service = CategoriaService()
 
-                data = [['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Vendedor', 'Forma de Pago', 'Total Venta']]
+                data = [['ID Ticket', 'Fecha', 'Código de Barras', 'Producto', 'Cantidad', 'Precio Venta', 'Categoria', 'Vendedor', 'Forma de Pago']]
                 
                 for ticket in tickets:
+                    total = total + ticket.total
                     productos_vendidos = producto_vendido_service.obtenerProductosVendidos(ticket.id_ticket)
                     nombre_vendedor = vendedor_service.obtenerNombrePorId(ticket.id_vendedor)
                     for producto_vendido in productos_vendidos:
+                        producto = producto_service.obtenerProducto(producto_vendido.codigo)
+                        categoria = categoria_service.ObtenerCategoria(producto.categoria)
                         if ticket.tipo_de_pago == 0:
                             metodo_pago = 'Efectivo'
                         elif ticket.tipo_de_pago == 1:
@@ -225,7 +232,10 @@ class Utils:
                             metodo_pago = 'Transferencia'
                         else:
                             metodo_pago = str(ticket.tipo_de_pago)
-                        data.append([ticket.id_ticket, ticket.fecha, producto_vendido.codigo, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, nombre_vendedor, metodo_pago, ticket.total])
+                        data.append([ticket.id_ticket, ticket.fecha, producto_vendido.codigo, producto_vendido.producto_vendido, producto_vendido.cantidad_vendida, producto_vendido.precio_venta, categoria.descripcion, nombre_vendedor, metodo_pago])
+
+                data.append(["","","","","","","","",""]) 
+                data.append(["Total Ventas:", "", "","","","","","", total]) 
 
                 pdf_buffer = Utils.generate_pdf(main_window, "Reporte de Ventas", data)
 

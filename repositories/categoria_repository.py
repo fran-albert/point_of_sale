@@ -43,6 +43,22 @@ class CategoriaRepository:
             return categorias
         except Error as e:
             raise RuntimeError("Error al obtener las categorias", e)
+        
+    def obtenerCategoria(self, id):
+        categoria = None
+        query = "SELECT * FROM categorias WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (id,))
+                row = cursor.fetchone()
+                if row:
+                    id = row[0]
+                    descripcion = row[1]
+                    porcentaje = row[2]
+                    categoria = Categoria(id, descripcion, porcentaje)
+            return categoria
+        except Error as e:
+            raise RuntimeError(f"Error al obtener la categoria con el id {id}", e)
     
     def actualizarCategoria(self, nuevaDescripcion, nuevoPorcentaje, idCategoria):
         query = "UPDATE categorias SET Descripcion = %s, Porcentaje = %s WHERE id = %s"
