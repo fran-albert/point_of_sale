@@ -1,8 +1,10 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog
+from PyQt5.QtWidgets import QDateEdit, QMessageBox
 from ordenes.agregar_orden import AgregarOrdenDialog
 from ordenes.historial_ordenes import VerOrdenDialog
 from servicios.producto_service import ProductoService
+from PyQt5.QtCore import QDate
 from servicios.proveedor_service import ProveedorService
 from servicios.orden_compra_service import OrdenCompraService
 
@@ -54,8 +56,39 @@ class OrdenesWindow(QMainWindow):
         result = dialog.exec()
 
     def on_ver_orden_clicked(self):
-        dialog = VerOrdenDialog()
-        result = dialog.exec()
+        dialog = QDialog()
+        layout = QVBoxLayout()
+
+        labelDesde = QLabel("Fecha Desde:", dialog)
+        dateEditDesde = QDateEdit(dialog)
+        dateEditDesde.setCalendarPopup(True)
+        dateEditDesde.setDate(QDate.currentDate().addMonths(-1))
+
+        labelHasta = QLabel("Fecha Hasta:", dialog)
+        dateEditHasta = QDateEdit(dialog)
+        dateEditHasta.setCalendarPopup(True)
+        dateEditHasta.setDate(QDate.currentDate().addMonths(+1))
+        
+        btnOk = QPushButton("Aceptar", dialog)
+        btnOk.clicked.connect(lambda: self.accept_dates(dialog, dateEditDesde, dateEditHasta))
+
+        layout.addWidget(labelDesde)
+        layout.addWidget(dateEditDesde)
+        layout.addWidget(labelHasta)
+        layout.addWidget(dateEditHasta)
+        layout.addWidget(btnOk)
+
+        dialog.setLayout(layout)
+        dialog.exec_()
+
+    def accept_dates(self, dialog, dateEditDesde, dateEditHasta):
+        fechaDesde = dateEditDesde.date().toPyDate()
+        fechaHasta = dateEditHasta.date().toPyDate()
+        if fechaDesde > fechaHasta:
+            QMessageBox.critical(dialog, "Error", f"Fechas inválidas.")
+        else:
+            ver_orden_dialog = VerOrdenDialog(fechaDesde, fechaHasta)
+            ver_orden_dialog.exec_()
 
     def on_cancelar_clicked(self):
         self.close() 

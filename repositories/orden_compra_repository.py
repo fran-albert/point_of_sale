@@ -35,12 +35,12 @@ class OrdenCompraRepository:
         except Error as e:
             raise RuntimeError(f"Error al obtener la orden de compra con el id {idOrdenCompra}", e)
         
-    def obtenerOrdenes(self):
+    def obtenerOrdenes(self, fecha_desde, fecha_hasta):
         ordenesCompra = []
-        query = "SELECT * FROM ordenes_compra"
+        query = "SELECT * FROM ordenes_compra WHERE fecha_recepcion BETWEEN %s AND %s"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, (fecha_desde, fecha_hasta))
                 for row in cursor.fetchall():
                     id = row[0]
                     idProveedor = row[1]

@@ -7,8 +7,8 @@ class OrdenCompraService:
     def insertarOrden(self, ordenCompra):
         return self.orden_compra_repository.insertarOrden(ordenCompra)
     
-    def obtenerOrdenes(self):
-        return self.orden_compra_repository.obtenerOrdenes()
+    def obtenerOrdenes(self, fecha_desde, fecha_hasta):
+        return self.orden_compra_repository.obtenerOrdenes(fecha_desde, fecha_hasta)
     
     def obtenerOrden(self, idOrdenCompra):
         return self.orden_compra_repository.obtenerOrden(idOrdenCompra)
