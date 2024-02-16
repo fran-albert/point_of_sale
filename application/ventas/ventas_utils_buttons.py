@@ -131,30 +131,11 @@ class VentasUtilsButtons:
                 producto_service.actualizarStock(producto_vendido.get_codigo(), producto_vendido.get_cantidad_vendida())
             productos_vendidos = producto_vendido_service.obtenerProductosVendidos(idTicket_generado)
             
-            if guardar_ticket:
-                with open('C:/Users/Francisco/Desktop/ticket.txt', 'w') as f:
-                    f.write(f"Usuario: {usuario}\nTotal: {total}\n")
-                    if tipo_de_pago == 0:
-                        metodo_pago = 'Efectivo'
-                    elif tipo_de_pago == 1:
-                        metodo_pago = 'Tarjeta'
-                    elif tipo_de_pago == 2:
-                        metodo_pago = 'Transferencia'
-                    else:
-                        metodo_pago = str(tipo_de_pago)
-                    f.write(f"Tipo de Pago: {metodo_pago}\n")
-                    f.write(f"Fecha: {fecha}\n")
-                    
-                    # # Aquí puedes escribir la lista de productos vendidos en el archivo de alguna manera
-                    for producto in productos_vendidos:
-                        f.write(f"Producto: {producto.get_producto_vendido()}\n")
-                        f.write(f"Cantidad: {producto.get_cantidad_vendida()}\n")
-                        f.write(f"Precio Unitario: {producto.get_precio_venta()}\n")
-                        f.write(f"Precio Total {producto.get_precio_venta() * producto.get_cantidad_vendida()}\n\n")
             root = tk.Tk()
             root.withdraw()
             respuesta = QMessageBox.question(None, "Confirmación de cobro", f"¿Abona monto total?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if respuesta == QMessageBox.Yes:
+                Utils.generate_ticket(self.ventas_window, fecha, usuario, tipo_de_pago, total, productos_vendidos)
                 messagebox.showinfo("Información", "Venta realizada")
             else:
                 QMessageBox.warning(None, "Advertencia", "Elija otra forma de pago", QMessageBox.Ok)

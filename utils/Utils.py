@@ -239,7 +239,36 @@ class Utils:
                 print("Error al generar el reporte de ventas:")
                 QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el reporte de ventas: {e}")
 
-            
+    def generate_ticket(main_window, fecha, usuario, tipo_de_pago, total, productos_vendidos):
+        try:
+            metodo_pago = None
+            if tipo_de_pago == 0:
+                metodo_pago = 'Efectivo'
+            elif tipo_de_pago == 1:
+                metodo_pago = 'Tarjeta'
+            elif tipo_de_pago == 2:
+                metodo_pago = 'Transferencia'
+
+            data = [['Fecha:', fecha.strftime("%d/%m/%Y")], 
+                    ['Vendedor:', usuario],  
+                    ['Producto', 'Cantidad', 'Precio Unitario']]
+
+            for producto in productos_vendidos:
+                data.append([producto.producto_vendido, producto.cantidad_vendida, producto.precio_venta])
+
+            data.append(["", "", ""]) 
+            data.append(["Forma de pago:", metodo_pago]) 
+            data.append(["Precio total:", "", total]) 
+        
+            pdf_buffer = Utils.generate_pdf(main_window, f"Ticket {fecha}", data)
+
+            stock_headers = ["Producto", "Cantidad", "Precio Unitario"]
+            stock_data_for_preview = [[producto.producto_vendido, producto.cantidad_vendida, producto.precio_venta] for producto in productos_vendidos]
+
+            Utils.show_pdf_preview(main_window, pdf_buffer, stock_data_for_preview, stock_headers)
+        except Exception as e:
+            print("Error al generar el ticket de venta:")
+            QMessageBox.critical(main_window, "Error", f"Ocurrió un error al generar el ticket de venta: {e}")
 
     def generate_minimum_stock_report(main_window):
         try:
@@ -381,5 +410,3 @@ def init_header(parent, width, nombre_usuario, menu_bar_height):
     main_layout.addLayout(right_layout)
     main_layout.setStretchFactor(right_layout, 1)
     header.setLayout(main_layout)
-
-
